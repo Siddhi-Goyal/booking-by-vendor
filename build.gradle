@@ -1,0 +1,95 @@
+buildscript {
+	apply from: 'properties.gradle'
+
+	repositories {
+		maven mavenConfig
+		ivy ivyConfig
+	}
+	dependencies {
+		classpath("com.gap.gradle.plugins:gap-sonar-plugin:2+")
+	}
+}
+
+plugins {
+	id 'org.springframework.boot' version '2.3.6.RELEASE'
+	id 'io.spring.dependency-management' version '1.0.10.RELEASE'
+	id 'java'
+	id "com.gorylenko.gradle-git-properties" version "2.2.0"
+}
+
+apply plugin: 'gap-sonarqube'
+
+group = 'com.gap.sourcing.smee'
+sourceCompatibility = '11'
+
+configurations {
+	compileOnly {
+		extendsFrom annotationProcessor
+	}
+}
+
+repositories {
+	maven mavenConfig
+}
+
+dependencies {
+	implementation 'org.springframework.boot:spring-boot-starter-actuator'
+	implementation 'org.springframework.boot:spring-boot-starter-webflux'
+	implementation 'org.springframework.cloud:spring-cloud-starter-config'
+	implementation group: 'com.github.ulisesbocchio', name: 'jasypt-spring-boot-starter', version: '1.18'
+	implementation 'net.logstash.logback:logstash-logback-encoder:6.2'
+	implementation 'ch.qos.logback:logback-classic:1.2.3'
+}
+
+dependencyManagement {
+	imports {
+		mavenBom "com.microsoft.azure:azure-spring-boot-bom:${azureVersion}"
+		mavenBom "org.springframework.cloud:spring-cloud-dependencies:${springCloudVersion}"
+	}
+}
+
+uploadArchives {
+	repositories {
+		ivy {
+			layout 'maven'
+			credentials artifactoryCredentials
+			url nonProdArtifactory
+		}
+	}
+}
+
+uploadArchives.dependsOn bootJar
+
+sourceSets {
+	test {
+		java { srcDirs = ['src/test/unit/java'] }
+		resources { srcDirs = ['src/test/unit/resources'] }
+		compileClasspath += sourceSets.main.compileClasspath
+		runtimeClasspath += sourceSets.main.runtimeClasspath
+	}
+}
+
+
+sonarqube {
+	properties {
+		property "sonar.login", System.getenv('SONAR_TOKEN')
+		property "sonar.projectKey", 'com.gap.sourcing:smee-user-service'
+		property "sonar.projectName", 'smee-user-service'
+		property "sonar.includePlugins", "buildbreaker"
+		property "sonar.analysis.mode", "preview"
+		property "sonar.projectVersion", version
+		property "sonar.exclusions", "/src/main/java/com/gap/sourcing/smee/SmeeUserServiceApplication.java, " +
+				"/src/main/java/com/gap/sourcing/smee/configuration/*.java, /src/main/java/com/gap/sourcing/smee/controller/*.java"
+	}
+}
+
+gitProperties {
+	dateFormat = "yyyy-MM-dd'T'HH:mm:ssZ"
+	dateFormatTimeZone = "PST"
+	keys = ['git.branch', 'git.commit.id', 'git.commit.time', 'git.commit.message.full',
+			'git.commit.user.name', 'git.commit.user.email']
+}
+
+test {
+	useJUnitPlatform()
+}

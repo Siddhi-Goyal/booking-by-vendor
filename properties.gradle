@@ -1,0 +1,39 @@
+def getJvmArgs(){
+
+    def applicationDefaultJvmArgs = []
+    def activeProfile =  "${project.gradle.startParameter.systemPropertiesArgs['spring.profiles.active']}"
+
+    if(activeProfile != "null"){
+        applicationDefaultJvmArgs.push("-Dspring.profiles.active=${activeProfile}");
+    }
+    return applicationDefaultJvmArgs;
+}
+
+project.ext {
+    applicationDefaultJvmArgs = getJvmArgs()
+    springCloudVersion = 'Hoxton.SR9'
+    azureVersion = "2.3.5"
+    mavenRepo = "https://gapinc.jfrog.io/gapinc/maven-repos"
+    nonProdArtifactory = "https://gapinc.jfrog.io/gapinc/local-non-prod"
+
+    artifactoryCredentials = {
+        username System.getenv('SAAS_ARTIFACTORY_USERNAME') ?: "$saas_artifactory_username"
+        password System.getenv('SAAS_ARTIFACTORY_PASSWORD') ?: "$saas_artifactory_password"
+    }
+
+    mavenConfig = {
+        url mavenRepo
+        credentials artifactoryCredentials
+    }
+
+    ivyConfig = {
+        layout 'maven'
+        url mavenRepo
+        credentials artifactoryCredentials
+    }
+}
+
+//Lets command-line -P properties override the above
+gradle.startParameter.getProjectProperties().each { property, value ->
+    project.ext[property] = value
+}
