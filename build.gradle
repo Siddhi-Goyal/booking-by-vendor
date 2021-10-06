@@ -39,6 +39,8 @@ dependencies {
 	implementation group: 'com.github.ulisesbocchio', name: 'jasypt-spring-boot-starter', version: '1.18'
 	implementation 'net.logstash.logback:logstash-logback-encoder:6.2'
 	implementation 'ch.qos.logback:logback-classic:1.2.3'
+	compileOnly 'org.projectlombok:lombok'
+	annotationProcessor 'org.projectlombok:lombok'
 }
 
 dependencyManagement {
