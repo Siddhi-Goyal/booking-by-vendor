@@ -1,2 +1,1 @@
-
 # spc-smee-user-service
