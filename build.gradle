@@ -83,7 +83,7 @@ sonarqube {
 		property "sonar.analysis.mode", "preview"
 		property "sonar.projectVersion", version
 		property "sonar.exclusions", "/src/main/java/com/gap/sourcing/smee/SmeeUserServiceApplication.java, " +
-				"/src/main/java/com/gap/sourcing/smee/configuration/*.java, /src/main/java/com/gap/sourcing/smee/controller/*.java"
+				"/src/main/java/com/gap/sourcing/smee/configurations/*.java, /src/main/java/com/gap/sourcing/smee/controllers/*.java"
 	}
 }
 
