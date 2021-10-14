@@ -1,13 +1,9 @@
 package com.gap.sourcing.smee.entities;
 
 import lombok.*;
-import org.hibernate.annotations.Type;
 
-import javax.persistence.Entity;
-import javax.persistence.Id;
-import javax.persistence.Table;
+import javax.persistence.*;
 import java.time.ZonedDateTime;
-import java.util.UUID;
 
 @Getter
 @Setter
@@ -19,8 +15,7 @@ import java.util.UUID;
 public class SmeeUser {
 
     @Id
-    @Type(type = "uuid-char")
-    @Generated
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
     private String userName;
     private String userEmail;

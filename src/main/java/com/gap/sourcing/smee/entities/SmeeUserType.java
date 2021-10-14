@@ -2,9 +2,7 @@ package com.gap.sourcing.smee.entities;
 
 import lombok.*;
 
-import javax.persistence.Entity;
-import javax.persistence.Id;
-import javax.persistence.Table;
+import javax.persistence.*;
 
 @Getter
 @Setter
@@ -16,7 +14,7 @@ import javax.persistence.Table;
 public class SmeeUserType {
 
     @Id
-    @Generated
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
     private String userType;
     private String description;
