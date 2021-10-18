@@ -17,10 +17,10 @@ import java.util.Arrays;
 @Slf4j
 public class SmeeUserCreateResourceConversionStep implements Step {
 
-    private Step userLoadDataStep;
+    private Step smeeUserLoadDataStep;
 
-    public SmeeUserCreateResourceConversionStep(Step userLoadDataStep) {
-        this.userLoadDataStep = userLoadDataStep;
+    public SmeeUserCreateResourceConversionStep(Step smeeUserLoadDataStep) {
+        this.smeeUserLoadDataStep = smeeUserLoadDataStep;
     }
 
     @Override
@@ -47,6 +47,6 @@ public class SmeeUserCreateResourceConversionStep implements Step {
             throw new GenericBadRequestException(userResource, "Exception while converting resource to input entity object " +
                     "withStackTrace - " + Arrays.toString(exception.getStackTrace()));
         }
-        return userLoadDataStep;
+        return smeeUserLoadDataStep;
     }
 }

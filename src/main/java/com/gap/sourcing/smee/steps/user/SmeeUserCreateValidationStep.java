@@ -16,10 +16,10 @@ import static net.logstash.logback.argument.StructuredArguments.kv;
 @Slf4j
 public class SmeeUserCreateValidationStep implements Step{
 
-    private final Step userCreateResourceConversionStep;
+    private final Step smeeUserCreateResourceConversionStep;
 
-    public SmeeUserCreateValidationStep(final Step userCreateResourceConversionStep) {
-        this.userCreateResourceConversionStep = userCreateResourceConversionStep;
+    public SmeeUserCreateValidationStep(final Step smeeUserCreateResourceConversionStep) {
+        this.smeeUserCreateResourceConversionStep = smeeUserCreateResourceConversionStep;
     }
 
     @Override
@@ -32,7 +32,7 @@ public class SmeeUserCreateValidationStep implements Step{
 
         log.info("Validation of the incoming resource is complete.");
 
-        return userCreateResourceConversionStep;
+        return smeeUserCreateResourceConversionStep;
     }
 
     private void validateInDcDate(UserCreateResource resource) throws GenericBadRequestException {

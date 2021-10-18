@@ -4,3 +4,7 @@ spring:
     username: SA
     password: ENC(gTbq2KQ76FdVkdKdNLxXIvRucctt+HdL)
     driver-class-name: com.microsoft.sqlserver.jdbc.SQLServerDriver
+
+service-uri:
+  denodo-api-service:
+    base: http://denodo.gapinc.com:9090/server/sourcing_db/vendor_relationship/views/vendor_relationship
