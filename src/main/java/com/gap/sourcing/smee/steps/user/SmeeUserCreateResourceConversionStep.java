@@ -4,6 +4,7 @@ import com.gap.sourcing.smee.contexts.Context;
 import com.gap.sourcing.smee.contexts.UserContext;
 import com.gap.sourcing.smee.dtos.resources.UserCreateResource;
 import com.gap.sourcing.smee.entities.SmeeUser;
+import com.gap.sourcing.smee.exceptions.GenericBadRequestException;
 import com.gap.sourcing.smee.exceptions.GenericUserException;
 import com.gap.sourcing.smee.steps.Step;
 import lombok.extern.slf4j.Slf4j;
@@ -43,7 +44,7 @@ public class SmeeUserCreateResourceConversionStep implements Step {
             userContext.setInput(smeeUser);
             log.info("Converted incoming resource to smee user and saved in context's input attribute.");
         } catch (Exception exception) {
-            throw new GenericUserException(userResource, "Exception while converting resource to input entity object " +
+            throw new GenericBadRequestException(userResource, "Exception while converting resource to input entity object " +
                     "withStackTrace - " + Arrays.toString(exception.getStackTrace()));
         }
         return userLoadDataStep;
