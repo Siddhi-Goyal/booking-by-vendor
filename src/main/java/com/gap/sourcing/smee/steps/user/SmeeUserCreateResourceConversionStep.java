@@ -4,12 +4,15 @@ import com.gap.sourcing.smee.contexts.Context;
 import com.gap.sourcing.smee.contexts.UserContext;
 import com.gap.sourcing.smee.dtos.resources.UserCreateResource;
 import com.gap.sourcing.smee.entities.SmeeUser;
+import com.gap.sourcing.smee.entities.SmeeUserType;
 import com.gap.sourcing.smee.exceptions.GenericBadRequestException;
 import com.gap.sourcing.smee.exceptions.GenericUserException;
+import com.gap.sourcing.smee.repositories.SmeeUserTypeRepository;
 import com.gap.sourcing.smee.steps.Step;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
 
+import javax.persistence.criteria.CriteriaBuilder;
 import java.time.ZonedDateTime;
 import java.util.Arrays;
 
@@ -18,9 +21,12 @@ import java.util.Arrays;
 public class SmeeUserCreateResourceConversionStep implements Step {
 
     private Step smeeUserLoadDataStep;
+    private final SmeeUserTypeRepository smeeUserTypeRepository;
 
-    public SmeeUserCreateResourceConversionStep(Step smeeUserLoadDataStep) {
+    public SmeeUserCreateResourceConversionStep(Step smeeUserLoadDataStep , SmeeUserTypeRepository smeeUserTypeRepository) {
         this.smeeUserLoadDataStep = smeeUserLoadDataStep;
+        this.smeeUserTypeRepository = smeeUserTypeRepository;
+
     }
 
     @Override
@@ -30,9 +36,12 @@ public class SmeeUserCreateResourceConversionStep implements Step {
         SmeeUser smeeUser = new SmeeUser();
         log.info("Converting incoming resource to smeeUser, resource={}", userResource);
         try {
+
+          //  Integer userTypeId = fetchUserTypeIdFromDB(userResource.getUserType());
             smeeUser.setUserName(userResource.getUserName());
             smeeUser.setUserEmail(userResource.getUserEmail());
             smeeUser.setUserTypeId(1);//TODO fetch user type id from DB
+
             smeeUser.setIsActive(true);
             smeeUser.setIsVendor(userResource.getIsVendor());
             smeeUser.setCreatedBy(userResource.getUserId());//TODO check with managers
@@ -49,4 +58,9 @@ public class SmeeUserCreateResourceConversionStep implements Step {
         }
         return smeeUserLoadDataStep;
     }
+
+   /* public Integer fetchUserTypeIdFromDB (String userType){
+         SmeeUserType smeeUserType =  smeeUserTypeRepository.findSmeeUserType(userType);
+         return smeeUserType.getId();
+    }*/
 }
