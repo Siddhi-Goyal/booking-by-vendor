@@ -11,14 +11,14 @@ import java.util.EnumMap;
 import java.util.Map;
 
 @Controller
-public class UserStepManager implements StepManager {
+public class SmeeUserStepManager implements StepManager {
 
     private final Map<RequestAction, Step> firstStepMap;
 
-    public UserStepManager( final Step UserCreateValidationStep) {
+    public SmeeUserStepManager(final Step userCreateValidationStep) {
         this.firstStepMap = new EnumMap<>(RequestAction.class);
 
-        firstStepMap.put(RequestAction.CREATE, UserCreateValidationStep);
+        firstStepMap.put(RequestAction.CREATE, userCreateValidationStep);
     }
 
     @Override

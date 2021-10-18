@@ -4,6 +4,7 @@ import lombok.*;
 
 import javax.persistence.*;
 import java.time.ZonedDateTime;
+import java.util.List;
 
 @Getter
 @Setter
@@ -17,6 +18,7 @@ public class SmeeUser {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
+
     private String userName;
     private String userEmail;
     private Integer userTypeId;
@@ -26,4 +28,8 @@ public class SmeeUser {
     private ZonedDateTime createdDate;
     private String lastModifiedBy;
     private ZonedDateTime lastModifiedDate;
+
+    @OneToMany(mappedBy = "userId", fetch = FetchType.LAZY, orphanRemoval = true, cascade = CascadeType.ALL )
+    private List<SmeeUserVendor> vendors;
+
 }

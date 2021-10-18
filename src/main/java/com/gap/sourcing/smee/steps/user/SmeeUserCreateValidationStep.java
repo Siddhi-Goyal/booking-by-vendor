@@ -14,11 +14,11 @@ import static net.logstash.logback.argument.StructuredArguments.kv;
 
 @Component
 @Slf4j
-public class UserCreateValidationStep implements Step{
+public class SmeeUserCreateValidationStep implements Step{
 
     private final Step userCreateResourceConversionStep;
 
-    public UserCreateValidationStep(final Step userCreateResourceConversionStep) {
+    public SmeeUserCreateValidationStep(final Step userCreateResourceConversionStep) {
         this.userCreateResourceConversionStep = userCreateResourceConversionStep;
     }
 
@@ -28,12 +28,11 @@ public class UserCreateValidationStep implements Step{
 
         log.info("Validating the incoming resource for user creation", kv("resource", resource));
 
-       // validateInDcDate(resource);
+        // include validation if required
 
         log.info("Validation of the incoming resource is complete.");
 
-        //return userCreateResourceConversionStep;
-        return null;
+        return userCreateResourceConversionStep;
     }
 
     private void validateInDcDate(UserCreateResource resource) throws GenericBadRequestException {
@@ -41,3 +40,4 @@ public class UserCreateValidationStep implements Step{
     }
 
 }
+

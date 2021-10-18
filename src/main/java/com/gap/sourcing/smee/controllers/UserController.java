@@ -2,10 +2,13 @@ package com.gap.sourcing.smee.controllers;
 
 import com.gap.sourcing.smee.dtos.responses.Response;
 import com.gap.sourcing.smee.dtos.resources.UserCreateResource;
+import com.gap.sourcing.smee.services.ControllerStepService;
+import com.gap.sourcing.smee.services.UserControllerStepService;
 import com.gap.sourcing.smee.utils.RequestIdGenerator;
 import com.gap.sourcing.smee.enums.RequestAction;
 import com.gap.sourcing.smee.envelopes.Envelope;
 import lombok.extern.slf4j.Slf4j;
+import org.slf4j.MDC;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -30,26 +33,19 @@ import static net.logstash.logback.argument.StructuredArguments.kv;
 @RequestMapping("/api/user")
 public class UserController {
 
-    @GetMapping
-    public ResponseEntity<String> sayHello() {
-        String requestId = RequestIdGenerator.generateRequestId();
-        log.info("Just to check logs", kv("requestId", requestId), kv("date", Instant.now().toString()));
-        return ResponseEntity.ok("Hello!!!, Your Request ID is: " + requestId);
+    private final ControllerStepService userControllerStepService;
+
+    UserController(final ControllerStepService userControllerStepService) {
+        this.userControllerStepService = userControllerStepService;
     }
 
     @PostMapping
     public ResponseEntity<String> createOrUpdateUser(final @Valid @RequestBody UserCreateResource resource) throws GenericUserException {
         log.info("Received requested to create User", kv("resource", resource));
 
-        final String requestId = RequestIdGenerator.generateRequestId();//MDC.get(RequestIdGenerator.REQUEST_ID_KEY);
+        final String requestId = MDC.get(RequestIdGenerator.REQUEST_ID_KEY);
 
-        System.out.println("========Resource values"+ resource.getVendorPartyId());
-
-     //   final Response response = gisBookingControllerStepService.process(RequestAction.CREATE, resource);
-
-        //  final Envelope envelope = new Envelope(HttpStatus.OK.value(), requestId, response);
-
-        log.info("User created successfully", kv("response", "User created "));
+        final Response response = userControllerStepService.process(RequestAction.CREATE, resource);
 
         return ResponseEntity.ok("Hello!!!, Your Request ID is: " + requestId);
 

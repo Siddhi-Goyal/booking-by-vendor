@@ -7,7 +7,9 @@ import com.gap.sourcing.smee.enums.RequestAction;
 import com.gap.sourcing.smee.exceptions.GenericUserException;
 import com.gap.sourcing.smee.steps.Step;
 import com.gap.sourcing.smee.steps.StepManager;
+import org.springframework.stereotype.Service;
 
+@Service
 public class UserControllerStepService implements ControllerStepService   {
 
     private final StepManager userStepManager;
@@ -25,9 +27,6 @@ public class UserControllerStepService implements ControllerStepService   {
         while (nextStep != null) {
             nextStep = nextStep.execute(userContext);
         }
-      //  return action.equals(RequestAction.GET) ? vendorContext.getVendorSearchResponse() : vendorContext.getResponse();
         return (Response) userContext.getResponse();
-
     }
-
 }

@@ -21,7 +21,11 @@ public class SmeeUserVendor {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
-    private Integer userId;
-    private String vendorPartyId;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "user_id")
+    private SmeeUser userId;
+
+    private Integer vendorPartyId;
     private String vendorName;
 }
