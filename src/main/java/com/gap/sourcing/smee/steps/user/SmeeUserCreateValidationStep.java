@@ -34,9 +34,7 @@ public class SmeeUserCreateValidationStep implements Step{
         return smeeUserCreateResourceConversionStep;
     }
 
-    private void validateInDcDate(SmeeUserCreateResource resource) throws GenericBadRequestException {
 
-    }
 
 }
 
