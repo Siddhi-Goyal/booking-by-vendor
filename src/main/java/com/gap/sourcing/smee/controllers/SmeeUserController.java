@@ -46,6 +46,5 @@ public class SmeeUserController {
         log.info("SMEE User created successfully", kv("response", response));
 
         return new ResponseEntity<>(envelope, HttpStatus.OK);
-
     }
 }
