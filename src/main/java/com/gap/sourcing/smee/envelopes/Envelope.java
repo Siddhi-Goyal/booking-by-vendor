@@ -15,10 +15,10 @@ public class Envelope {
     private Response resource;
     private String error;
 
-    public Envelope(Integer httpStatus, String requestId, Response resource) {
+    public Envelope(Integer httpStatus, String requestId, Response response) {
         this.httpStatus = httpStatus;
         this.requestId = requestId;
-        this.resource = resource;
+        this.resource = response;
     }
 
     public Envelope(Integer httpStatus, String requestId, String error) {

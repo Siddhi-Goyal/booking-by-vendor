@@ -1,6 +1,6 @@
 package com.gap.sourcing.smee.services;
 
-import com.gap.sourcing.smee.contexts.UserContext;
+import com.gap.sourcing.smee.contexts.SmeeUserContext;
 import com.gap.sourcing.smee.dtos.resources.Resource;
 import com.gap.sourcing.smee.dtos.responses.Response;
 import com.gap.sourcing.smee.enums.RequestAction;
@@ -20,7 +20,7 @@ public class UserControllerStepService implements ControllerStepService   {
 
     @Override
     public Response process(RequestAction action, Resource resource) throws GenericUserException {
-        UserContext userContext = new UserContext(resource);
+        SmeeUserContext userContext = new SmeeUserContext(resource);
 
         Step nextStep = userStepManager.getFirstStep(action);
 

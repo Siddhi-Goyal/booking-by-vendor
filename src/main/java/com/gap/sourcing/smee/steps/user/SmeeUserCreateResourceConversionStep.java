@@ -1,8 +1,8 @@
 package com.gap.sourcing.smee.steps.user;
 
 import com.gap.sourcing.smee.contexts.Context;
-import com.gap.sourcing.smee.contexts.UserContext;
-import com.gap.sourcing.smee.dtos.resources.UserCreateResource;
+import com.gap.sourcing.smee.contexts.SmeeUserContext;
+import com.gap.sourcing.smee.dtos.resources.SmeeUserCreateResource;
 import com.gap.sourcing.smee.entities.SmeeUser;
 import com.gap.sourcing.smee.entities.SmeeUserType;
 import com.gap.sourcing.smee.exceptions.GenericBadRequestException;
@@ -31,8 +31,8 @@ public class SmeeUserCreateResourceConversionStep implements Step {
 
     @Override
     public Step execute(Context context) throws GenericUserException {
-        UserContext userContext = (UserContext) context;
-        UserCreateResource userResource = (UserCreateResource) userContext.getResource();
+        SmeeUserContext userContext = (SmeeUserContext) context;
+        SmeeUserCreateResource userResource = (SmeeUserCreateResource) userContext.getResource();
         SmeeUser smeeUser = new SmeeUser();
         log.info("Converting incoming resource to smeeUser, resource={}", userResource);
         try {

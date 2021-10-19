@@ -1,6 +1,6 @@
 package com.gap.sourcing.smee.exceptions;
 
-import com.gap.sourcing.smee.dtos.resources.UserCreateResource;
+import com.gap.sourcing.smee.dtos.resources.SmeeUserCreateResource;
 import com.gap.sourcing.smee.envelopes.Envelope;
 import com.gap.sourcing.smee.utils.RequestIdGenerator;
 import lombok.extern.slf4j.Slf4j;
@@ -11,7 +11,6 @@ import org.springframework.dao.DataAccessResourceFailureException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.http.converter.HttpMessageNotReadableException;
-import org.springframework.util.StringUtils;
 import org.springframework.validation.BindException;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.MethodArgumentNotValidException;
@@ -93,7 +92,7 @@ public class SmeeUserExceptionHandler {
     }
 
     private ResponseEntity<Envelope> handleFieldsOrPathVariableInvalidException(Exception ex, BindingResult bindingResult) {
-        if (bindingResult.getTarget() instanceof UserCreateResource) {
+        if (bindingResult.getTarget() instanceof SmeeUserCreateResource) {
             return handle(ex, SMEE_USER_MISSING_PARAM_MESSAGE, HttpStatus.BAD_REQUEST);
         }
 

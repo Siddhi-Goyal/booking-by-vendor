@@ -1,12 +1,12 @@
-package com.gap.sourcing.smee.services;
+package com.gap.sourcing.smee.utils;
 
-
+import com.gap.sourcing.smee.exceptions.ApiClientException;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.MediaType;
-import org.springframework.stereotype.Service;
+import org.springframework.stereotype.Component;
 import org.springframework.web.reactive.function.BodyInserters;
 import org.springframework.web.reactive.function.client.WebClient;
 import org.springframework.web.reactive.function.client.WebClientResponseException;
@@ -15,42 +15,40 @@ import reactor.core.publisher.Mono;
 import java.util.Objects;
 
 @Slf4j
-@Service
+@Component
 public class Client {
 
-    @Value("${service-uri.denodo-api-service.base}")
-    private String denodoURI;
+    @Value("${smee-user-service.apikey}")
+    private String apikey;
+
+    private static final String HEADER_API_KEY = "apiKey";
 
     private final WebClient webClient;
 
     public Client(WebClient.Builder webClientBuilder) {
-        webClient = webClientBuilder
-                .baseUrl("http://denodo.gapinc.com:9090")
-                .defaultHeader(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON_VALUE).build();
-    }
-    public String get(String uri) {
-        WebClient.RequestBodySpec request = webClient.
-                method(HttpMethod.GET)
-                .uri(builder -> builder.path(uri).queryParam("partyId","100045").build())
-               ;
-
-        return processRequest(request, HttpMethod.GET, null).block();
+        webClient = webClientBuilder.defaultHeader(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON_VALUE).build();
     }
 
-    private <T, Q> Mono<String> processRequest(WebClient.RequestBodySpec request, HttpMethod method, Q requestBody ) {
+    public <T> T get(String uri, Class<T> responseClass) {
+        WebClient.RequestBodySpec request = webClient.method(HttpMethod.GET).uri(uri);
+        return processRequest(request, HttpMethod.GET, null, responseClass).block();
+    }
+
+    private <T, Q> Mono<T> processRequest(WebClient.RequestBodySpec request, HttpMethod method, Q requestBody, Class<T> responseClass) {
         return request.
+                header(HEADER_API_KEY, apikey).
                 body(BodyInserters.fromValue((Objects.nonNull(requestBody) ? requestBody : "")))
                 .retrieve()
-                .bodyToMono(String.class)
+                .bodyToMono(responseClass)
                 .onErrorMap(error -> handleError(error, method));
     }
 
     private Throwable handleError(Throwable throwable, HttpMethod method) {
         if (throwable instanceof WebClientResponseException) {
             WebClientResponseException wbException = (WebClientResponseException) throwable;
-            return new Exception(wbException.getMessage());
+            return new ApiClientException(wbException.getMessage());
         }
 
-        return new Exception(throwable.getMessage());
+        return new ApiClientException(throwable.getMessage());
     }
 }

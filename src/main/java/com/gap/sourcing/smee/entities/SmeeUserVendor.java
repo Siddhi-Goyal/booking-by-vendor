@@ -26,6 +26,6 @@ public class SmeeUserVendor {
     @JoinColumn(name = "user_id")
     private SmeeUser userId;
 
-    private Integer vendorPartyId;
+    private String vendorPartyId;
     private String vendorName;
 }

@@ -1,12 +1,11 @@
 package com.gap.sourcing.smee.steps.user;
 
 import com.gap.sourcing.smee.contexts.Context;
-import com.gap.sourcing.smee.contexts.UserContext;
-import com.gap.sourcing.smee.dtos.resources.UserCreateResource;
+import com.gap.sourcing.smee.contexts.SmeeUserContext;
+import com.gap.sourcing.smee.dtos.resources.SmeeUserCreateResource;
 import com.gap.sourcing.smee.exceptions.GenericBadRequestException;
 import com.gap.sourcing.smee.exceptions.GenericUserException;
 import com.gap.sourcing.smee.steps.Step;
-import com.gap.sourcing.smee.steps.StepManager;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
 
@@ -24,7 +23,7 @@ public class SmeeUserCreateValidationStep implements Step{
 
     @Override
     public Step execute(final Context context) throws GenericUserException {
-        final UserCreateResource resource = (UserCreateResource) ((UserContext) context).getResource();
+        final SmeeUserCreateResource resource = (SmeeUserCreateResource) ((SmeeUserContext) context).getResource();
 
         log.info("Validating the incoming resource for user creation", kv("resource", resource));
 
@@ -35,7 +34,7 @@ public class SmeeUserCreateValidationStep implements Step{
         return smeeUserCreateResourceConversionStep;
     }
 
-    private void validateInDcDate(UserCreateResource resource) throws GenericBadRequestException {
+    private void validateInDcDate(SmeeUserCreateResource resource) throws GenericBadRequestException {
 
     }
 
