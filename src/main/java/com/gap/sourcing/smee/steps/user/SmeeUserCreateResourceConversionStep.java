@@ -12,7 +12,6 @@ import com.gap.sourcing.smee.steps.Step;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
 
-import javax.persistence.criteria.CriteriaBuilder;
 import java.time.ZonedDateTime;
 import java.util.Arrays;
 
@@ -37,10 +36,9 @@ public class SmeeUserCreateResourceConversionStep implements Step {
         log.info("Converting incoming resource to smeeUser, resource={}", userResource);
         try {
 
-          //  Integer userTypeId = fetchUserTypeIdFromDB(userResource.getUserType());
             smeeUser.setUserName(userResource.getUserName());
             smeeUser.setUserEmail(userResource.getUserEmail());
-            smeeUser.setUserTypeId(1);//TODO fetch user type id from DB
+            smeeUser.setUserTypeId(fetchUserTypeIdFromDB(userResource.getUserType()));//TODO fetch user type id from DB
 
             smeeUser.setIsActive(true);
             smeeUser.setIsVendor(userResource.getIsVendor());
@@ -59,8 +57,8 @@ public class SmeeUserCreateResourceConversionStep implements Step {
         return smeeUserLoadDataStep;
     }
 
-   /* public Integer fetchUserTypeIdFromDB (String userType){
-         SmeeUserType smeeUserType =  smeeUserTypeRepository.findSmeeUserType(userType);
+    public Integer fetchUserTypeIdFromDB (String userType){
+         SmeeUserType smeeUserType =  smeeUserTypeRepository.findSmeeUserTypeByUserType(userType);
          return smeeUserType.getId();
-    }*/
+    }
 }

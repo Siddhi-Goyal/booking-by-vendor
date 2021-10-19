@@ -27,6 +27,6 @@ public class UserControllerStepService implements ControllerStepService   {
         while (nextStep != null) {
             nextStep = nextStep.execute(userContext);
         }
-        return (Response) userContext.getResponse();
+        return userContext.getResponse();
     }
 }
