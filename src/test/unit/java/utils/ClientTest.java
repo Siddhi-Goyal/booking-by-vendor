@@ -10,7 +10,6 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.web.reactive.function.client.ClientResponse;
 import org.springframework.web.reactive.function.client.WebClient;
-import org.springframework.web.reactive.function.client.WebClientResponseException;
 import reactor.core.publisher.Mono;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -25,7 +24,7 @@ class ClientTest {
     private ClientResponse clientResponse;
 
     @Test
-    void get_Success_GlobalAssortmentResponse() {
+    void get_Success_DenodoResponse() {
         clientResponse =ClientResponse.create(HttpStatus.OK).header(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON_VALUE).body(getSuccessResponsepayload()).build();
         webClientBuilder = WebClient.builder().exchangeFunction((request) -> Mono.just(clientResponse));
         webClient = webClientBuilder.defaultHeader(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON_VALUE).build();
@@ -36,7 +35,7 @@ class ClientTest {
     }
 
     @Test
-    void get_GlobalAssortmentResponse_throw_exception() {
+    void get_DenodoResponse_throw_exception() {
         clientResponse =ClientResponse.create(HttpStatus.OK).header(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON_VALUE).body(getInvalidResponsePayload()).build();
         webClientBuilder = WebClient.builder().exchangeFunction((request) -> Mono.just(clientResponse));
         webClient = webClientBuilder.defaultHeader(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON_VALUE).build();

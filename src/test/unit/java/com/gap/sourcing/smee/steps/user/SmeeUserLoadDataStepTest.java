@@ -29,7 +29,7 @@ import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
 @TestMethodOrder(MethodOrderer.OrderAnnotation.class)
-public class SmeeUserLoadDataStepTest {
+class SmeeUserLoadDataStepTest {
 
     @Mock
     Step smeeUserVendorRelationStep;
@@ -59,11 +59,15 @@ public class SmeeUserLoadDataStepTest {
 
     @Test
     void execute_shouldReturnASmeeUserVendorRelationStep() throws GenericUserException {
-         SmeeUser entityFromDb = new SmeeUser();
-        // entityFromDb.setUserName("xyz");
-         final Step step = smeeUserLoadDataStep.execute(context);
-     //   when(smeeUserRepository.findSmeeUserByUserName(entity.getUserName())).thenReturn(entityFromDb);
+        final Step step = smeeUserLoadDataStep.execute(context);
+
         assertThat(step, is(smeeUserVendorRelationStep));
     }
 
+    @Test
+    void execute_shouldReturnASmeeUserVendorRelationStep_with_current() throws GenericUserException {
+        final Step step = smeeUserLoadDataStep.execute(context);
+
+        assertThat(step, is(smeeUserVendorRelationStep));
+    }
 }

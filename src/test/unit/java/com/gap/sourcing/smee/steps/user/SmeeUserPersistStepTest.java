@@ -3,6 +3,7 @@ package com.gap.sourcing.smee.steps.user;
 import com.gap.sourcing.smee.contexts.SmeeUserContext;
 import com.gap.sourcing.smee.dtos.resources.SmeeUserCreateResource;
 import com.gap.sourcing.smee.entities.SmeeUser;
+import com.gap.sourcing.smee.entities.SmeeUserType;
 import com.gap.sourcing.smee.exceptions.GenericUserException;
 import com.gap.sourcing.smee.repositories.SmeeUserRepository;
 import com.gap.sourcing.smee.steps.Step;
@@ -20,12 +21,12 @@ import java.time.ZonedDateTime;
 
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.core.Is.is;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
+import static org.mockito.ArgumentMatchers.anyString;
+import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)
 @TestMethodOrder(MethodOrderer.OrderAnnotation.class)
-public class SmeeUserPersistStepTest {
+class SmeeUserPersistStepTest {
 
     @Mock
     Step smeeUserResponseConversionStep;
@@ -52,7 +53,6 @@ public class SmeeUserPersistStepTest {
     void execute_shouldReturnASmeeUserResponseConversionStep() throws GenericUserException {
         final SmeeUserCreateResource resource = ResourceProvider.getSmeeUserCreateResource();
         final SmeeUserContext context = new SmeeUserContext(resource);
-        //  when(smeeUserTypeRepository.findSmeeUserTypeByUserType(resource.getUserType())).thenReturn(smeeUserType);
         final Step step = smeeUserPersistStep.execute(context);
 
         assertThat(step, is(smeeUserResponseConversionStep));
