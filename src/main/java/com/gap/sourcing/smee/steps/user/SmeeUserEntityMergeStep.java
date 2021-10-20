@@ -5,7 +5,6 @@ import com.gap.sourcing.smee.contexts.SmeeUserContext;
 import com.gap.sourcing.smee.entities.SmeeUser;
 import com.gap.sourcing.smee.entities.SmeeUserVendor;
 import com.gap.sourcing.smee.exceptions.GenericUserException;
-import com.gap.sourcing.smee.repositories.SmeeUserVendorRepository;
 import com.gap.sourcing.smee.steps.Step;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
@@ -18,11 +17,9 @@ import java.util.stream.Collectors;
 public class SmeeUserEntityMergeStep implements Step {
 
     private final  Step smeeUserPersistStep;
-    private final SmeeUserVendorRepository  smeeUserVendorRepository;
 
-    public SmeeUserEntityMergeStep(Step smeeUserPersistStep, SmeeUserVendorRepository smeeUserVendorRepository) {
+    public SmeeUserEntityMergeStep(Step smeeUserPersistStep) {
         this.smeeUserPersistStep = smeeUserPersistStep;
-        this.smeeUserVendorRepository = smeeUserVendorRepository;
     }
 
     @Override
@@ -41,16 +38,12 @@ public class SmeeUserEntityMergeStep implements Step {
             List<SmeeUserVendor> addedVendors = input.getVendors().stream().filter(vendor  -> isPresent(current.getVendors(),
                     vendor)).collect(Collectors.toList());
             if (!removedVendors.isEmpty())  {
-                removedVendors.forEach(vendor -> {
-                    smeeUserVendorRepository.delete(vendor);
-                    current.getVendors().remove(vendor);
-                });
+                removedVendors.forEach(vendor -> current.getVendors().remove(vendor));
             }
             if (!addedVendors.isEmpty()) {
                 addedVendors.forEach(vendor -> {
                     vendor.setUserId(current);
-                    SmeeUserVendor user = smeeUserVendorRepository.save(vendor);
-                    current.getVendors().add(user);
+                    current.getVendors().add(vendor);
                 });
             }
         }
@@ -62,6 +55,6 @@ public class SmeeUserEntityMergeStep implements Step {
 
     private boolean isPresent(List<SmeeUserVendor> vendors, SmeeUserVendor vendor) {
         return vendors.stream().noneMatch(ven -> vendor.getVendorName().equals(ven.getVendorName()) &&
-                vendor.getUserId().equals(ven.getUserId()));
+                vendor.getVendorPartyId().equals(ven.getVendorPartyId()));
     }
 }

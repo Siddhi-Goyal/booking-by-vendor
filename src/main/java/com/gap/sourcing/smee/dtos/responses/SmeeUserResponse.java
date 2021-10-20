@@ -14,7 +14,6 @@ import java.util.List;
 @NoArgsConstructor
 public class SmeeUserResponse implements Response{
 
-    private Integer id;
     private String userName;
     private String userEmail;
     private String userType;

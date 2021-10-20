@@ -86,6 +86,12 @@ public class SmeeUserExceptionHandler {
                 HttpStatus.INTERNAL_SERVER_ERROR);
     }
 
+    @ExceptionHandler(value = {ApiClientException.class})
+    protected ResponseEntity<Envelope> handleApiClientException(ApiClientException ex, WebRequest request) {
+        return handle(ex, ex.getMessage(),
+                HttpStatus.INTERNAL_SERVER_ERROR);
+    }
+
     private ResponseEntity<Envelope> handle(Exception ex, String responseMessage, HttpStatus responseStatus) {
         String requestId = MDC.get(RequestIdGenerator.REQUEST_ID_KEY);
         log.error(String.format("Error processing request with reason - %s", responseMessage)
@@ -97,7 +103,7 @@ public class SmeeUserExceptionHandler {
         List<String> exceptionFields = ex.getConstraintViolations().stream()
                 .map(x -> String.format("Passed %s : %s is invalid", x.getPropertyPath(), x.getMessage()))
                 .collect(Collectors.toList());
-        return handle(ex, String.format("Bad Request - %s", exceptionFields.toString()), HttpStatus.BAD_REQUEST);
+        return handle(ex, String.format("Bad Request - %s", exceptionFields), HttpStatus.BAD_REQUEST);
     }
 
     private ResponseEntity<Envelope> handleFieldsOrPathVariableInvalidException(Exception ex, BindingResult bindingResult) {
@@ -108,7 +114,7 @@ public class SmeeUserExceptionHandler {
         List<String> exceptionFields = bindingResult.getFieldErrors().stream()
                 .map(x -> String.format("Passed %s : %s is invalid", x.getField(), x.getRejectedValue()))
                 .collect(Collectors.toList());
-        return handle(ex, String.format("Bad Request - %s", exceptionFields.toString()), HttpStatus.BAD_REQUEST);
+        return handle(ex, String.format("Bad Request - %s", exceptionFields), HttpStatus.BAD_REQUEST);
     }
 
     private String getMessageForHttpMessageNotReadableException(HttpMessageNotReadableException ex) {
