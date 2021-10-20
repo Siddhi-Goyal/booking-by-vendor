@@ -4,10 +4,12 @@ import com.gap.sourcing.smee.dtos.resources.SmeeUserCreateResource;
 import com.gap.sourcing.smee.envelopes.Envelope;
 import com.gap.sourcing.smee.utils.RequestIdGenerator;
 import lombok.extern.slf4j.Slf4j;
+import org.hibernate.TransientPropertyValueException;
 import org.slf4j.MDC;
 import org.springframework.core.Ordered;
 import org.springframework.core.annotation.Order;
 import org.springframework.dao.DataAccessResourceFailureException;
+import org.springframework.dao.InvalidDataAccessApiUsageException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.http.converter.HttpMessageNotReadableException;
@@ -32,6 +34,7 @@ public class SmeeUserExceptionHandler {
             "usertype, isZVendor, vendorPartyId and userid";
     private static final String MALFORMED_JSON_MESSAGE = "Bad Request - Passed Malformed JSON";
     private static final String INVALID_MESSAGE = "Bad Request - Malformed JSON,";
+    private static final String VENDOR_CREATE_ERROR = "Something  went  wrong";
 
 
     @Order(Ordered.HIGHEST_PRECEDENCE)
@@ -62,11 +65,6 @@ public class SmeeUserExceptionHandler {
         return handle(ex, responseMessage, HttpStatus.BAD_REQUEST);
     }
 
-    /*@ExceptionHandler(value = {ResourceNotFoundException.class})
-    protected ResponseEntity<Envelope> handleResourceNotFoundException(ResourceNotFoundException ex, WebRequest request) {
-        return handle(ex, ex.getMessage(), HttpStatus.NOT_FOUND);
-    }*/
-
     @ExceptionHandler(value = {ConstraintViolationException.class})
     protected ResponseEntity<Envelope> handleConstraintViolationException(ConstraintViolationException ex, WebRequest request) {
         return handleRequestParamsInvalidException(ex);
@@ -75,6 +73,17 @@ public class SmeeUserExceptionHandler {
     @ExceptionHandler(value = {DataAccessResourceFailureException.class})
     protected ResponseEntity<Envelope> handleConstraintViolationException(DataAccessResourceFailureException ex, WebRequest request) {
         return handle(ex, ex.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
+    }
+
+    @ExceptionHandler(value = {TransientPropertyValueException.class})
+    protected ResponseEntity<Envelope> handleTransientPropertyValueException(TransientPropertyValueException ex, WebRequest request) {
+        return handle(ex, ex.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
+    }
+
+    @ExceptionHandler(value = {InvalidDataAccessApiUsageException.class})
+    protected ResponseEntity<Envelope> handleInvalidDataAccessApiUsageException(InvalidDataAccessApiUsageException ex, WebRequest request) {
+        return handle(ex, VENDOR_CREATE_ERROR,
+                HttpStatus.INTERNAL_SERVER_ERROR);
     }
 
     private ResponseEntity<Envelope> handle(Exception ex, String responseMessage, HttpStatus responseStatus) {

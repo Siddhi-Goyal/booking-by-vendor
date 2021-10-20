@@ -35,11 +35,9 @@ public class SmeeUserCreateResourceConversionStep implements Step {
         SmeeUser smeeUser = new SmeeUser();
         log.info("Converting incoming resource to smeeUser, resource={}", userResource);
         try {
-
             smeeUser.setUserName(userResource.getUserName());
             smeeUser.setUserEmail(userResource.getUserEmail());
-            smeeUser.setUserTypeId(fetchUserTypeIdFromDB(userResource.getUserType()));//TODO fetch user type id from DB
-
+            smeeUser.setUserTypeId(fetchUserTypeIdFromDB(userResource.getUserType()));
             smeeUser.setIsActive(true);
             smeeUser.setIsVendor(userResource.getIsVendor());
             smeeUser.setCreatedBy(userResource.getUserId());//TODO check with managers

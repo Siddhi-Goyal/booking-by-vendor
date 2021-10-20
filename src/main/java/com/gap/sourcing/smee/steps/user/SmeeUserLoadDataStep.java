@@ -24,10 +24,9 @@ public class SmeeUserLoadDataStep implements Step {
 
     @Override
     public Step execute(Context context) throws GenericUserException {
-
         SmeeUserContext userContext = (SmeeUserContext) context;
         SmeeUser smeeUser = userContext.getInput();
-
+        log.info("Loading  data for smee user {}", smeeUser.getUserName());
         SmeeUser smeeUserFromDb  = smeeUserRepository.findSmeeUserByUserName(smeeUser.getUserName());
 
         if(smeeUserFromDb != null){
