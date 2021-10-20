@@ -7,7 +7,6 @@ import com.gap.sourcing.smee.services.ControllerStepService;
 import com.gap.sourcing.smee.utils.RequestIdGenerator;
 import com.gap.sourcing.smee.enums.RequestAction;
 import lombok.extern.slf4j.Slf4j;
-import org.slf4j.MDC;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -37,7 +36,7 @@ public class SmeeUserController {
     public ResponseEntity<Envelope> createOrUpdateUser(final @Valid @RequestBody SmeeUserCreateResource resource) throws GenericUserException {
         log.info("Received requested to create User", kv("resource", resource));
 
-        final String requestId = MDC.get(RequestIdGenerator.REQUEST_ID_KEY);
+        final String requestId = RequestIdGenerator.generateRequestId();
 
         final Response response = userControllerStepService.process(RequestAction.CREATE, resource);
 
