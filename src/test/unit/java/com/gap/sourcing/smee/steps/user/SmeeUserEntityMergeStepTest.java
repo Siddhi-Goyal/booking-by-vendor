@@ -23,44 +23,28 @@ import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
 @TestMethodOrder(MethodOrderer.OrderAnnotation.class)
-public class SmeeUserCreateResourceConversionStepTest {
+
+public class SmeeUserEntityMergeStepTest {
 
     @Mock
-    Step smeeUserLoadDataStep;
+    Step smeeUserPersistStep;
 
-    @Mock
-    SmeeUserTypeRepository smeeUserTypeRepository;
-
-    private SmeeUserType smeeUserType;
-
-    private SmeeUserCreateResourceConversionStep smeeUserCreateResourceConversionStep;
+    private SmeeUserEntityMergeStep smeeUserEntityMergeStep;
 
     @BeforeEach
     void init() {
-        smeeUserType = new SmeeUserType();
-        smeeUserType.setId(1);
-        smeeUserCreateResourceConversionStep = new SmeeUserCreateResourceConversionStep(smeeUserLoadDataStep,
-                smeeUserTypeRepository);
+     //   smeeUserType = new SmeeUserType();
+      //  smeeUserType.setId(1);
+        smeeUserEntityMergeStep = new SmeeUserEntityMergeStep( smeeUserPersistStep);
     }
 
     @Test
     void execute_shouldReturnASmeeUserLoadDataStep() throws GenericUserException {
         final SmeeUserCreateResource resource = ResourceProvider.getSmeeUserCreateResource();
         final SmeeUserContext context = new SmeeUserContext(resource);
-        when(smeeUserTypeRepository.findSmeeUserTypeByUserType(resource.getUserType())).thenReturn(smeeUserType);
-        final Step step = smeeUserCreateResourceConversionStep.execute(context);
 
-        assertThat(step, is(smeeUserLoadDataStep));
-    }
+        final Step step = smeeUserEntityMergeStep.execute(context);
 
-    @Test
-    void execute_shouldUpdateTheContextWithAnInputSmeeUserEntityObject() throws GenericUserException {
-        final SmeeUserCreateResource resource = ResourceProvider.getSmeeUserCreateResource();
-        final SmeeUserContext context = new SmeeUserContext(resource);
-        when(smeeUserTypeRepository.findSmeeUserTypeByUserType(resource.getUserType())).thenReturn(smeeUserType);
-        smeeUserCreateResourceConversionStep.execute(context);
-        final SmeeUser input = context.getInput();
-
-        assertThat(input, is(notNullValue()));
+        assertThat(step, is(smeeUserPersistStep));
     }
 }
