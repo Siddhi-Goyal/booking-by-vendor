@@ -1,5 +1,4 @@
 package com.gap.sourcing.smee.steps.user;
-
 import com.gap.sourcing.smee.contexts.SmeeUserContext;
 import com.gap.sourcing.smee.dtos.resources.SmeeUserCreateResource;
 import com.gap.sourcing.smee.entities.SmeeUserType;
@@ -8,6 +7,7 @@ import com.gap.sourcing.smee.exceptions.GenericUserException;
 import com.gap.sourcing.smee.exceptions.GenericUnknownActionException;
 import com.gap.sourcing.smee.repositories.SmeeUserTypeRepository;
 import com.gap.sourcing.smee.steps.Step;
+import com.gap.sourcing.smee.steps.helper.SmeeUserEntityToDTOConverter;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.MethodOrderer;
 import org.junit.jupiter.api.Test;
@@ -25,44 +25,37 @@ import java.util.List;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.core.Is.is;
 import static org.hamcrest.core.IsNull.notNullValue;
+import static org.hamcrest.core.IsNull.nullValue;
 import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.mockito.ArgumentMatchers.isNull;
 import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
-@TestMethodOrder(MethodOrderer.OrderAnnotation.class)
-public class SmeeUserCreateValidationStepTest {
+
+public class SmeeUserResponseConversionStepTest {
 
     @Mock
-    SmeeUserCreateResourceConversionStep smeeUserCreateResourceConversionStep;
+    SmeeUserEntityToDTOConverter smeeUserEntityToDTOConverter ;
 
-    @Mock
-    SmeeUserTypeRepository smeeUserTypeRepository;
-
-    private SmeeUserType entity;
-    private SmeeUserStepManager smeeUserStepManager;
-    private Step smeeUserCreateValidationStep;
+    private SmeeUserResponseConversionStep smeeUserResponseConversionStep;
 
     @BeforeEach
     void init() {
-        entity = new SmeeUserType();
-        entity.setUserType("Garment Vendor");
-        smeeUserCreateValidationStep = new SmeeUserCreateValidationStep(smeeUserCreateResourceConversionStep, smeeUserTypeRepository);
+
+        smeeUserResponseConversionStep = new SmeeUserResponseConversionStep(smeeUserEntityToDTOConverter);
     }
+
 
     @Test
-    void execute_shouldReturnASmeeUserCreateResourceConversionStepGivenAValidResource() throws GenericUserException {
+    void execute_shouldReturnResponseInContext() throws GenericUserException {
         final SmeeUserCreateResource resource = ResourceProvider.getSmeeUserCreateResource();
         final SmeeUserContext context = new SmeeUserContext(resource);
-        SmeeUserType smeeUserType = new SmeeUserType();
-        smeeUserType.setUserType("Garment Vendor");
-        List<SmeeUserType> smeeUserTypes = new ArrayList<>();
-        smeeUserTypes.add(smeeUserType);
-        when(smeeUserTypeRepository.findAll()).thenReturn(smeeUserTypes);
 
-        final Step step = smeeUserCreateValidationStep.execute(context);
+        final Step step = smeeUserResponseConversionStep.execute(context);
+        assertThat(step, is(nullValue()));
 
-        assertThat(step, is(smeeUserCreateResourceConversionStep));
     }
+
+
+
 }
-
-
