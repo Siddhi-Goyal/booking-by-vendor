@@ -13,13 +13,12 @@ import org.springframework.stereotype.Component;
 @Component
 public class SmeeUserLoadDataStep implements Step {
 
-    private final Step smeeUserVendorRelationStep;
+    private final Step smeeUserBuildVendorRelationStep;
     private final SmeeUserRepository smeeUserRepository;
 
-
-    public SmeeUserLoadDataStep(final Step smeeUserVendorRelationStep, final SmeeUserRepository smeeUserRepository) {
+    public SmeeUserLoadDataStep(final Step smeeUserBuildVendorRelationStep, final SmeeUserRepository smeeUserRepository) {
         this.smeeUserRepository = smeeUserRepository;
-        this.smeeUserVendorRelationStep = smeeUserVendorRelationStep;
+        this.smeeUserBuildVendorRelationStep = smeeUserBuildVendorRelationStep;
     }
 
     @Override
@@ -34,6 +33,6 @@ public class SmeeUserLoadDataStep implements Step {
         } else {
             log.info("User not found in database, UserName={}", smeeUser.getUserName());
         }
-        return smeeUserVendorRelationStep;
+        return smeeUserBuildVendorRelationStep;
     }
 }
