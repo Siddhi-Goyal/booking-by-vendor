@@ -36,7 +36,7 @@ class SmeeUserCreateResourceConversionStepTest {
     @BeforeEach
     void init() {
         smeeUserType = new SmeeUserType();
-        smeeUserType.setId(1);
+        smeeUserType.setId(1L);
         smeeUserCreateResourceConversionStep = new SmeeUserCreateResourceConversionStep(smeeUserLoadDataStep,
                 smeeUserTypeRepository);
     }

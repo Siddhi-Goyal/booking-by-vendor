@@ -40,7 +40,7 @@ public class SmeeUserCreateResourceConversionStep implements Step {
             smeeUser.setUserTypeId(fetchUserTypeIdFromDB(userResource.getUserType()));
             smeeUser.setIsActive(true);
             smeeUser.setIsVendor(userResource.getIsVendor());
-            smeeUser.setCreatedBy(userResource.getUserId());//TODO check with managers
+            smeeUser.setCreatedBy(userResource.getUserId());
             ZonedDateTime currentTimestamp = ZonedDateTime.now();
             smeeUser.setCreatedDate(currentTimestamp);
             smeeUser.setLastModifiedBy(userResource.getUserId());
@@ -55,7 +55,7 @@ public class SmeeUserCreateResourceConversionStep implements Step {
         return smeeUserLoadDataStep;
     }
 
-    public Integer fetchUserTypeIdFromDB (String userType){
+    public Long fetchUserTypeIdFromDB (String userType){
          SmeeUserType smeeUserType =  smeeUserTypeRepository.findSmeeUserTypeByUserType(userType);
          return smeeUserType.getId();
     }

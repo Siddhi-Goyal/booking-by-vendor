@@ -17,11 +17,11 @@ public class SmeeUser {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Integer id;
+    private Long id;
 
     private String userName;
     private String userEmail;
-    private Integer userTypeId;
+    private Long userTypeId;
     private Boolean isActive;
     private Boolean isVendor;
     private String createdBy;

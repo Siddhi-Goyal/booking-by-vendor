@@ -18,7 +18,7 @@ import static org.hamcrest.core.Is.is;
 
 @ExtendWith(MockitoExtension.class)
 
-class SmeeUserVendorRelationStepTest {
+class SmeeUserBuildVendorRelationStepTest {
 
     @Mock
     Step smeeUserEntityMergeStep;
@@ -26,14 +26,14 @@ class SmeeUserVendorRelationStepTest {
     @Mock
     Client client;
 
-    SmeeUserVendorRelationStep smeeUserVendorRelationStep;
+    SmeeUserBuildVendorRelationStep smeeUserVendorRelationStep;
 
     private SmeeUserContext context;
     SmeeUser entity;
 
     @BeforeEach
     void init() {
-        smeeUserVendorRelationStep = new SmeeUserVendorRelationStep(smeeUserEntityMergeStep,
+        smeeUserVendorRelationStep = new SmeeUserBuildVendorRelationStep(smeeUserEntityMergeStep,
                 client);
         SmeeUserCreateResource resource = new SmeeUserCreateResource();
         context = new SmeeUserContext(resource);

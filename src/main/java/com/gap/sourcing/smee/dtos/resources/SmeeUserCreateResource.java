@@ -8,7 +8,6 @@ import lombok.Setter;
 
 
 import javax.validation.constraints.NotBlank;
-import javax.validation.constraints.NotNull;
 
 
 @Getter
@@ -20,17 +19,16 @@ import javax.validation.constraints.NotNull;
 public class SmeeUserCreateResource implements Resource {
 
         @NotBlank
-        @NotNull
         private String userName;
-        @NotNull
         @NotBlank
         private String userEmail;
-        @NotNull
+        @NotBlank
         private String userType;
+        @NotBlank
         private Boolean isVendor;
-        @NotNull
+        @NotBlank
         private String vendorPartyId;
-        @NotNull
+        @NotBlank
         private String userId;
     }
 

@@ -23,7 +23,7 @@ import static net.logstash.logback.argument.StructuredArguments.kv;
 
 @Slf4j
 @Component
-public class SmeeUserVendorRelationStep implements Step {
+public class SmeeUserBuildVendorRelationStep implements Step {
 
 
     @Value("${smee-user-service.denodo-uri}")
@@ -33,7 +33,7 @@ public class SmeeUserVendorRelationStep implements Step {
     private final Client client;
     private final Step smeeUserEntityMergeStep;
 
-    public SmeeUserVendorRelationStep(Step smeeUserEntityMergeStep, Client client) {
+    public SmeeUserBuildVendorRelationStep(Step smeeUserEntityMergeStep, Client client) {
         this.smeeUserEntityMergeStep = smeeUserEntityMergeStep;
         this.client = client;
     }
@@ -48,9 +48,9 @@ public class SmeeUserVendorRelationStep implements Step {
         log.info("Fetching vendors from denodo API for user {}", smeeUser.getUserName(),kv("userName", smeeUser.getUserName()),
                 kv("vendorPartyId", vendorPartyId));
         DenodoResponse denodoPartyIdData =  client.get(denodoURI+"partyId="+vendorPartyId, DenodoResponse.class);
-        log.info("Vendor data from denodo api for partyId", denodoPartyIdData, kv("partyId", denodoPartyIdData));
+        log.info("Vendor data from denodo api for partyId", denodoPartyIdData, kv("partyIdResponse", denodoPartyIdData));
         DenodoResponse denodoVendorData =  client.get(denodoURI+"parVenId="+vendorPartyId, DenodoResponse.class);
-        log.info("Vendor data from denodo api for parVenId", denodoVendorData, kv("partyId", denodoVendorData));
+        log.info("Vendor data from denodo api for parVenId", denodoVendorData, kv("parVenIdResponse", denodoVendorData));
         List<SmeeUserVendor> vendors = new ArrayList<>();
         if (denodoPartyIdData != null && !CollectionUtils.isEmpty(denodoPartyIdData.getElements())) {
             vendors.add(buildVendor(denodoPartyIdData.getElements().get(0), vendorPartyId, smeeUser));
