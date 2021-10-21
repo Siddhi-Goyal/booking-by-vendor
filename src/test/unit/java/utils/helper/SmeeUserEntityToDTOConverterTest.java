@@ -2,7 +2,6 @@ package utils.helper;
 
 import com.gap.sourcing.smee.dtos.resources.SmeeUserCreateResource;
 import com.gap.sourcing.smee.dtos.responses.SmeeUserResponse;
-import com.gap.sourcing.smee.dtos.responses.SmeeVendor;
 import com.gap.sourcing.smee.entities.SmeeUser;
 import com.gap.sourcing.smee.entities.SmeeUserVendor;
 import com.gap.sourcing.smee.steps.helper.SmeeUserEntityToDTOConverter;
