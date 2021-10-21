@@ -73,6 +73,18 @@ sourceSets {
 	}
 }
 
+sonar.dependsOn jacocoTestReport
+jacoco {
+	toolVersion = "0.8.5"
+}
+
+jacocoTestReport {
+	reports {
+		xml.enabled true
+		csv.enabled true
+	}
+	dependsOn test
+}
 
 sonarqube {
 	properties {
