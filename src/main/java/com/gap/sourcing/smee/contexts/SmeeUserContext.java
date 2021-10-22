@@ -19,6 +19,6 @@ public class SmeeUserContext implements Context {
 
     public SmeeUserContext(Resource resource) {
         this.resource = resource;
-
+        this.response = new SmeeUserResponse();
     }
 }

@@ -15,7 +15,6 @@ import javax.validation.constraints.NotBlank;
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
-
 public class SmeeUserCreateResource implements Resource {
 
         @NotBlank

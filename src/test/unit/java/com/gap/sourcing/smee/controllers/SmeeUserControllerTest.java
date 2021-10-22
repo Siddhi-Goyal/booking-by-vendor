@@ -19,7 +19,7 @@ import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.core.Is.is;
 
 @ExtendWith(MockitoExtension.class)
-public class SmeeUserControllerTest {
+class SmeeUserControllerTest {
 
     private SmeeUserCreateResource createResource;
     @Mock

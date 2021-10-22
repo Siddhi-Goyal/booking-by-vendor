@@ -16,7 +16,7 @@ import static org.hamcrest.core.IsNull.notNullValue;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
 @ExtendWith(MockitoExtension.class)
-public class SmeeUserStepManagerTest {
+class SmeeUserStepManagerTest {
 
     @Mock
     private Step smeeUserCreateValidationStep;
