@@ -15,7 +15,7 @@ import static org.mockito.Mockito.mock;
 
 class UserControllerStepServiceTest {
     @Test
-    void process_shouldReturnAGisBookingResponse() throws GenericUserException {
+    void process_shouldReturnASmeeUserResponse() throws GenericUserException {
         final StepManager stepManager = mock(StepManager.class);
         final ControllerStepService controllerStepService = new UserControllerStepService(stepManager);
         final Resource resource = SmeeUserCreateResource.builder().build();
