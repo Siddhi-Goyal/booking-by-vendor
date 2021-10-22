@@ -7,10 +7,14 @@ import com.gap.sourcing.smee.entities.SmeeUserVendor;
 import com.gap.sourcing.smee.exceptions.GenericUserException;
 import com.gap.sourcing.smee.steps.Step;
 import lombok.extern.slf4j.Slf4j;
+import org.slf4j.MDC;
 import org.springframework.stereotype.Component;
 
 import java.util.List;
 import java.util.stream.Collectors;
+
+import static com.gap.sourcing.smee.utils.RequestIdGenerator.REQUEST_ID_KEY;
+import static net.logstash.logback.argument.StructuredArguments.kv;
 
 @Slf4j
 @Component
@@ -29,7 +33,7 @@ public class SmeeUserEntityMergeStep implements Step {
         SmeeUser current = smeeUserContext.getCurrent();
 
         log.info("Merging record's created from context's current to context's input attribute, " +
-                "input={}, current={}", input, current);
+                "input={}, current={}", input, current, kv(REQUEST_ID_KEY, MDC.get(REQUEST_ID_KEY)));
         if (current != null) {
             current.setLastModifiedBy(input.getLastModifiedBy());
             current.setLastModifiedDate(input.getLastModifiedDate());
@@ -48,7 +52,7 @@ public class SmeeUserEntityMergeStep implements Step {
             }
         }
 
-        log.info("Merged record's created details from context's current to context's input attribute");
+        log.info("Merged record's created details from context's current to context's input attribute", kv(REQUEST_ID_KEY, MDC.get(REQUEST_ID_KEY)));
 
         return smeeUserPersistStep;
     }

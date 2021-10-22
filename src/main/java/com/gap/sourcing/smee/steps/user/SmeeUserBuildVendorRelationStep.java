@@ -11,6 +11,7 @@ import com.gap.sourcing.smee.exceptions.GenericUserException;
 import com.gap.sourcing.smee.steps.Step;
 import com.gap.sourcing.smee.utils.Client;
 import lombok.extern.slf4j.Slf4j;
+import org.slf4j.MDC;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 import org.springframework.util.CollectionUtils;
@@ -19,6 +20,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
+import static com.gap.sourcing.smee.utils.RequestIdGenerator.REQUEST_ID_KEY;
 import static net.logstash.logback.argument.StructuredArguments.kv;
 
 @Slf4j
@@ -46,11 +48,13 @@ public class SmeeUserBuildVendorRelationStep implements Step {
         SmeeUser smeeUser = userContext.getInput();
         String vendorPartyId = resource.getVendorPartyId();
         log.info("Fetching vendors from denodo API for user {}", smeeUser.getUserName(),kv("userName", smeeUser.getUserName()),
-                kv("vendorPartyId", vendorPartyId));
+                kv("vendorPartyId", vendorPartyId), kv(REQUEST_ID_KEY, MDC.get(REQUEST_ID_KEY)));
         DenodoResponse denodoPartyIdData =  client.get(denodoURI+"partyId="+vendorPartyId, DenodoResponse.class);
-        log.info("Vendor data from denodo api for partyId", denodoPartyIdData, kv("partyIdResponse", denodoPartyIdData));
+        log.info("Vendor data from denodo api for partyId", denodoPartyIdData, kv("partyIdResponse", denodoPartyIdData),
+                kv(REQUEST_ID_KEY, MDC.get(REQUEST_ID_KEY)));
         DenodoResponse denodoVendorData =  client.get(denodoURI+"parVenId="+vendorPartyId, DenodoResponse.class);
-        log.info("Vendor data from denodo api for parVenId", denodoVendorData, kv("parVenIdResponse", denodoVendorData));
+        log.info("Vendor data from denodo api for parVenId", denodoVendorData, kv("parVenIdResponse", denodoVendorData),
+                kv(REQUEST_ID_KEY, MDC.get(REQUEST_ID_KEY)));
         List<SmeeUserVendor> vendors = new ArrayList<>();
         if (denodoPartyIdData != null && !CollectionUtils.isEmpty(denodoPartyIdData.getElements())) {
             vendors.add(buildVendor(denodoPartyIdData.getElements().get(0), vendorPartyId, smeeUser));
@@ -60,7 +64,7 @@ public class SmeeUserBuildVendorRelationStep implements Step {
                     vendorPartyId, smeeUser)).collect(Collectors.toList()));
         }
         smeeUser.setVendors(vendors);
-        log.info("Retrieved vendors from denodo API",kv("vendors", vendors.size()));
+        log.info("Retrieved vendors from denodo API",kv("vendors", vendors.size()), kv(REQUEST_ID_KEY, MDC.get(REQUEST_ID_KEY)));
         return smeeUserEntityMergeStep;
     }
 

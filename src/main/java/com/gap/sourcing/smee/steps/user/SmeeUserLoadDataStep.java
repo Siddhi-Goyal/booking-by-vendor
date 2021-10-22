@@ -7,7 +7,11 @@ import com.gap.sourcing.smee.exceptions.GenericUserException;
 import com.gap.sourcing.smee.repositories.SmeeUserRepository;
 import com.gap.sourcing.smee.steps.Step;
 import lombok.extern.slf4j.Slf4j;
+import org.slf4j.MDC;
 import org.springframework.stereotype.Component;
+
+import static com.gap.sourcing.smee.utils.RequestIdGenerator.REQUEST_ID_KEY;
+import static net.logstash.logback.argument.StructuredArguments.kv;
 
 @Slf4j
 @Component
@@ -23,15 +27,18 @@ public class SmeeUserLoadDataStep implements Step {
 
     @Override
     public Step execute(Context context) throws GenericUserException {
+
         SmeeUserContext userContext = (SmeeUserContext) context;
         SmeeUser smeeUser = userContext.getInput();
-        log.info("Loading  data for smee user {}", smeeUser.getUserName());
+        log.info("Loading  data for smee user {}", smeeUser.getUserName(), kv("userName", smeeUser.getUserName()),
+                kv(REQUEST_ID_KEY, MDC.get(REQUEST_ID_KEY)));
         SmeeUser smeeUserFromDb  = smeeUserRepository.findSmeeUserByUserName(smeeUser.getUserName());
 
         if(smeeUserFromDb != null){
             userContext.setCurrent(smeeUserFromDb);
         } else {
-            log.info("User not found in database, UserName={}", smeeUser.getUserName());
+            log.info("User not found in database with UserName={}", smeeUser.getUserName(), kv("userName", smeeUser.getUserName()),
+                    kv(REQUEST_ID_KEY, MDC.get(REQUEST_ID_KEY)));
         }
         return smeeUserBuildVendorRelationStep;
     }

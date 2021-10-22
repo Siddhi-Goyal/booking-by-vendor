@@ -9,12 +9,14 @@ import com.gap.sourcing.smee.exceptions.GenericUserException;
 import com.gap.sourcing.smee.repositories.SmeeUserTypeRepository;
 import com.gap.sourcing.smee.steps.Step;
 import lombok.extern.slf4j.Slf4j;
+import org.slf4j.MDC;
 import org.springframework.stereotype.Component;
 
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
+import static com.gap.sourcing.smee.utils.RequestIdGenerator.REQUEST_ID_KEY;
 import static net.logstash.logback.argument.StructuredArguments.kv;
 
 @Component
@@ -35,7 +37,7 @@ public class SmeeUserCreateValidationStep implements Step{
     public Step execute(final Context context) throws GenericUserException {
         final SmeeUserCreateResource resource = (SmeeUserCreateResource) ((SmeeUserContext) context).getResource();
 
-        log.info("Validating the incoming resource for user creation", kv("resource", resource));
+        log.info("Validating the incoming resource for user creation", kv("resource", resource), kv(REQUEST_ID_KEY, MDC.get(REQUEST_ID_KEY)));
 
         List<SmeeUserType> smeeUserTypes = smeeUserTypeRepository.findAll();
         Optional<SmeeUserType> smeeUserType =  smeeUserTypes.stream().filter(userType -> resource.getUserType()
@@ -43,11 +45,11 @@ public class SmeeUserCreateValidationStep implements Step{
         if(smeeUserType.isEmpty()) {
             List<String> userTypes = smeeUserTypes.stream().map(SmeeUserType::getUserType).collect(Collectors.toList());
             log.info(INVALID_USER_TYPE_ERROR_MESSAGE, userTypes,
-                    kv("userType", resource.getUserType()));
+                    kv("userType", resource.getUserType()), kv(REQUEST_ID_KEY, MDC.get(REQUEST_ID_KEY)));
             throw new GenericBadRequestException(resource, INVALID_USER_TYPE_ERROR_MESSAGE + userTypes);
         }
 
-        log.info("Validation of the incoming resource is complete.");
+        log.info("Validation of the incoming resource is complete.", kv(REQUEST_ID_KEY, MDC.get(REQUEST_ID_KEY)));
 
         return smeeUserCreateResourceConversionStep;
     }

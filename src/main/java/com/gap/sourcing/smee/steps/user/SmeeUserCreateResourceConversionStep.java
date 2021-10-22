@@ -10,16 +10,20 @@ import com.gap.sourcing.smee.exceptions.GenericUserException;
 import com.gap.sourcing.smee.repositories.SmeeUserTypeRepository;
 import com.gap.sourcing.smee.steps.Step;
 import lombok.extern.slf4j.Slf4j;
+import org.slf4j.MDC;
 import org.springframework.stereotype.Component;
 
 import java.time.ZonedDateTime;
 import java.util.Arrays;
 
+import static com.gap.sourcing.smee.utils.RequestIdGenerator.REQUEST_ID_KEY;
+import static net.logstash.logback.argument.StructuredArguments.kv;
+
 @Component
 @Slf4j
 public class SmeeUserCreateResourceConversionStep implements Step {
 
-    private Step smeeUserLoadDataStep;
+    private final Step smeeUserLoadDataStep;
     private final SmeeUserTypeRepository smeeUserTypeRepository;
 
     public SmeeUserCreateResourceConversionStep(Step smeeUserLoadDataStep , SmeeUserTypeRepository smeeUserTypeRepository) {
@@ -33,7 +37,7 @@ public class SmeeUserCreateResourceConversionStep implements Step {
         SmeeUserContext userContext = (SmeeUserContext) context;
         SmeeUserCreateResource userResource = (SmeeUserCreateResource) userContext.getResource();
         SmeeUser smeeUser = new SmeeUser();
-        log.info("Converting incoming resource to smeeUser, resource={}", userResource);
+        log.info("Converting incoming resource to smeeUser, resource={}", userResource, kv(REQUEST_ID_KEY, MDC.get(REQUEST_ID_KEY)));
         try {
             smeeUser.setUserName(userResource.getUserName());
             smeeUser.setUserEmail(userResource.getUserEmail());
@@ -47,7 +51,8 @@ public class SmeeUserCreateResourceConversionStep implements Step {
             smeeUser.setLastModifiedDate(currentTimestamp);
 
             userContext.setInput(smeeUser);
-            log.info("Converted incoming resource to smee user and saved in context's input attribute.");
+            log.info("Converted incoming resource to smee user and saved in context's input attribute.",
+                    kv(REQUEST_ID_KEY, MDC.get(REQUEST_ID_KEY)));
         } catch (Exception exception) {
             throw new GenericBadRequestException(userResource, "Exception while converting resource to input entity object " +
                     "withStackTrace - " + Arrays.toString(exception.getStackTrace()));

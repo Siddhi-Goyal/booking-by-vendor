@@ -24,6 +24,7 @@ import javax.validation.ConstraintViolationException;
 import java.util.List;
 import java.util.stream.Collectors;
 
+import static com.gap.sourcing.smee.utils.RequestIdGenerator.REQUEST_ID_KEY;
 import static net.logstash.logback.argument.StructuredArguments.kv;
 
 @ControllerAdvice
@@ -95,7 +96,7 @@ public class SmeeUserExceptionHandler {
     private ResponseEntity<Envelope> handle(Exception ex, String responseMessage, HttpStatus responseStatus) {
         String requestId = MDC.get(RequestIdGenerator.REQUEST_ID_KEY);
         log.error(String.format("Error processing request with reason - %s", responseMessage)
-                , kv("stack_trace", ex.getStackTrace()));
+                , kv("stack_trace", ex.getStackTrace()), kv(REQUEST_ID_KEY, MDC.get(REQUEST_ID_KEY)));
         return new ResponseEntity<>(new Envelope(responseStatus.value(), requestId, responseMessage), responseStatus);
     }
 
