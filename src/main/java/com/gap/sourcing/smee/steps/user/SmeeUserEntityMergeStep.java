@@ -37,6 +37,9 @@ public class SmeeUserEntityMergeStep implements Step {
         if (current != null) {
             current.setLastModifiedBy(input.getLastModifiedBy());
             current.setLastModifiedDate(input.getLastModifiedDate());
+            current.setUserEmail(input.getUserEmail());
+            current.setIsVendor(input.getIsVendor());
+            current.setUserTypeId(input.getUserTypeId());
             List<SmeeUserVendor> removedVendors = current.getVendors().stream().filter(vendor  -> isPresent(input.getVendors(),
                     vendor)).collect(Collectors.toList());
             List<SmeeUserVendor> addedVendors = input.getVendors().stream().filter(vendor  -> isPresent(current.getVendors(),
