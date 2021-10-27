@@ -24,7 +24,6 @@ public class SmeeUserCreateResource implements Resource {
         @NotBlank
         private String userType;
         private Boolean isVendor;
-        @NotBlank
         private String vendorPartyId;
         @NotBlank
         private String userId;

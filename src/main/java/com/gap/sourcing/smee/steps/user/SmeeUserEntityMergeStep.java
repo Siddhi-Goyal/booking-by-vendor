@@ -40,18 +40,20 @@ public class SmeeUserEntityMergeStep implements Step {
             current.setUserEmail(input.getUserEmail());
             current.setIsVendor(input.getIsVendor());
             current.setUserTypeId(input.getUserTypeId());
-            List<SmeeUserVendor> removedVendors = current.getVendors().stream().filter(vendor  -> isPresent(input.getVendors(),
-                    vendor)).collect(Collectors.toList());
-            List<SmeeUserVendor> addedVendors = input.getVendors().stream().filter(vendor  -> isPresent(current.getVendors(),
-                    vendor)).collect(Collectors.toList());
-            if (!removedVendors.isEmpty())  {
-                removedVendors.forEach(vendor -> current.getVendors().remove(vendor));
-            }
-            if (!addedVendors.isEmpty()) {
-                addedVendors.forEach(vendor -> {
-                    vendor.setUserId(current);
-                    current.getVendors().add(vendor);
-                });
+            if (Boolean.TRUE.equals(input.getIsVendor())) {
+                List<SmeeUserVendor> removedVendors = current.getVendors().stream().filter(vendor -> isPresent(input.getVendors(),
+                        vendor)).collect(Collectors.toList());
+                List<SmeeUserVendor> addedVendors = input.getVendors().stream().filter(vendor -> isPresent(current.getVendors(),
+                        vendor)).collect(Collectors.toList());
+                if (!removedVendors.isEmpty()) {
+                    removedVendors.forEach(vendor -> current.getVendors().remove(vendor));
+                }
+                if (!addedVendors.isEmpty()) {
+                    addedVendors.forEach(vendor -> {
+                        vendor.setUserId(current);
+                        current.getVendors().add(vendor);
+                    });
+                }
             }
         }
 

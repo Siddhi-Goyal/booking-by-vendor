@@ -28,6 +28,9 @@ class SmeeUserLoadDataStepTest {
     Step smeeUserVendorRelationStep;
 
     @Mock
+    Step smeeUserEntityMergeStep;
+
+    @Mock
     SmeeUserRepository smeeUserRepository;
 
     private SmeeUserLoadDataStep smeeUserLoadDataStep;
@@ -38,14 +41,14 @@ class SmeeUserLoadDataStepTest {
     @BeforeEach
     void init() {
 
-        SmeeUserCreateResource resource = new SmeeUserCreateResource();//ResourceProvider.getSmeeUserCreateResource();
+        SmeeUserCreateResource resource = new SmeeUserCreateResource();
         context = new SmeeUserContext(resource);
         entity = new SmeeUser();
         entity.setUserName("xyz");
         entity.setUserEmail("xyz@abc.com");
         context.setInput(entity);
         smeeUserLoadDataStep = new SmeeUserLoadDataStep(smeeUserVendorRelationStep,
-                smeeUserRepository);
+                smeeUserRepository, smeeUserEntityMergeStep);
     }
 
 

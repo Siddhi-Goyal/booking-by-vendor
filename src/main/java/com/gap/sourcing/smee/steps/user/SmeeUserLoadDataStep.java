@@ -19,10 +19,13 @@ public class SmeeUserLoadDataStep implements Step {
 
     private final Step smeeUserBuildVendorRelationStep;
     private final SmeeUserRepository smeeUserRepository;
+    private final Step smeeUserEntityMergeStep;
 
-    public SmeeUserLoadDataStep(final Step smeeUserBuildVendorRelationStep, final SmeeUserRepository smeeUserRepository) {
+    public SmeeUserLoadDataStep(final Step smeeUserBuildVendorRelationStep, final SmeeUserRepository smeeUserRepository,
+                                Step smeeUserEntityMergeStep) {
         this.smeeUserRepository = smeeUserRepository;
         this.smeeUserBuildVendorRelationStep = smeeUserBuildVendorRelationStep;
+        this.smeeUserEntityMergeStep = smeeUserEntityMergeStep;
     }
 
     @Override
@@ -40,6 +43,10 @@ public class SmeeUserLoadDataStep implements Step {
             log.info("User not found in database with UserName={}", smeeUser.getUserName(), kv("userName", smeeUser.getUserName()),
                     kv(REQUEST_ID_KEY, MDC.get(REQUEST_ID_KEY)));
         }
-        return smeeUserBuildVendorRelationStep;
+        if (Boolean.TRUE.equals(smeeUser.getIsVendor())) {
+            return smeeUserBuildVendorRelationStep;
+        } else {
+            return smeeUserEntityMergeStep;
+        }
     }
 }

@@ -32,7 +32,7 @@ import static net.logstash.logback.argument.StructuredArguments.kv;
 public class SmeeUserExceptionHandler {
 
     private static final String SMEE_USER_MISSING_PARAM_MESSAGE = "Smee user creation requires username, useremail, " +
-            "usertype, isZVendor, vendorPartyId and userid";
+            "usertype, isVendor, vendorPartyId and userid";
     private static final String MALFORMED_JSON_MESSAGE = "Bad Request - Passed Malformed JSON";
     private static final String INVALID_MESSAGE = "Bad Request - Malformed JSON,";
     private static final String VENDOR_CREATE_ERROR = "Something  went  wrong";
