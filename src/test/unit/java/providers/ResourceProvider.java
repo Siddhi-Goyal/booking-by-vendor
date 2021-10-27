@@ -10,6 +10,7 @@ public class ResourceProvider {
                 .userEmail("kausher@arvindexports.com")
                 .userType("Garment Vendor")
                 .isVendor(true)
+                .vendorPartyId("1004244")
                 .userId("vprabhu").build();
     }
 }
