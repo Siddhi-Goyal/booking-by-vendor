@@ -1,5 +1,6 @@
 package com.gap.sourcing.smee.steps.helper;
 
+import com.gap.sourcing.smee.dtos.resources.Resource;
 import com.gap.sourcing.smee.dtos.resources.SmeeUserCreateResource;
 import com.gap.sourcing.smee.dtos.responses.SmeeUserResponse;
 import com.gap.sourcing.smee.dtos.responses.SmeeVendor;
@@ -16,7 +17,7 @@ import java.util.stream.Collectors;
 @Component
 public class SmeeUserEntityToDTOConverter {
 
-    public SmeeUserResponse convert(SmeeUser entity, SmeeUserCreateResource resource) {
+    public SmeeUserResponse convert(SmeeUser entity, String userType) {
         SmeeUserResponse  response = null;
         if (entity != null) {
             response = new SmeeUserResponse();
@@ -24,7 +25,7 @@ public class SmeeUserEntityToDTOConverter {
 
             List<SmeeVendor> vendors  = entity.getVendors().stream().map(this::mapToVendors)
                     .collect(Collectors.toList());
-            response.setUserType(resource.getUserType());
+            response.setUserType(userType);
             response.setVendors(vendors);
         }
         return response;

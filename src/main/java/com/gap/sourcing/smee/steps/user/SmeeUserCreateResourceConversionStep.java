@@ -49,7 +49,7 @@ public class SmeeUserCreateResourceConversionStep implements Step {
             smeeUser.setCreatedDate(currentTimestamp);
             smeeUser.setLastModifiedBy(userResource.getUserId());
             smeeUser.setLastModifiedDate(currentTimestamp);
-
+            userContext.setSmeeUserType(userResource.getUserType());
             userContext.setInput(smeeUser);
             log.info("Converted incoming resource to smee user and saved in context's input attribute.",
                     kv(REQUEST_ID_KEY, MDC.get(REQUEST_ID_KEY)));

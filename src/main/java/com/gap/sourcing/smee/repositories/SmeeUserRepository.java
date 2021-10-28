@@ -8,4 +8,6 @@ import org.springframework.stereotype.Repository;
 public interface SmeeUserRepository extends JpaRepository<SmeeUser, Integer> {
 
     SmeeUser findSmeeUserByUserName(String userName);
+
+    SmeeUser findSmeeUserByUserEmail(String userEmail);
 }

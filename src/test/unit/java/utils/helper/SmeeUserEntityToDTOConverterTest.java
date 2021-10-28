@@ -42,7 +42,7 @@ class SmeeUserEntityToDTOConverterTest {
 
     @Test
     void convert_ShouldReturnObject() {
-        SmeeUserResponse smeeUserResponse = smeeUserEntityToDTOConverter.convert(entity, smeeUserCreateResource);
+        SmeeUserResponse smeeUserResponse = smeeUserEntityToDTOConverter.convert(entity, "Garment Vendor");
         assertThat(smeeUserResponse, is(notNullValue()));
         assertEquals(1, smeeUserResponse.getVendors().size());
     }

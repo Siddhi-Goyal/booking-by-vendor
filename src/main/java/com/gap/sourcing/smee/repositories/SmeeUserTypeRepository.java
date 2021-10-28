@@ -5,7 +5,8 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
 @Repository
-public interface SmeeUserTypeRepository extends JpaRepository<SmeeUserType, Integer> {
+public interface SmeeUserTypeRepository extends JpaRepository<SmeeUserType, Long> {
 
     SmeeUserType  findSmeeUserTypeByUserType(String userType);
+
 }

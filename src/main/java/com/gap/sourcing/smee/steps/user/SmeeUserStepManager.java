@@ -15,10 +15,11 @@ public class SmeeUserStepManager implements StepManager {
 
     private final Map<RequestAction, Step> firstStepMap;
 
-    public SmeeUserStepManager(final Step smeeUserCreateValidationStep) {
+    public SmeeUserStepManager(final Step smeeUserCreateValidationStep , final  Step smeeUserGetDataStep) {
         this.firstStepMap = new EnumMap<>(RequestAction.class);
 
         firstStepMap.put(RequestAction.CREATE, smeeUserCreateValidationStep);
+        firstStepMap.put(RequestAction.GET, smeeUserGetDataStep);
     }
 
     @Override
