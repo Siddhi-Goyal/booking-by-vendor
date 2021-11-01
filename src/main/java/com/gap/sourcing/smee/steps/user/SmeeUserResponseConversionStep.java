@@ -41,8 +41,12 @@ public class SmeeUserResponseConversionStep implements Step {
             if(entity!=null) {
                 String userType = smeeUserContext.getSmeeUserType();
                  response = smeeUserEntityToDTOConverter.convert(entity, userType);
+                smeeUserContext.setResponse(response);
             }
-            smeeUserContext.setResponse(response);
+           else{
+                smeeUserContext.setResponse(null);
+            }
+
 
         } catch (Exception exception) {
             throw new GenericBadRequestException(userResource, "Exception in parsing data from DB to Response");

@@ -42,36 +42,37 @@ public class SmeeUserGetDataStep implements Step {
         SmeeUserContext userContext = (SmeeUserContext) context;
         SmeeUserGetResource resource = (SmeeUserGetResource) userContext.getResource();
         String userIdToGetDetails = resource.getUserId();
-
-
         Optional<SmeeUser> smeeUser;
-        if (userIdToGetDetails.contains("@")) {
-            if(!validateUserEmail(userIdToGetDetails)){
+        try {
+            if (userIdToGetDetails.contains("@")) {
+            /*if(!validateUserEmail(userIdToGetDetails)){
                 log.info(INVALID_USER_EMAIL_ERROR_MESSAGE,
                         kv("userId", resource.getUserId()), kv(REQUEST_ID_KEY, MDC.get(REQUEST_ID_KEY)));
                 throw new GenericBadRequestException(resource, INVALID_USER_EMAIL_ERROR_MESSAGE);
+            }*/
+                smeeUser = Optional.ofNullable(smeeUserRepository.findSmeeUserByUserEmail(userIdToGetDetails));
+            } else
+                smeeUser = Optional.ofNullable(smeeUserRepository.findSmeeUserByUserName(userIdToGetDetails));
+
+            if (smeeUser.isPresent()) {
+                Long userTypeId = smeeUser.get().getUserTypeId();
+                Optional<SmeeUserType> smeeUserType = smeeUserTypeRepository.findById(userTypeId);
+                String userType = smeeUserType.get().getUserType();
+                userContext.setSmeeUserType(userType);
+                ((SmeeUserContext) context).setOutput(smeeUser.get());
+            } else {
+                userContext.setOutput(null);
             }
-            smeeUser = Optional.ofNullable(smeeUserRepository.findSmeeUserByUserEmail(userIdToGetDetails));
-        } else
-            smeeUser = Optional.ofNullable(smeeUserRepository.findSmeeUserByUserName(userIdToGetDetails));
-
-        if (smeeUser.isPresent()) {
-            Long userTypeId = smeeUser.get().getUserTypeId();
-            Optional<SmeeUserType> smeeUserType = smeeUserTypeRepository.findById(userTypeId);
-            String userType = smeeUserType.get().getUserType();
-            userContext.setSmeeUserType(userType);
-            ((SmeeUserContext) context).setOutput(smeeUser.get());
-        } else {
-            userContext.setOutput(null);
+        } catch (Exception exception) {
+            throw new GenericBadRequestException(resource,"Exception while fetching the user details");
         }
-
         return smeeUserResponseConversionStep;
     }
 
-    Boolean validateUserEmail(String userEmail){
+   /* Boolean validateUserEmail(String userEmail){
         String regexPattern = "^(.+)@(\\S+)$";
         return Pattern.compile(regexPattern)
                 .matcher(userEmail)
                 .matches();
-    }
+    }*/
 }
