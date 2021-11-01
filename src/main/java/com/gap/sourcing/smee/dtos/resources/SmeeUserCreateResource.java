@@ -7,7 +7,7 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 
-import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.*;
 
 
 @Getter
@@ -18,14 +18,20 @@ import javax.validation.constraints.NotBlank;
 public class SmeeUserCreateResource implements Resource {
 
         @NotBlank
+        @Size(min = 1, max = 20)
         private String userName;
+        @Email
         @NotBlank
+        @Size(min = 1, max = 50)
         private String userEmail;
         @NotBlank
+        @Size(min = 1, max = 20)
         private String userType;
+        @NotNull
         private Boolean isVendor;
         private String vendorPartyId;
         @NotBlank
+        @Size(min = 1, max = 10)
         private String userId;
     }
 

@@ -58,26 +58,26 @@ public class SmeeUserBuildVendorRelationStep implements Step {
                 kv(REQUEST_ID_KEY, MDC.get(REQUEST_ID_KEY)));
         List<SmeeUserVendor> vendors = new ArrayList<>();
         if (denodoPartyIdData != null && !CollectionUtils.isEmpty(denodoPartyIdData.getElements())) {
-            vendors.add(buildVendor(denodoPartyIdData.getElements().get(0), vendorPartyId, smeeUser));
+            vendors.add(buildVendor(denodoPartyIdData.getElements().get(0), smeeUser));
         }
         if (denodoVendorData != null && !CollectionUtils.isEmpty(denodoVendorData.getElements())) {
-            vendors.addAll(denodoVendorData.getElements().stream().map(denodoData -> buildVendor(denodoData,
-                    vendorPartyId, smeeUser)).collect(Collectors.toList()));
+            vendors.addAll(denodoVendorData.getElements().stream().map(denodoData -> buildVendor(denodoData, smeeUser))
+                    .collect(Collectors.toList()));
         }
         if (vendors.isEmpty()) {
-            log.info("Vendor details not found for user {} ", smeeUser.getUserName(), kv(REQUEST_ID_KEY, MDC.get(REQUEST_ID_KEY)),
+            log.info("Vendor details not found for given user {} ", smeeUser.getUserName(), kv(REQUEST_ID_KEY, MDC.get(REQUEST_ID_KEY)),
                     kv("userName", smeeUser.getUserName()));
-            throw new GenericBadRequestException(resource, "Vendor details not found for vendor party id "+ resource.getVendorPartyId());
+            throw new GenericBadRequestException(resource, "Vendor details not found for given vendor party id "+ resource.getVendorPartyId());
         }
         smeeUser.setVendors(vendors);
         log.info("Retrieved vendors from denodo API",kv("vendors", vendors.size()), kv(REQUEST_ID_KEY, MDC.get(REQUEST_ID_KEY)));
         return smeeUserEntityMergeStep;
     }
 
-    private SmeeUserVendor buildVendor(DenodoElement denodoElement, String vendorPartyId, SmeeUser smeeUser) {
+    private SmeeUserVendor buildVendor(DenodoElement denodoElement, SmeeUser smeeUser) {
         return SmeeUserVendor.builder()
                 .vendorName(denodoElement.getLegalName())
-                .vendorPartyId(vendorPartyId)
+                .vendorPartyId(denodoElement.getPartyId())
                 .userId(smeeUser)
                 .build();
     }
