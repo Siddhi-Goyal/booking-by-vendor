@@ -14,6 +14,8 @@ import com.gap.sourcing.smee.steps.Step;
 import com.gap.sourcing.smee.utils.Client;
 import org.junit.jupiter.api.*;
 import org.junit.jupiter.api.extension.ExtendWith;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.MethodSource;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.mockito.stubbing.Answer;
@@ -62,8 +64,9 @@ class SmeeUserCreateValidationStepTest {
     void execute_shouldReturnASmeeUserCreateResourceConversionStepGivenAValidResource() throws GenericUserException {
         final SmeeUserCreateResource resource = ResourceProvider.getSmeeUserCreateResource();
         final SmeeUserContext context = new SmeeUserContext(resource);
-        SmeeUserType smeeUserType = SmeeUserType.builder().userType("Garment Vendor").build();
-        List<SmeeUserType> smeeUserTypes = List.of(smeeUserType);
+        SmeeUserType smeeUserTypeGarmentVendor = SmeeUserType.builder().userType("Garment Vendor").build();
+        SmeeUserType smeeUserTypeGisPD = SmeeUserType.builder().userType("GIS PD").build();
+        List<SmeeUserType> smeeUserTypes = List.of(smeeUserTypeGarmentVendor, smeeUserTypeGisPD);
         when(smeeUserTypeRepository.findAll()).thenReturn(smeeUserTypes);
 
         final Step step = smeeUserCreateValidationStep.execute(context);
@@ -79,6 +82,48 @@ class SmeeUserCreateValidationStepTest {
 
         Assertions.assertThrows(GenericBadRequestException.class, () -> smeeUserCreateValidationStep.execute(context));
     }
+
+    @Test
+    void execute_shouldReturnASmeeUserCreateResourceConversionStepGivenAValidResource_vendor_without_vendor_party_id() throws GenericUserException {
+        final SmeeUserCreateResource resource = ResourceProvider.getSmeeUserCreateResource();
+        resource.setUserType("GIS PD");
+        resource.setUserEmail("kausher@gap.com");
+        resource.setVendorPartyId("");
+        final SmeeUserContext context = new SmeeUserContext(resource);
+
+        Assertions.assertThrows(GenericBadRequestException.class, () -> smeeUserCreateValidationStep.execute(context));
+    }
+
+    @Test
+    void execute_shouldReturnASmeeUserCreateResourceConversionStepGivenAValidResource_vendor_without_vendor_type() throws GenericUserException {
+        final SmeeUserCreateResource resource = ResourceProvider.getSmeeUserCreateResource();
+        resource.setUserType("GIS PD");
+        resource.setUserEmail("kausher@arvindexports.com");
+        resource.setVendorPartyId("1004244");
+        final SmeeUserContext context = new SmeeUserContext(resource);
+
+        Assertions.assertThrows(GenericBadRequestException.class, () -> smeeUserCreateValidationStep.execute(context));
+    }
+
+    @Test
+    void execute_shouldReturnASmeeUserCreateResourceConversionStepGivenAValidResource_not_vendor_with_vendor_type() throws GenericUserException {
+        final SmeeUserCreateResource resource = ResourceProvider.getSmeeUserCreateResource();
+        resource.setUserType("Garment Vendor");
+        resource.setIsVendor(false);
+        resource.setUserEmail("aravind@gap.com");
+        final SmeeUserContext context = new SmeeUserContext(resource);
+
+        Assertions.assertThrows(GenericBadRequestException.class, () -> smeeUserCreateValidationStep.execute(context));
+    }
+
+    @Test
+    void execute_shouldReturnASmeeUserCreateResourceConversionStepGivenAValidResource_vendor_with_invalid_email() throws GenericUserException {
+        final SmeeUserCreateResource resource = ResourceProvider.getSmeeUserCreateResource();
+        resource.setUserType("Garment Vendor");
+        resource.setIsVendor(false);
+        resource.setUserEmail("kausher@arvindexports.com");
+        final SmeeUserContext context = new SmeeUserContext(resource);
+
+        Assertions.assertThrows(GenericBadRequestException.class, () -> smeeUserCreateValidationStep.execute(context));
+    }
 }
-
-
