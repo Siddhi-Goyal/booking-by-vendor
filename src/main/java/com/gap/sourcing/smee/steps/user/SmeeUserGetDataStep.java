@@ -64,7 +64,7 @@ public class SmeeUserGetDataStep implements Step {
                 userContext.setOutput(null);
             }
         } catch (Exception exception) {
-            throw new GenericBadRequestException(resource,"Exception while fetching the user details");
+            throw new GenericBadRequestException(resource,"User-id passed is null");
         }
         return smeeUserResponseConversionStep;
     }

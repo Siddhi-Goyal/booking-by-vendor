@@ -2,6 +2,7 @@ package com.gap.sourcing.smee.steps.user;
 
 import com.gap.sourcing.smee.contexts.SmeeUserContext;
 import com.gap.sourcing.smee.dtos.resources.SmeeUserCreateResource;
+import com.gap.sourcing.smee.entities.SmeeUser;
 import com.gap.sourcing.smee.exceptions.GenericBadRequestException;
 import com.gap.sourcing.smee.exceptions.GenericUserException;
 import com.gap.sourcing.smee.steps.Step;
@@ -46,7 +47,9 @@ class SmeeUserResponseConversionStepTest {
     @Test
     void execute_shouldReturnResponseInContext_throws_exception() throws GenericUserException {
         final SmeeUserCreateResource resource = ResourceProvider.getSmeeUserCreateResource();
+        final SmeeUser smeeUser = new SmeeUser();
         final SmeeUserContext context = new SmeeUserContext(resource);
+        context.setOutput(smeeUser);
         when(smeeUserEntityToDTOConverter.convert(any(), any())).thenThrow(GenericBadRequestException.class);
         Assertions.assertThrows(GenericBadRequestException .class, () -> smeeUserResponseConversionStep.execute(context));
     }
