@@ -1,7 +1,5 @@
 package com.gap.sourcing.smee.steps.helper;
 
-import com.gap.sourcing.smee.dtos.resources.Resource;
-import com.gap.sourcing.smee.dtos.resources.SmeeUserCreateResource;
 import com.gap.sourcing.smee.dtos.responses.SmeeUserResponse;
 import com.gap.sourcing.smee.dtos.responses.SmeeVendor;
 import com.gap.sourcing.smee.entities.SmeeUser;

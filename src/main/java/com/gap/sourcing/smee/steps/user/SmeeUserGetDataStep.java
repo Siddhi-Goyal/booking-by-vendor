@@ -16,7 +16,6 @@ import org.slf4j.MDC;
 import org.springframework.stereotype.Component;
 
 import java.util.Optional;
-import java.util.regex.Pattern;
 
 import static com.gap.sourcing.smee.utils.RequestIdGenerator.REQUEST_ID_KEY;
 import static net.logstash.logback.argument.StructuredArguments.kv;
@@ -28,8 +27,6 @@ public class SmeeUserGetDataStep implements Step {
     private final Step smeeUserResponseConversionStep;
     private final SmeeUserRepository smeeUserRepository;
     private final SmeeUserTypeRepository smeeUserTypeRepository;
-    private static final String INVALID_USER_EMAIL_ERROR_MESSAGE = "User email is invalid";
-
 
     public SmeeUserGetDataStep(Step smeeUserResponseConversionStep, SmeeUserRepository smeeUserRepository,
                                SmeeUserTypeRepository smeeUserTypeRepository) {
@@ -43,6 +40,8 @@ public class SmeeUserGetDataStep implements Step {
         SmeeUserGetResource resource = (SmeeUserGetResource) userContext.getResource();
         String userIdToGetDetails = resource.getUserId();
         Optional<SmeeUser> smeeUser;
+        log.info("Getting user details for user-id, resource={}", resource, kv(REQUEST_ID_KEY, MDC.get(REQUEST_ID_KEY)));
+
         try {
             if (userIdToGetDetails.contains("@")) {
                 smeeUser = Optional.ofNullable(smeeUserRepository.findSmeeUserByUserEmail(userIdToGetDetails));
@@ -52,14 +51,16 @@ public class SmeeUserGetDataStep implements Step {
             if (smeeUser.isPresent()) {
                 Long userTypeId = smeeUser.get().getUserTypeId();
                 Optional<SmeeUserType> smeeUserType = smeeUserTypeRepository.findById(userTypeId);
-                String userType = smeeUserType.get().getUserType();
-                userContext.setSmeeUserType(userType);
+                if(smeeUserType.isPresent()) {
+                    String userType = smeeUserType.get().getUserType();
+                    userContext.setSmeeUserType(userType);
+                }
                 ((SmeeUserContext) context).setOutput(smeeUser.get());
             } else {
                 userContext.setOutput(null);
             }
         } catch (Exception exception) {
-            throw new GenericBadRequestException(resource,"User-id passed is null");
+            throw new GenericBadRequestException(resource, "User-id passed is null");
         }
         return smeeUserResponseConversionStep;
     }
