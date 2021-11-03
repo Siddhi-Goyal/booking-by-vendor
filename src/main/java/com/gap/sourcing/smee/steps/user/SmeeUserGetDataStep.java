@@ -39,15 +39,16 @@ public class SmeeUserGetDataStep implements Step {
         SmeeUserContext userContext = (SmeeUserContext) context;
         SmeeUserGetResource resource = (SmeeUserGetResource) userContext.getResource();
         String userIdToGetDetails = resource.getUserId();
+        if(userIdToGetDetails==null){
+            log.info("User Id is cannot be null",
+                    kv("userId", resource.getUserId()), kv(REQUEST_ID_KEY, MDC.get(REQUEST_ID_KEY)));
+            throw new GenericBadRequestException(resource, "User Id is cannot be null");
+        }
         Optional<SmeeUser> smeeUser;
         log.info("Getting user details for user-id, resource={}", resource, kv(REQUEST_ID_KEY, MDC.get(REQUEST_ID_KEY)));
 
         try {
-            if (userIdToGetDetails.contains("@")) {
-                smeeUser = Optional.ofNullable(smeeUserRepository.findSmeeUserByUserEmail(userIdToGetDetails));
-            } else
-                smeeUser = Optional.ofNullable(smeeUserRepository.findSmeeUserByUserName(userIdToGetDetails));
-
+            smeeUser = Optional.ofNullable(smeeUserRepository.findSmeeUserByUserName(userIdToGetDetails));
             if (smeeUser.isPresent()) {
                 Long userTypeId = smeeUser.get().getUserTypeId();
                 Optional<SmeeUserType> smeeUserType = smeeUserTypeRepository.findById(userTypeId);

@@ -5,6 +5,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
+import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
 
 @Getter
@@ -14,6 +15,7 @@ import javax.validation.constraints.NotNull;
 public class SmeeUserGetResource implements Resource {
 
     @NotNull
+    @NotBlank
     private  String userId;
 
 }
