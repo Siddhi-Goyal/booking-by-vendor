@@ -55,6 +55,7 @@ class SmeeUserEntityMergeStepTest {
         SmeeUserVendor vendor1 =  SmeeUserVendor.builder().vendorPartyId("908756").vendorName("Another Test Name").build();
         SmeeUserVendor vendor2 =  SmeeUserVendor.builder().vendorPartyId("786578").vendorName("New Test Name").build();
         SmeeUser input = SmeeUser.builder().lastModifiedDate(ZonedDateTime.now()).lastModifiedBy("syarram")
+                .isVendor(true)
                 .vendors(new ArrayList<>(Arrays.asList(vendor, vendor1))).build();
         SmeeUser current = SmeeUser.builder().lastModifiedDate(ZonedDateTime.now()).lastModifiedBy("syarram")
                 .vendors(new ArrayList<>(Arrays.asList(vendor2, vendor1))).build();

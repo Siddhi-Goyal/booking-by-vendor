@@ -10,6 +10,8 @@ import lombok.extern.slf4j.Slf4j;
 import org.slf4j.MDC;
 import org.springframework.stereotype.Component;
 
+import java.util.List;
+
 import static com.gap.sourcing.smee.utils.RequestIdGenerator.REQUEST_ID_KEY;
 import static net.logstash.logback.argument.StructuredArguments.kv;
 
@@ -19,10 +21,13 @@ public class SmeeUserLoadDataStep implements Step {
 
     private final Step smeeUserBuildVendorRelationStep;
     private final SmeeUserRepository smeeUserRepository;
+    private final Step smeeUserEntityMergeStep;
 
-    public SmeeUserLoadDataStep(final Step smeeUserBuildVendorRelationStep, final SmeeUserRepository smeeUserRepository) {
+    public SmeeUserLoadDataStep(final Step smeeUserBuildVendorRelationStep, final SmeeUserRepository smeeUserRepository,
+                                Step smeeUserEntityMergeStep) {
         this.smeeUserRepository = smeeUserRepository;
         this.smeeUserBuildVendorRelationStep = smeeUserBuildVendorRelationStep;
+        this.smeeUserEntityMergeStep = smeeUserEntityMergeStep;
     }
 
     @Override
@@ -39,7 +44,12 @@ public class SmeeUserLoadDataStep implements Step {
         } else {
             log.info("User not found in database with UserName={}", smeeUser.getUserName(), kv("userName", smeeUser.getUserName()),
                     kv(REQUEST_ID_KEY, MDC.get(REQUEST_ID_KEY)));
+            smeeUser.setVendors(List.of());
         }
-        return smeeUserBuildVendorRelationStep;
+        if (Boolean.TRUE.equals(smeeUser.getIsVendor())) {
+            return smeeUserBuildVendorRelationStep;
+        } else {
+            return smeeUserEntityMergeStep;
+        }
     }
 }

@@ -6,6 +6,7 @@ import com.gap.sourcing.smee.utils.RequestIdGenerator;
 import lombok.extern.slf4j.Slf4j;
 import org.hibernate.TransientPropertyValueException;
 import org.slf4j.MDC;
+import org.springframework.context.support.DefaultMessageSourceResolvable;
 import org.springframework.core.Ordered;
 import org.springframework.core.annotation.Order;
 import org.springframework.dao.DataAccessResourceFailureException;
@@ -15,6 +16,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.http.converter.HttpMessageNotReadableException;
 import org.springframework.validation.BindException;
 import org.springframework.validation.BindingResult;
+import org.springframework.validation.ObjectError;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
@@ -22,6 +24,7 @@ import org.springframework.web.context.request.WebRequest;
 
 import javax.validation.ConstraintViolationException;
 import java.util.List;
+import java.util.Objects;
 import java.util.stream.Collectors;
 
 import static com.gap.sourcing.smee.utils.RequestIdGenerator.REQUEST_ID_KEY;
@@ -32,7 +35,7 @@ import static net.logstash.logback.argument.StructuredArguments.kv;
 public class SmeeUserExceptionHandler {
 
     private static final String SMEE_USER_MISSING_PARAM_MESSAGE = "Smee user creation requires username, useremail, " +
-            "usertype, isZVendor, vendorPartyId and userid";
+            "usertype, isVendor, vendorPartyId and userid";
     private static final String MALFORMED_JSON_MESSAGE = "Bad Request - Passed Malformed JSON";
     private static final String INVALID_MESSAGE = "Bad Request - Malformed JSON,";
     private static final String VENDOR_CREATE_ERROR = "Something  went  wrong";
@@ -109,13 +112,34 @@ public class SmeeUserExceptionHandler {
 
     private ResponseEntity<Envelope> handleFieldsOrPathVariableInvalidException(Exception ex, BindingResult bindingResult) {
         if (bindingResult.getTarget() instanceof SmeeUserCreateResource) {
-            return handle(ex, SMEE_USER_MISSING_PARAM_MESSAGE, HttpStatus.BAD_REQUEST);
+            List<ObjectError> violations = ((MethodArgumentNotValidException) ex).getBindingResult().getAllErrors();
+            List<String> errors = violations.stream().map(this::prepareError).filter(Objects::nonNull).collect(Collectors.toList());
+            if (errors.isEmpty()) {
+                return handle(ex, SMEE_USER_MISSING_PARAM_MESSAGE, HttpStatus.BAD_REQUEST);
+            } else  {
+                return handle(ex, String.join(", ", errors) , HttpStatus.BAD_REQUEST);
+            }
         }
 
         List<String> exceptionFields = bindingResult.getFieldErrors().stream()
                 .map(x -> String.format("Passed %s : %s is invalid", x.getField(), x.getRejectedValue()))
                 .collect(Collectors.toList());
         return handle(ex, String.format("Bad Request - %s", exceptionFields), HttpStatus.BAD_REQUEST);
+    }
+
+    private String prepareError(ObjectError objectError) {
+        try {
+            String error = "";
+            Object[] arguments = objectError.getArguments();
+            if (arguments != null && arguments.length > 0) {
+                DefaultMessageSourceResolvable messageResolver = (DefaultMessageSourceResolvable) arguments[0];
+                error = messageResolver.getDefaultMessage() + " - " + objectError.getDefaultMessage();
+            }
+            return error;
+        } catch (Exception exception) {
+            log.info("Exception while  constructing error message");
+            return null;
+        }
     }
 
     private String getMessageForHttpMessageNotReadableException(HttpMessageNotReadableException ex) {

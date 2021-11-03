@@ -21,11 +21,12 @@ public class SmeeUserEntityToDTOConverter {
         if (entity != null) {
             response = new SmeeUserResponse();
             BeanUtils.copyProperties(entity, response);
-
-            List<SmeeVendor> vendors  = entity.getVendors().stream().map(this::mapToVendors)
-                    .collect(Collectors.toList());
+            if( entity.getVendors() != null && !entity.getVendors().isEmpty()) {
+                List<SmeeVendor> vendors = entity.getVendors().stream().map(this::mapToVendors)
+                        .collect(Collectors.toList());
+                response.setVendors(vendors);
+            }
             response.setUserType(resource.getUserType());
-            response.setVendors(vendors);
         }
         return response;
     }

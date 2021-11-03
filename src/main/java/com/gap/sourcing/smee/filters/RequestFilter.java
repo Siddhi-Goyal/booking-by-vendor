@@ -19,6 +19,7 @@ import static com.gap.sourcing.smee.utils.RequestIdGenerator.REQUEST_ID_KEY;
 public class RequestFilter implements Filter {
     @Override
     public void init(FilterConfig filterConfig) throws ServletException {
+        //
     }
 
     @Override
@@ -33,5 +34,6 @@ public class RequestFilter implements Filter {
 
     @Override
     public void destroy() {
+        //
     }
 }
