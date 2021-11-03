@@ -28,14 +28,6 @@ public class SmeeUserEntityToDTOConverter {
             response.setUserType(userType);
             response.setVendors(vendors);
 
-            if( entity.getVendors() != null && !entity.getVendors().isEmpty()) {
-                List<SmeeVendor> vendors = entity.getVendors().stream().map(this::mapToVendors)
-                        .collect(Collectors.toList());
-                response.setVendors(vendors);
-            }
-          //  response.setUserType(resource.getUserType());
-            response.setUserType(userType);
-
         }
         return response;
     }

@@ -45,11 +45,6 @@ public class SmeeUserGetDataStep implements Step {
         Optional<SmeeUser> smeeUser;
         try {
             if (userIdToGetDetails.contains("@")) {
-            /*if(!validateUserEmail(userIdToGetDetails)){
-                log.info(INVALID_USER_EMAIL_ERROR_MESSAGE,
-                        kv("userId", resource.getUserId()), kv(REQUEST_ID_KEY, MDC.get(REQUEST_ID_KEY)));
-                throw new GenericBadRequestException(resource, INVALID_USER_EMAIL_ERROR_MESSAGE);
-            }*/
                 smeeUser = Optional.ofNullable(smeeUserRepository.findSmeeUserByUserEmail(userIdToGetDetails));
             } else
                 smeeUser = Optional.ofNullable(smeeUserRepository.findSmeeUserByUserName(userIdToGetDetails));
@@ -69,10 +64,4 @@ public class SmeeUserGetDataStep implements Step {
         return smeeUserResponseConversionStep;
     }
 
-   /* Boolean validateUserEmail(String userEmail){
-        String regexPattern = "^(.+)@(\\S+)$";
-        return Pattern.compile(regexPattern)
-                .matcher(userEmail)
-                .matches();
-    }*/
 }
