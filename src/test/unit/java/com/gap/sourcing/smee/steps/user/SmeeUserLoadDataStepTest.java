@@ -28,6 +28,9 @@ class SmeeUserLoadDataStepTest {
     Step smeeUserVendorRelationStep;
 
     @Mock
+    Step smeeUserEntityMergeStep;
+
+    @Mock
     SmeeUserRepository smeeUserRepository;
 
     private SmeeUserLoadDataStep smeeUserLoadDataStep;
@@ -38,26 +41,28 @@ class SmeeUserLoadDataStepTest {
     @BeforeEach
     void init() {
 
-        SmeeUserCreateResource resource = new SmeeUserCreateResource();//ResourceProvider.getSmeeUserCreateResource();
+        SmeeUserCreateResource resource = new SmeeUserCreateResource();
         context = new SmeeUserContext(resource);
         entity = new SmeeUser();
         entity.setUserName("xyz");
         entity.setUserEmail("xyz@abc.com");
+
         context.setInput(entity);
         smeeUserLoadDataStep = new SmeeUserLoadDataStep(smeeUserVendorRelationStep,
-                smeeUserRepository);
+                smeeUserRepository, smeeUserEntityMergeStep);
     }
 
-
+    //if isVendor is false, return smeeUserEntityMergeStep
     @Test
-    void execute_shouldReturnASmeeUserVendorRelationStep() throws GenericUserException {
+    void execute_shouldReturnASmeeUserEntityMergeStep() throws GenericUserException {
         final Step step = smeeUserLoadDataStep.execute(context);
 
-        assertThat(step, is(smeeUserVendorRelationStep));
+        assertThat(step, is(smeeUserEntityMergeStep));
     }
 
     @Test
     void execute_shouldReturnASmeeUserVendorRelationStep_with_current() throws GenericUserException {
+        entity.setIsVendor(true);
         when(smeeUserRepository.findSmeeUserByUserName(anyString())).thenReturn(mock(SmeeUser.class));
         final Step step = smeeUserLoadDataStep.execute(context);
 
