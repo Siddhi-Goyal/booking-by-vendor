@@ -39,24 +39,24 @@ public class SmeeUserGetDataStep implements Step {
         SmeeUserContext userContext = (SmeeUserContext) context;
         SmeeUserGetResource resource = (SmeeUserGetResource) userContext.getResource();
         String userIdToGetDetails = resource.getUserId();
-        if(userIdToGetDetails==null){
+        if(userIdToGetDetails.isEmpty()){
             log.info("User Id is cannot be null",
                     kv("userId", resource.getUserId()), kv(REQUEST_ID_KEY, MDC.get(REQUEST_ID_KEY)));
             throw new GenericBadRequestException(resource, "User Id is cannot be null");
         }
-        Optional<SmeeUser> smeeUser;
+
         log.info("Getting user details for user-id, resource={}", resource, kv(REQUEST_ID_KEY, MDC.get(REQUEST_ID_KEY)));
 
         try {
-            smeeUser = Optional.ofNullable(smeeUserRepository.findSmeeUserByUserName(userIdToGetDetails));
-            if (smeeUser.isPresent()) {
-                Long userTypeId = smeeUser.get().getUserTypeId();
+            SmeeUser smeeUser = smeeUserRepository.findSmeeUserByUserName(userIdToGetDetails);
+            if (smeeUser!=null) {
+                Long userTypeId = smeeUser.getUserTypeId();
                 Optional<SmeeUserType> smeeUserType = smeeUserTypeRepository.findById(userTypeId);
                 if(smeeUserType.isPresent()) {
                     String userType = smeeUserType.get().getUserType();
                     userContext.setSmeeUserType(userType);
                 }
-                ((SmeeUserContext) context).setOutput(smeeUser.get());
+                ((SmeeUserContext) context).setOutput(smeeUser);
             } else {
                 userContext.setOutput(null);
             }
