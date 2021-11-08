@@ -6,8 +6,8 @@ import com.gap.sourcing.smee.contexts.SmeeUserContext;
 import com.gap.sourcing.smee.dtos.resources.SmeeUserGetResource;
 import com.gap.sourcing.smee.entities.SmeeUser;
 import com.gap.sourcing.smee.entities.SmeeUserType;
-import com.gap.sourcing.smee.exceptions.GenericBadRequestException;
 import com.gap.sourcing.smee.exceptions.GenericUserException;
+import com.gap.sourcing.smee.exceptions.ResourceNotFoundException;
 import com.gap.sourcing.smee.repositories.SmeeUserRepository;
 import com.gap.sourcing.smee.repositories.SmeeUserTypeRepository;
 import com.gap.sourcing.smee.steps.Step;
@@ -39,29 +39,19 @@ public class SmeeUserGetDataStep implements Step {
         SmeeUserContext userContext = (SmeeUserContext) context;
         SmeeUserGetResource resource = (SmeeUserGetResource) userContext.getResource();
         String userIdToGetDetails = resource.getUserId();
-        if(userIdToGetDetails.isEmpty()){
-            log.info("User Id is cannot be null",
-                    kv("userId", resource.getUserId()), kv(REQUEST_ID_KEY, MDC.get(REQUEST_ID_KEY)));
-            throw new GenericBadRequestException(resource, "User Id is cannot be null");
-        }
 
         log.info("Getting user details for user-id, resource={}", resource, kv(REQUEST_ID_KEY, MDC.get(REQUEST_ID_KEY)));
 
-        try {
-            SmeeUser smeeUser = smeeUserRepository.findSmeeUserByUserName(userIdToGetDetails);
-            if (smeeUser!=null) {
-                Long userTypeId = smeeUser.getUserTypeId();
-                Optional<SmeeUserType> smeeUserType = smeeUserTypeRepository.findById(userTypeId);
-                if(smeeUserType.isPresent()) {
-                    String userType = smeeUserType.get().getUserType();
-                    userContext.setSmeeUserType(userType);
-                }
-                ((SmeeUserContext) context).setOutput(smeeUser);
-            } else {
-                userContext.setOutput(null);
+        SmeeUser smeeUser = smeeUserRepository.findSmeeUserByUserName(userIdToGetDetails);
+        if (smeeUser != null) {
+            Optional<SmeeUserType> smeeUserType = smeeUserTypeRepository.findById(smeeUser.getUserTypeId());
+            if (smeeUserType.isPresent()) {
+                userContext.setSmeeUserType(smeeUserType.get().getUserType());
             }
-        } catch (Exception exception) {
-            throw new GenericBadRequestException(resource, "User-id passed is null");
+            ((SmeeUserContext) context).setOutput(smeeUser);
+        } else {
+            userContext.setOutput(null);
+            throw new ResourceNotFoundException(resource, String.format("Passed user id : %s not found", resource.getUserId()));
         }
         return smeeUserResponseConversionStep;
     }

@@ -4,7 +4,6 @@ import com.gap.sourcing.smee.dtos.resources.SmeeUserGetResource;
 import com.gap.sourcing.smee.dtos.responses.Response;
 import com.gap.sourcing.smee.dtos.resources.SmeeUserCreateResource;
 import com.gap.sourcing.smee.envelopes.Envelope;
-import com.gap.sourcing.smee.envelopes.SmeeUserGetEnvelope;
 import com.gap.sourcing.smee.services.ControllerStepService;
 import com.gap.sourcing.smee.enums.RequestAction;
 import lombok.extern.slf4j.Slf4j;
@@ -16,8 +15,6 @@ import org.springframework.web.bind.annotation.*;
 import javax.validation.Valid;
 
 import com.gap.sourcing.smee.exceptions.GenericUserException;
-
-import java.util.ArrayList;
 
 import static com.gap.sourcing.smee.utils.RequestIdGenerator.REQUEST_ID_KEY;
 import static net.logstash.logback.argument.StructuredArguments.kv;
@@ -56,15 +53,9 @@ public class SmeeUserController {
         log.info("Received request to get user details for user id", kv("resource", resource), kv(REQUEST_ID_KEY, requestId));
 
         final Response response = userControllerStepService.process(RequestAction.GET, resource);
-        final Envelope envelope;
 
-        if(response == null){
-            envelope = new SmeeUserGetEnvelope(HttpStatus.OK.value(), requestId, new ArrayList<>());
-        }
-        else {
-           envelope = new Envelope(HttpStatus.OK.value(), requestId, response);
+        final Envelope envelope = new Envelope(HttpStatus.OK.value(), requestId, response);
 
-        }
         log.info("User response returned successfully", kv("response", response), kv(REQUEST_ID_KEY, requestId));
         return new ResponseEntity<>(envelope, HttpStatus.OK);
 
