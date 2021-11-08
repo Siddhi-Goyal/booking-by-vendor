@@ -1,12 +1,9 @@
 package com.gap.sourcing.smee.steps.user;
 
 import com.gap.sourcing.smee.contexts.SmeeUserContext;
-import com.gap.sourcing.smee.dtos.resources.Resource;
-import com.gap.sourcing.smee.dtos.resources.SmeeUserCreateResource;
 import com.gap.sourcing.smee.dtos.resources.SmeeUserGetResource;
 import com.gap.sourcing.smee.entities.SmeeUser;
 import com.gap.sourcing.smee.entities.SmeeUserType;
-import com.gap.sourcing.smee.exceptions.GenericBadRequestException;
 import com.gap.sourcing.smee.exceptions.GenericUserException;
 import com.gap.sourcing.smee.exceptions.ResourceNotFoundException;
 import com.gap.sourcing.smee.repositories.SmeeUserRepository;
@@ -17,13 +14,8 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
-import java.util.List;
-import java.util.Optional;
-
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.core.Is.is;
-import static org.mockito.ArgumentMatchers.anyString;
-import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
@@ -59,11 +51,9 @@ class SmeeUserGetDataStepTest {
         smeeUserGetDataStep = new SmeeUserGetDataStep(smeeUserResponseConversionStep,
                 smeeUserRepository, smeeUserTypeRepository);
 
-        SmeeUserType smeeUserType = new SmeeUserType();
         SmeeUser smeeUser = new SmeeUser();
 
-        Long id = Long.valueOf(1);
-        smeeUser.setUserTypeId(id);
+        smeeUser.setUserTypeId(1L);
         when(smeeUserRepository.findSmeeUserByUserName("testId")).thenReturn(smeeUser);
     }
 
