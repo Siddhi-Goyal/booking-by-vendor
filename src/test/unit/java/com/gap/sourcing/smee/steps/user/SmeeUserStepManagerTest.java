@@ -21,11 +21,15 @@ class SmeeUserStepManagerTest {
     @Mock
     private Step smeeUserCreateValidationStep;
 
+    @Mock
+    private Step smeeUserGetDataStep;
+
     private SmeeUserStepManager smeeUserStepManager;
 
     @BeforeEach
     void init() {
-        smeeUserStepManager = new SmeeUserStepManager(smeeUserCreateValidationStep);
+        smeeUserStepManager = new SmeeUserStepManager(smeeUserCreateValidationStep,smeeUserGetDataStep);
+
     }
 
     @Test

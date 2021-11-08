@@ -12,7 +12,7 @@ import java.util.List;
 @Setter
 @AllArgsConstructor
 @NoArgsConstructor
-public class SmeeUserResponse implements Response{
+public class SmeeUserResponse implements Response {
 
     private String userName;
     private String userEmail;

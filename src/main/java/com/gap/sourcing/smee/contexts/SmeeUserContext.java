@@ -15,6 +15,7 @@ public class SmeeUserContext implements Context {
     private SmeeUser current;
     private SmeeUser output;
     private SmeeUserResponse response;
+    private String smeeUserType;
 
 
     public SmeeUserContext(Resource resource) {

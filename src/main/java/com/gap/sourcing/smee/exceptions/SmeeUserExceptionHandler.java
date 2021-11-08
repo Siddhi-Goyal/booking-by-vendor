@@ -17,6 +17,7 @@ import org.springframework.http.converter.HttpMessageNotReadableException;
 import org.springframework.validation.BindException;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.ObjectError;
+import org.springframework.web.HttpRequestMethodNotSupportedException;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
@@ -39,6 +40,7 @@ public class SmeeUserExceptionHandler {
     private static final String MALFORMED_JSON_MESSAGE = "Bad Request - Passed Malformed JSON";
     private static final String INVALID_MESSAGE = "Bad Request - Malformed JSON,";
     private static final String VENDOR_CREATE_ERROR = "Something  went  wrong";
+    private static final String REQUIRED_USER_ID = "Required userId";
 
 
     @Order(Ordered.HIGHEST_PRECEDENCE)
@@ -63,6 +65,12 @@ public class SmeeUserExceptionHandler {
         return handleFieldsOrPathVariableInvalidException(ex, ex.getBindingResult());
     }
 
+    @ExceptionHandler(value = {HttpRequestMethodNotSupportedException.class})
+    protected ResponseEntity<Envelope> handleMethodNotSupportedException(HttpRequestMethodNotSupportedException ex, WebRequest request) {
+        return handle(ex, REQUIRED_USER_ID, HttpStatus.METHOD_NOT_ALLOWED);
+
+    }
+
     @ExceptionHandler(value = {HttpMessageNotReadableException.class})
     protected ResponseEntity<Envelope> handleMalformedRequestException(HttpMessageNotReadableException ex, WebRequest request) {
         String responseMessage = getMessageForHttpMessageNotReadableException(ex);
@@ -77,6 +85,11 @@ public class SmeeUserExceptionHandler {
     @ExceptionHandler(value = {DataAccessResourceFailureException.class})
     protected ResponseEntity<Envelope> handleConstraintViolationException(DataAccessResourceFailureException ex, WebRequest request) {
         return handle(ex, ex.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
+    }
+
+    @ExceptionHandler(value = {ResourceNotFoundException.class})
+    protected ResponseEntity<Envelope> handleResourceNotFoundException(ResourceNotFoundException ex, WebRequest request) {
+        return handle(ex, ex.getMessage(), HttpStatus.NOT_FOUND);
     }
 
     @ExceptionHandler(value = {TransientPropertyValueException.class})
@@ -148,5 +161,9 @@ public class SmeeUserExceptionHandler {
         }
         return INVALID_MESSAGE;
     }
+
+
+
+
 }
 
