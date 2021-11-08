@@ -3,7 +3,6 @@ package com.gap.sourcing.smee.steps.user;
 import com.gap.sourcing.smee.contexts.SmeeUserContext;
 import com.gap.sourcing.smee.dtos.resources.SmeeUserGetResource;
 import com.gap.sourcing.smee.entities.SmeeUser;
-import com.gap.sourcing.smee.entities.SmeeUserType;
 import com.gap.sourcing.smee.exceptions.GenericUserException;
 import com.gap.sourcing.smee.exceptions.ResourceNotFoundException;
 import com.gap.sourcing.smee.repositories.SmeeUserRepository;
