@@ -8,6 +8,7 @@ import com.gap.sourcing.smee.entities.SmeeUser;
 import com.gap.sourcing.smee.entities.SmeeUserType;
 import com.gap.sourcing.smee.exceptions.GenericBadRequestException;
 import com.gap.sourcing.smee.exceptions.GenericUserException;
+import com.gap.sourcing.smee.exceptions.ResourceNotFoundException;
 import com.gap.sourcing.smee.repositories.SmeeUserRepository;
 import com.gap.sourcing.smee.repositories.SmeeUserTypeRepository;
 import com.gap.sourcing.smee.steps.Step;
@@ -57,35 +58,35 @@ class SmeeUserGetDataStepTest {
         context.setInput(entity);
         smeeUserGetDataStep = new SmeeUserGetDataStep(smeeUserResponseConversionStep,
                 smeeUserRepository, smeeUserTypeRepository);
-    }
-
-
-  /*  @Test
-    void execute_shouldThrowExceptionWhenUserIdisNull() throws GenericUserException {
-        Assertions.assertThrows(GenericBadRequestException.class, () -> smeeUserGetDataStep.execute(context));
-
-    }*/
-
-
-    @Test
-    void execute_shouldReturnAsmeeUserResponseConversionStep() throws GenericUserException {
-        resource.setUserId("abh");
-        final Step step = smeeUserGetDataStep.execute(context);
-        assertThat(step, is(smeeUserResponseConversionStep));
-    }
-
-    @Test
-    void execute_shouldReturnAsmeeUserResponse() throws GenericUserException {
-        resource.setUserId("abh");
 
         SmeeUserType smeeUserType = new SmeeUserType();
         SmeeUser smeeUser = new SmeeUser();
 
         Long id = Long.valueOf(1);
         smeeUser.setUserTypeId(id);
-        when(smeeUserRepository.findSmeeUserByUserName("abh")).thenReturn(smeeUser);
-        when(smeeUserTypeRepository.findById(id)).thenReturn(java.util.Optional.of(smeeUserType));
+        when(smeeUserRepository.findSmeeUserByUserName("testId")).thenReturn(smeeUser);
+    }
+
+    @Test
+    void execute_shouldReturnAsmeeUserResponseConversionStep() throws GenericUserException {
+        resource.setUserId("testId");
+
         final Step step = smeeUserGetDataStep.execute(context);
         assertThat(step, is(smeeUserResponseConversionStep));
+    }
+
+    @Test
+    void execute_shouldReturnAsmeeUserResponse() throws GenericUserException {
+        resource.setUserId("testId");
+
+        final Step step = smeeUserGetDataStep.execute(context);
+        assertThat(step, is(smeeUserResponseConversionStep));
+    }
+
+    @Test
+    void execute_shouldReturnAsmeeUserResponse_throw_exception() throws GenericUserException {
+        resource.setUserId("testId");
+        when(smeeUserRepository.findSmeeUserByUserName("testId")).thenReturn(null);
+        Assertions.assertThrows(ResourceNotFoundException.class, () -> smeeUserGetDataStep.execute(context));
     }
 }
