@@ -21,7 +21,7 @@ public class SmeeUserTypeLoadServiceImpl implements SmeeUserTypeLoadService {
         this.smeeUserTypeRepository = smeeUserTypeRepository;
     }
 
-    @Cacheable(value = "smee-usertype-load", unless = "#result == T(java.util.Collections).emptyList()")
+    @Cacheable(value = "smee-usertypes", unless = "#result == T(java.util.Collections).emptyList()")
     public List<SmeeUserType> getSmeeUserTypes() throws GenericUserException {
         List<SmeeUserType> smeeUserTypesFromDb  = smeeUserTypeRepository.findAll();
         log.info("Fetched User-Types From DB:: ", kv("smeeUserTypesFromDb", smeeUserTypesFromDb));

@@ -7,6 +7,6 @@ import java.util.List;
 
 public interface SmeeUserTypeLoadService {
 
-    @Cacheable(value = "smee-usertype-load", unless = "#result == T(java.util.Collections).emptyList()")
+    @Cacheable(value = "smee-usertypes", unless = "#result == T(java.util.Collections).emptyList()")
     List<SmeeUserType> getSmeeUserTypes();
 }

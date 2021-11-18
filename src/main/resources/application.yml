@@ -4,7 +4,7 @@ server:
 spring:
   cache:
     type: caffeine
-    cache-names: smee-usertype-load
+    cache-names: smee-usertypes
     caffeine:
       spec: maximumSize=500, expireAfterAccess=24h
 
