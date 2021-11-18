@@ -1,6 +1,13 @@
 server:
   port: 8080
 
+spring:
+  cache:
+    type: caffeine
+    cache-names: smee-usertype-load
+    caffeine:
+      spec: maximumSize=500, expireAfterAccess=24h
+
 management:
   endpoints:
     web:

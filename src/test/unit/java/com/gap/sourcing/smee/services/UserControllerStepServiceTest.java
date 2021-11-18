@@ -3,6 +3,7 @@ package com.gap.sourcing.smee.services;
 import com.gap.sourcing.smee.dtos.resources.Resource;
 import com.gap.sourcing.smee.dtos.resources.SmeeUserCreateResource;
 import com.gap.sourcing.smee.dtos.responses.Response;
+import com.gap.sourcing.smee.dtos.responses.SmeeUserTypeResponse;
 import com.gap.sourcing.smee.enums.RequestAction;
 import com.gap.sourcing.smee.exceptions.GenericUserException;
 import com.gap.sourcing.smee.steps.StepManager;
@@ -21,6 +22,17 @@ class UserControllerStepServiceTest {
         final Resource resource = SmeeUserCreateResource.builder().build();
 
         final Response response = controllerStepService.process(RequestAction.CREATE, resource);
+
+        assertThat(response, is(notNullValue()));
+
+    }
+
+    @Test
+    void process_shouldReturnASmeeUserTypeResponse() throws GenericUserException {
+        final StepManager stepManager = mock(StepManager.class);
+        final ControllerStepService controllerStepService = new UserControllerStepService(stepManager);
+
+        final SmeeUserTypeResponse response = (SmeeUserTypeResponse)controllerStepService.process(RequestAction.GET_USER_TYPES, null);
 
         assertThat(response, is(notNullValue()));
 

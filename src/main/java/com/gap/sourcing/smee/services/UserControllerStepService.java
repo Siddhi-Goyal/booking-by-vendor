@@ -20,13 +20,17 @@ public class UserControllerStepService implements ControllerStepService   {
 
     @Override
     public Response process(RequestAction action, Resource resource) throws GenericUserException {
-        SmeeUserContext userContext = new SmeeUserContext(resource);
 
+        SmeeUserContext userContext = new SmeeUserContext(resource);
         Step nextStep = userStepManager.getFirstStep(action);
 
         while (nextStep != null) {
             nextStep = nextStep.execute(userContext);
         }
-        return userContext.getResponse();
+        if(resource != null){
+            return userContext.getResponse();
+        }else{
+            return userContext.getUserTypeResponse();
+        }
     }
 }
