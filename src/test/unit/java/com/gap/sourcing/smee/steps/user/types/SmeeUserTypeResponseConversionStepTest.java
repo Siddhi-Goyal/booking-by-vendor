@@ -54,7 +54,7 @@ class SmeeUserTypeResponseConversionStepTest {
         final SmeeUserContext context = new SmeeUserContext(null);
         context.setUserTypeOutput(entity);
         when(smeeUserTypeEntityToDTOConverter.convert(any())).thenThrow(GenericBadRequestException.class);
-        Assertions.assertThrows(GenericBadRequestException.class, () -> smeeUserTypeResponseConversionStep.execute(context));
+        Assertions.assertThrows(GenericUserException.class, () -> smeeUserTypeResponseConversionStep.execute(context));
     }
 
 }
