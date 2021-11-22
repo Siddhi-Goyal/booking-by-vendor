@@ -3,6 +3,7 @@ package com.gap.sourcing.smee.controllers;
 import com.gap.sourcing.smee.dtos.resources.SmeeUserGetResource;
 import com.gap.sourcing.smee.dtos.responses.Response;
 import com.gap.sourcing.smee.dtos.resources.SmeeUserCreateResource;
+import com.gap.sourcing.smee.dtos.responses.SmeeUserTypeResponse;
 import com.gap.sourcing.smee.envelopes.Envelope;
 import com.gap.sourcing.smee.services.ControllerStepService;
 import com.gap.sourcing.smee.enums.RequestAction;
@@ -59,5 +60,19 @@ public class SmeeUserController {
         log.info("User response returned successfully", kv("response", response), kv(REQUEST_ID_KEY, requestId));
         return new ResponseEntity<>(envelope, HttpStatus.OK);
 
+    }
+
+    @GetMapping("/types")
+    public ResponseEntity<Envelope> getUserTypes() throws GenericUserException {
+
+        final String requestId = MDC.get(REQUEST_ID_KEY);
+        log.info("Received request to get user types ", kv(REQUEST_ID_KEY, requestId));
+
+        final SmeeUserTypeResponse response = (SmeeUserTypeResponse)userControllerStepService.process(RequestAction.GET_USER_TYPES, null);
+
+        final Envelope envelope = new Envelope(HttpStatus.OK.value(), requestId, response.getUserTypes());
+
+        log.info("User types response returned successfully", kv("response", response), kv(REQUEST_ID_KEY, requestId));
+        return new ResponseEntity<>(envelope, HttpStatus.OK);
     }
 }

@@ -4,7 +4,7 @@ import com.gap.sourcing.smee.dtos.resources.Resource;
 import com.gap.sourcing.smee.dtos.resources.SmeeUserCreateResource;
 import com.gap.sourcing.smee.dtos.resources.SmeeUserGetResource;
 import com.gap.sourcing.smee.dtos.responses.SmeeUserResponse;
-import com.gap.sourcing.smee.entities.SmeeUser;
+import com.gap.sourcing.smee.dtos.responses.SmeeUserTypeResponse;
 import com.gap.sourcing.smee.enums.RequestAction;
 import com.gap.sourcing.smee.envelopes.Envelope;
 import com.gap.sourcing.smee.exceptions.GenericUserException;
@@ -60,6 +60,18 @@ class SmeeUserControllerTest {
         when(controllerStepService.process(eq(RequestAction.GET), any(Resource.class))).thenReturn(expectedResponse);
 
         final ResponseEntity<Envelope> response = sampleController.getUser(getResource);
+
+        assertThat(response.getStatusCode(), is(notNullValue()));
+        assertThat(response.getBody(), is(notNullValue()));
+    }
+
+    @Test
+    void getSmeeUserType_ShouldReturnAResponseEntityContainingAUserTypeEnvelope() throws GenericUserException {
+
+        final SmeeUserTypeResponse expectedResponse = new SmeeUserTypeResponse();
+        when(controllerStepService.process(eq(RequestAction.GET_USER_TYPES), eq(null))).thenReturn(expectedResponse);
+
+        final ResponseEntity<Envelope> response = sampleController.getUserTypes();
 
         assertThat(response.getStatusCode(), is(notNullValue()));
         assertThat(response.getBody(), is(notNullValue()));

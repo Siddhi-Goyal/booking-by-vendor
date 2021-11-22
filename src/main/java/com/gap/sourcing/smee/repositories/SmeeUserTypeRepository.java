@@ -8,5 +8,4 @@ import org.springframework.stereotype.Repository;
 public interface SmeeUserTypeRepository extends JpaRepository<SmeeUserType, Long> {
 
     SmeeUserType  findSmeeUserTypeByUserType(String userType);
-
 }
