@@ -14,6 +14,7 @@ import org.springframework.dao.InvalidDataAccessApiUsageException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.http.converter.HttpMessageNotReadableException;
+import org.springframework.transaction.CannotCreateTransactionException;
 import org.springframework.validation.BindException;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.ObjectError;
@@ -94,6 +95,11 @@ public class SmeeUserExceptionHandler {
 
     @ExceptionHandler(value = {TransientPropertyValueException.class})
     protected ResponseEntity<Envelope> handleTransientPropertyValueException(TransientPropertyValueException ex, WebRequest request) {
+        return handle(ex, ex.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
+    }
+
+    @ExceptionHandler(value = {CannotCreateTransactionException.class})
+    protected ResponseEntity<Envelope> handleCannotCreateTransactionException(CannotCreateTransactionException ex, WebRequest request) {
         return handle(ex, ex.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
     }
 
