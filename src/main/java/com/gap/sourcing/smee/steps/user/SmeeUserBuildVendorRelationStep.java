@@ -53,6 +53,20 @@ public class SmeeUserBuildVendorRelationStep implements Step {
         DenodoResponse denodoPartyIdData =  client.get(denodoURI+"partyId="+vendorPartyId, DenodoResponse.class);
         log.info("Vendor data from denodo api for partyId", denodoPartyIdData, kv("partyIdResponse", denodoPartyIdData),
                 kv(REQUEST_ID_KEY, MDC.get(REQUEST_ID_KEY)));
+        if (denodoPartyIdData != null && !CollectionUtils.isEmpty(denodoPartyIdData.getElements())) {
+            DenodoElement denodoElement = denodoPartyIdData.getElements().get(0);
+            if(!denodoElement.getVendorType().equalsIgnoreCase("MFG") ){
+                log.info("VendorType is not MFG  {} ", smeeUser.getUserName(), kv(REQUEST_ID_KEY, MDC.get(REQUEST_ID_KEY)),
+                        kv("userName", smeeUser.getUserName()));
+                throw new GenericBadRequestException(resource, "VendorType is not MFG for partyId="+ resource.getVendorPartyId());
+
+            }
+            if( !denodoElement.getStatus().equalsIgnoreCase("Active")){
+                log.info("Vendor status is not Active {} ", smeeUser.getUserName(), kv(REQUEST_ID_KEY, MDC.get(REQUEST_ID_KEY)),
+                        kv("userName", smeeUser.getUserName()));
+                throw new GenericBadRequestException(resource, "Vendor Status  is not Active for partyId= "+ resource.getVendorPartyId());
+            }
+        }
         DenodoResponse denodoVendorData =  client.get(denodoURI+"parVenId="+vendorPartyId, DenodoResponse.class);
         log.info("Vendor data from denodo api for parVenId", denodoVendorData, kv("parVenIdResponse", denodoVendorData),
                 kv(REQUEST_ID_KEY, MDC.get(REQUEST_ID_KEY)));

@@ -7,6 +7,7 @@ import com.gap.sourcing.smee.exceptions.GenericUserException;
 import com.gap.sourcing.smee.exceptions.ResourceNotFoundException;
 import com.gap.sourcing.smee.repositories.SmeeUserRepository;
 import com.gap.sourcing.smee.repositories.SmeeUserTypeRepository;
+import com.gap.sourcing.smee.services.SmeeUserTypeLoadService;
 import com.gap.sourcing.smee.steps.Step;
 import org.junit.jupiter.api.*;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -30,6 +31,8 @@ class SmeeUserGetDataStepTest {
     @Mock
     SmeeUserResponseConversionStep smeeUserResponseConversionStep;
 
+    @Mock
+    SmeeUserTypeLoadService smeeUserTypeLoadService;
 
     private SmeeUserGetDataStep smeeUserGetDataStep;
 
@@ -48,7 +51,7 @@ class SmeeUserGetDataStepTest {
         entity.setUserEmail("xyz@abc.com");
         context.setInput(entity);
         smeeUserGetDataStep = new SmeeUserGetDataStep(smeeUserResponseConversionStep,
-                smeeUserRepository, smeeUserTypeRepository);
+                smeeUserRepository, smeeUserTypeLoadService);
 
         SmeeUser smeeUser = new SmeeUser();
 
