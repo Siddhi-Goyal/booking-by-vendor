@@ -16,6 +16,7 @@ import org.mockito.junit.jupiter.MockitoExtension;
 
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.core.Is.is;
+import static org.hamcrest.core.IsNull.nullValue;
 import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
@@ -56,7 +57,7 @@ class SmeeUserGetDataStepTest {
         SmeeUser smeeUser = new SmeeUser();
 
         smeeUser.setUserTypeId(1L);
-        when(smeeUserRepository.findSmeeUserByUserName("testId")).thenReturn(smeeUser);
+
     }
 
     @Test
@@ -76,9 +77,9 @@ class SmeeUserGetDataStepTest {
     }
 
     @Test
-    void execute_shouldReturnAsmeeUserResponse_throw_exception() throws GenericUserException {
-        resource.setUserId("testId");
-        when(smeeUserRepository.findSmeeUserByUserName("testId")).thenReturn(null);
-        Assertions.assertThrows(ResourceNotFoundException.class, () -> smeeUserGetDataStep.execute(context));
+    void execute_shouldReturnSmeeUserEmptyResponseWhenNoUserId() throws GenericUserException {
+        final SmeeUserContext context = new SmeeUserContext(null);
+        final Step step = smeeUserResponseConversionStep.execute(context);
+        assertThat(step, is(nullValue()));
     }
 }

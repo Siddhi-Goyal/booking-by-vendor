@@ -57,11 +57,39 @@ class SmeeUserBuildVendorRelationStepTest {
     void execute_shouldReturnASmeeUserEntityMergeStepStep() throws GenericUserException {
         DenodoResponse response  = new DenodoResponse();
         DenodoElement element = new DenodoElement();
+        element.setVendorType("MFG");
+        element.setStatus("Active");
         response.setElements(List.of(element));
         Mockito.lenient().when(client.get(anyString(), any())).thenReturn(response);
 
         final Step step = smeeUserVendorRelationStep.execute(context);
         assertThat(step, is(smeeUserEntityMergeStep));
+    }
+
+    @Test
+    void execute_shouldThrowBadExceptionIfVendorTypeNotMFG() throws GenericUserException {
+        DenodoResponse response  = new DenodoResponse();
+        DenodoElement element = new DenodoElement();
+        element.setVendorType("ABC");
+        element.setStatus("Active");
+        response.setElements(List.of(element));
+        Mockito.lenient().when(client.get(anyString(), any())).thenReturn(response);
+
+        Assertions.assertThrows(GenericBadRequestException.class, () -> smeeUserVendorRelationStep.execute(context));
+
+    }
+
+    @Test
+    void execute_shouldThrowBadExceptionIfVendorStatusIsNotActive() throws GenericUserException {
+        DenodoResponse response  = new DenodoResponse();
+        DenodoElement element = new DenodoElement();
+        element.setVendorType("MFG");
+        element.setStatus("Deactivated");
+        response.setElements(List.of(element));
+        Mockito.lenient().when(client.get(anyString(), any())).thenReturn(response);
+
+        Assertions.assertThrows(GenericBadRequestException.class, () -> smeeUserVendorRelationStep.execute(context));
+
     }
 
     @Test
