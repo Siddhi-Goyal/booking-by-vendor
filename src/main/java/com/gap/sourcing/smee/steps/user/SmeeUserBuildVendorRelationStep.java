@@ -54,18 +54,14 @@ public class SmeeUserBuildVendorRelationStep implements Step {
         log.info("Vendor data from denodo api for partyId", denodoPartyIdData, kv("partyIdResponse", denodoPartyIdData),
                 kv(REQUEST_ID_KEY, MDC.get(REQUEST_ID_KEY)));
         DenodoResponse denodoVendorData =  client.get(denodoURI+"parVenId="+vendorPartyId, DenodoResponse.class);
-        log.info("*******************************************Vendor data from denodo api for parVenId", denodoVendorData, kv("parVenIdResponse", denodoVendorData),
+        log.info("Vendor data from denodo api for parVenId", denodoVendorData, kv("parVenIdResponse", denodoVendorData),
                 kv(REQUEST_ID_KEY, MDC.get(REQUEST_ID_KEY)));
         List<SmeeUserVendor> vendors = new ArrayList<>();
-        if (denodoPartyIdData != null && !CollectionUtils.isEmpty(denodoPartyIdData.getElements())) {
+        if (denodoPartyIdData != null && !CollectionUtils.isEmpty(denodoPartyIdData.getElements()) && isVendorValid(denodoPartyIdData.getElements().get(0))) {
             vendors.add(buildVendor(denodoPartyIdData.getElements().get(0), smeeUser));
         }
         if (denodoVendorData != null && !CollectionUtils.isEmpty(denodoVendorData.getElements())) {
-            vendors.addAll(denodoVendorData.getElements().stream().map(denodoData -> {
-                if (denodoData.getVendorType().equalsIgnoreCase("MFG") && denodoData.getStatus().equalsIgnoreCase("Active"))
-                    return buildVendor(denodoData, smeeUser);
-                 else throw new GenericBadRequestException(resource, "Vendor Status  is not Active for partyId= "+ resource.getVendorPartyId());
-                    })
+            vendors.addAll(denodoVendorData.getElements().stream().filter(denodoElement -> isVendorValid(denodoElement)).map(denodoData ->  buildVendor(denodoData, smeeUser))
                     .collect(Collectors.toList()));
         }
         if (vendors.isEmpty()) {
@@ -76,6 +72,14 @@ public class SmeeUserBuildVendorRelationStep implements Step {
         smeeUser.setVendors(vendors);
         log.info("Retrieved vendors from denodo API",kv("vendors", vendors.size()), kv(REQUEST_ID_KEY, MDC.get(REQUEST_ID_KEY)));
         return smeeUserEntityMergeStep;
+    }
+
+    private boolean isVendorValid(DenodoElement denodoData){
+        if(denodoData.getVendorType().equalsIgnoreCase("MFG") && denodoData.getStatus().equalsIgnoreCase("Active")){
+            return true;
+        }
+
+        return false;
     }
 
     private SmeeUserVendor buildVendor(DenodoElement denodoElement, SmeeUser smeeUser) {
