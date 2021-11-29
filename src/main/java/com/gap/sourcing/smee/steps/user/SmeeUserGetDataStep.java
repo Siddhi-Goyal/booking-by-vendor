@@ -58,8 +58,7 @@ public class SmeeUserGetDataStep implements Step {
             ((SmeeUserContext) context).setOutput(smeeUser);
         } else {
             userContext.setOutput(null);
-           // throw new ResourceNotFoundException(resource, String.format("Passed user id : %s not found", resource.getUserId()));
-        }
+          }
         return smeeUserResponseConversionStep;
     }
 
