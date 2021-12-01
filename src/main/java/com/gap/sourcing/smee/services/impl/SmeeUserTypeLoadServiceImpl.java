@@ -9,6 +9,7 @@ import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Optional;
 
 import static net.logstash.logback.argument.StructuredArguments.kv;
 
@@ -27,5 +28,17 @@ public class SmeeUserTypeLoadServiceImpl implements SmeeUserTypeLoadService {
         log.info("Fetched User-Types From DB:: ", kv("smeeUserTypesFromDb", smeeUserTypesFromDb));
 
         return smeeUserTypesFromDb;
+
     }
+
+    public String fetchUserTypeFromCache(long userTypeId){
+        List<SmeeUserType> smeeUserTypesFromCache  = getSmeeUserTypes();
+        Optional<SmeeUserType> smeeUserTypeVal  =   smeeUserTypesFromCache
+                .stream().
+                filter(userType -> userType.getId().equals(userTypeId)).findFirst();
+
+          return   smeeUserTypeVal.get().getUserType();
+
+    }
+
 }

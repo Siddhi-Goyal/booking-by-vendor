@@ -35,8 +35,6 @@ public class SmeeUserGetDataStep implements Step {
         this.smeeUserRepository = smeeUserRepository;
         this.smeeUserResponseConversionStep = smeeUserResponseConversionStep;
         this.smeeUserTypeLoadService = smeeUserTypeLoadService;
-
-
     }
 
     public Step execute(Context context) throws GenericUserException {
@@ -45,16 +43,10 @@ public class SmeeUserGetDataStep implements Step {
         String userIdToGetDetails = resource.getUserId();
 
         log.info("Getting user details for user-id, resource={}", resource, kv(REQUEST_ID_KEY, MDC.get(REQUEST_ID_KEY)));
-
-        List<SmeeUserType> smeeUserTypesFromCache  = smeeUserTypeLoadService.getSmeeUserTypes();
         SmeeUser smeeUser = smeeUserRepository.findSmeeUserByUserName(userIdToGetDetails);
         if (smeeUser != null) {
-            Optional<SmeeUserType> smeeUserTypeVal  =   smeeUserTypesFromCache.stream().
-                    filter(userType -> smeeUser.getUserTypeId().equals(userType.getId())).findFirst();
-
-            if (smeeUserTypeVal.isPresent()) {
-                userContext.setSmeeUserType(smeeUserTypeVal.get().getUserType());
-            }
+            String smeeUserTypeVal = smeeUserTypeLoadService.fetchUserTypeFromCache(smeeUser.getUserTypeId());
+            userContext.setSmeeUserType(smeeUserTypeVal);
             ((SmeeUserContext) context).setOutput(smeeUser);
         } else {
             userContext.setOutput(null);

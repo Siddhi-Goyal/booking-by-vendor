@@ -14,6 +14,7 @@ import com.gap.sourcing.smee.steps.Step;
 import org.junit.jupiter.api.*;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
+import org.mockito.internal.stubbing.defaultanswers.ReturnsEmptyValues;
 import org.mockito.junit.jupiter.MockitoExtension;
 import providers.ResourceProvider;
 
@@ -89,16 +90,21 @@ class SmeeUserGetDataStepTest {
 
     @Test
     void execute_shouldReturnSmeeUserEmptyResponseWhenNoUserId() throws GenericUserException {
-        final SmeeUserContext context = new SmeeUserContext(null);
-        final Step step = smeeUserResponseConversionStep.execute(context);
-        assertThat(step, is(nullValue()));
+        resource.setUserId("xyz");
+        context.setResource(resource);
+      //  when(smeeUserTypeLoadService.getSmeeUserTypes()).thenReturn(context.getUserTypeOutput());
+        entity = null;
+        when(smeeUserRepository.findSmeeUserByUserName("xyz")).thenReturn(entity);
+      //  final SmeeUserContext context = new SmeeUserContext(null);
+        final Step step = smeeUserGetDataStep.execute(context);
+        assertThat(context.getOutput(), is(nullValue()));
+       // assertThat(step, is(ReturnsEmptyValues));
     }
 
     @Test
     void execute_shouldReturnAsmeeUserResponse1() throws GenericUserException {
         resource.setUserId("xyz");
         context.setResource(resource);
-        when(smeeUserTypeLoadService.getSmeeUserTypes()).thenReturn(context.getUserTypeOutput());
         when(smeeUserRepository.findSmeeUserByUserName("xyz")).thenReturn(entity);
         final Step step = smeeUserGetDataStep.execute(context);
         assertThat(step, is(smeeUserResponseConversionStep));

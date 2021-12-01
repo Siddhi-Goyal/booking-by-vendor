@@ -9,4 +9,8 @@ public interface SmeeUserTypeLoadService {
 
     @Cacheable(value = "smee-usertypes", unless = "#result == T(java.util.Collections).emptyList()")
     List<SmeeUserType> getSmeeUserTypes();
+
+    String fetchUserTypeFromCache(long userTypeId);
+
+
 }
