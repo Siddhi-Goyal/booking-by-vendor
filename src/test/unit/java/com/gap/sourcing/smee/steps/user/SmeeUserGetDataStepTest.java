@@ -89,7 +89,7 @@ class SmeeUserGetDataStepTest {
 
 
     @Test
-    void execute_shouldReturnSmeeUserEmptyResponseWhenNoUserId() throws GenericUserException {
+    void execute_shouldReturnNullWhenNoUserIdisFound() throws GenericUserException {
         resource.setUserId("xyz");
         context.setResource(resource);
       //  when(smeeUserTypeLoadService.getSmeeUserTypes()).thenReturn(context.getUserTypeOutput());
@@ -98,11 +98,11 @@ class SmeeUserGetDataStepTest {
       //  final SmeeUserContext context = new SmeeUserContext(null);
         final Step step = smeeUserGetDataStep.execute(context);
         assertThat(context.getOutput(), is(nullValue()));
-       // assertThat(step, is(ReturnsEmptyValues));
+
     }
 
     @Test
-    void execute_shouldReturnAsmeeUserResponse1() throws GenericUserException {
+    void execute_shouldReturnAsmeeUserResponse() throws GenericUserException {
         resource.setUserId("xyz");
         context.setResource(resource);
         when(smeeUserRepository.findSmeeUserByUserName("xyz")).thenReturn(entity);
