@@ -92,10 +92,8 @@ class SmeeUserGetDataStepTest {
     void execute_shouldReturnNullWhenNoUserIdisFound() throws GenericUserException {
         resource.setUserId("xyz");
         context.setResource(resource);
-      //  when(smeeUserTypeLoadService.getSmeeUserTypes()).thenReturn(context.getUserTypeOutput());
         entity = null;
         when(smeeUserRepository.findSmeeUserByUserName("xyz")).thenReturn(entity);
-      //  final SmeeUserContext context = new SmeeUserContext(null);
         final Step step = smeeUserGetDataStep.execute(context);
         assertThat(context.getOutput(), is(nullValue()));
 
