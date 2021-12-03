@@ -57,11 +57,15 @@ public class SmeeUserBuildVendorRelationStep implements Step {
         log.info("Vendor data from denodo api for parVenId", denodoVendorData, kv("parVenIdResponse", denodoVendorData),
                 kv(REQUEST_ID_KEY, MDC.get(REQUEST_ID_KEY)));
         List<SmeeUserVendor> vendors = new ArrayList<>();
-        if (denodoPartyIdData != null && !CollectionUtils.isEmpty(denodoPartyIdData.getElements())) {
+        if (denodoPartyIdData != null && !CollectionUtils.isEmpty(denodoPartyIdData.getElements()) &&
+                isValidVendor(denodoPartyIdData.getElements().get(0))) {
             vendors.add(buildVendor(denodoPartyIdData.getElements().get(0), smeeUser));
         }
         if (denodoVendorData != null && !CollectionUtils.isEmpty(denodoVendorData.getElements())) {
-            vendors.addAll(denodoVendorData.getElements().stream().map(denodoData -> buildVendor(denodoData, smeeUser))
+            vendors.addAll(denodoVendorData.getElements()
+                    .stream()
+                    .filter(this::isValidVendor)
+                    .map(denodoData ->  buildVendor(denodoData, smeeUser))
                     .collect(Collectors.toList()));
         }
         if (vendors.isEmpty()) {
@@ -72,6 +76,11 @@ public class SmeeUserBuildVendorRelationStep implements Step {
         smeeUser.setVendors(vendors);
         log.info("Retrieved vendors from denodo API",kv("vendors", vendors.size()), kv(REQUEST_ID_KEY, MDC.get(REQUEST_ID_KEY)));
         return smeeUserEntityMergeStep;
+    }
+
+    private boolean isValidVendor(DenodoElement denodoData){
+        return denodoData.getVendorType().equalsIgnoreCase("MFG") &&
+                denodoData.getStatus().equalsIgnoreCase("Active");
     }
 
     private SmeeUserVendor buildVendor(DenodoElement denodoElement, SmeeUser smeeUser) {

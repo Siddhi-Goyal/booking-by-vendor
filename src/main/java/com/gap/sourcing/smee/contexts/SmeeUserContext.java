@@ -1,6 +1,7 @@
 package com.gap.sourcing.smee.contexts;
 
 import com.gap.sourcing.smee.dtos.resources.Resource;
+import com.gap.sourcing.smee.dtos.responses.Response;
 import com.gap.sourcing.smee.dtos.responses.SmeeUserResponse;
 import com.gap.sourcing.smee.dtos.responses.SmeeUserTypeResponse;
 import com.gap.sourcing.smee.entities.SmeeUser;
@@ -18,7 +19,7 @@ public class SmeeUserContext implements Context {
     private SmeeUser input;
     private SmeeUser current;
     private SmeeUser output;
-    private SmeeUserResponse response;
+    private Response response;
     private String smeeUserType;
     private List<SmeeUserType> userTypeOutput;
     private SmeeUserTypeResponse userTypeResponse;

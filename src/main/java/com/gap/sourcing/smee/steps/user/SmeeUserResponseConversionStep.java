@@ -3,6 +3,7 @@ package com.gap.sourcing.smee.steps.user;
 import com.gap.sourcing.smee.contexts.Context;
 import com.gap.sourcing.smee.contexts.SmeeUserContext;
 import com.gap.sourcing.smee.dtos.resources.Resource;
+import com.gap.sourcing.smee.dtos.responses.SmeeUserEmptyResponse;
 import com.gap.sourcing.smee.entities.SmeeUser;
 import com.gap.sourcing.smee.exceptions.GenericBadRequestException;
 import com.gap.sourcing.smee.exceptions.GenericUserException;
@@ -35,7 +36,12 @@ public class SmeeUserResponseConversionStep implements Step {
             SmeeUserContext smeeUserContext = (SmeeUserContext) context;
             SmeeUser entity = smeeUserContext.getOutput();
             String userType = smeeUserContext.getSmeeUserType();
-            smeeUserContext.setResponse(smeeUserEntityToDTOConverter.convert(entity, userType));
+            if(entity==null){
+                smeeUserContext.setResponse(new SmeeUserEmptyResponse());
+            }
+            else {
+                smeeUserContext.setResponse(smeeUserEntityToDTOConverter.convert(entity, userType));
+            }
         } catch (Exception exception) {
             throw new GenericBadRequestException(userResource, "Exception in parsing data from DB to Response");
         }

@@ -10,11 +10,13 @@ import com.gap.sourcing.smee.exceptions.GenericUserException;
 import com.gap.sourcing.smee.exceptions.ResourceNotFoundException;
 import com.gap.sourcing.smee.repositories.SmeeUserRepository;
 import com.gap.sourcing.smee.repositories.SmeeUserTypeRepository;
+import com.gap.sourcing.smee.services.SmeeUserTypeLoadService;
 import com.gap.sourcing.smee.steps.Step;
 import lombok.extern.slf4j.Slf4j;
 import org.slf4j.MDC;
 import org.springframework.stereotype.Component;
 
+import java.util.List;
 import java.util.Optional;
 
 import static com.gap.sourcing.smee.utils.RequestIdGenerator.REQUEST_ID_KEY;
@@ -26,13 +28,13 @@ public class SmeeUserGetDataStep implements Step {
 
     private final Step smeeUserResponseConversionStep;
     private final SmeeUserRepository smeeUserRepository;
-    private final SmeeUserTypeRepository smeeUserTypeRepository;
+    private final SmeeUserTypeLoadService smeeUserTypeLoadService;
 
     public SmeeUserGetDataStep(Step smeeUserResponseConversionStep, SmeeUserRepository smeeUserRepository,
-                               SmeeUserTypeRepository smeeUserTypeRepository) {
+                               SmeeUserTypeLoadService smeeUserTypeLoadService) {
         this.smeeUserRepository = smeeUserRepository;
         this.smeeUserResponseConversionStep = smeeUserResponseConversionStep;
-        this.smeeUserTypeRepository = smeeUserTypeRepository;
+        this.smeeUserTypeLoadService = smeeUserTypeLoadService;
     }
 
     public Step execute(Context context) throws GenericUserException {
@@ -41,18 +43,14 @@ public class SmeeUserGetDataStep implements Step {
         String userIdToGetDetails = resource.getUserId();
 
         log.info("Getting user details for user-id, resource={}", resource, kv(REQUEST_ID_KEY, MDC.get(REQUEST_ID_KEY)));
-
         SmeeUser smeeUser = smeeUserRepository.findSmeeUserByUserName(userIdToGetDetails);
         if (smeeUser != null) {
-            Optional<SmeeUserType> smeeUserType = smeeUserTypeRepository.findById(smeeUser.getUserTypeId());
-            if (smeeUserType.isPresent()) {
-                userContext.setSmeeUserType(smeeUserType.get().getUserType());
-            }
+            String smeeUserTypeVal = smeeUserTypeLoadService.fetchUserTypeFromCache(smeeUser.getUserTypeId());
+            userContext.setSmeeUserType(smeeUserTypeVal);
             ((SmeeUserContext) context).setOutput(smeeUser);
         } else {
             userContext.setOutput(null);
-            throw new ResourceNotFoundException(resource, String.format("Passed user id : %s not found", resource.getUserId()));
-        }
+          }
         return smeeUserResponseConversionStep;
     }
 
