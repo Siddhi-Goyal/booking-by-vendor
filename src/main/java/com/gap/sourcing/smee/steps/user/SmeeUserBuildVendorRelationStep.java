@@ -57,9 +57,11 @@ public class SmeeUserBuildVendorRelationStep implements Step {
         log.info("Vendor data from denodo api for parVenId", denodoVendorData, kv("parVenIdResponse", denodoVendorData),
                 kv(REQUEST_ID_KEY, MDC.get(REQUEST_ID_KEY)));
         List<SmeeUserVendor> vendors = new ArrayList<>();
+        boolean isActiveVendorsAvailable = false;
         if (denodoPartyIdData != null && !CollectionUtils.isEmpty(denodoPartyIdData.getElements()) &&
                 isValidVendor(denodoPartyIdData.getElements().get(0))) {
             vendors.add(buildVendor(denodoPartyIdData.getElements().get(0), smeeUser));
+            isActiveVendorsAvailable = true;
         }
         if (denodoVendorData != null && !CollectionUtils.isEmpty(denodoVendorData.getElements())) {
             vendors.addAll(denodoVendorData.getElements()
@@ -67,13 +69,17 @@ public class SmeeUserBuildVendorRelationStep implements Step {
                     .filter(this::isValidVendor)
                     .map(denodoData ->  buildVendor(denodoData, smeeUser))
                     .collect(Collectors.toList()));
-            if(vendors.isEmpty()){
-                log.info("Vendor Type is not MFG {} ", smeeUser.getUserName(), kv(REQUEST_ID_KEY, MDC.get(REQUEST_ID_KEY)),
-                        kv("userName", smeeUser.getUserName()));
-                throw new GenericBadRequestException(resource, "Vendor Status is not Active or vendor type is not MFG for given vendor party id "
-                        + resource.getVendorPartyId());
 
+            if(!vendors.isEmpty()) {
+                isActiveVendorsAvailable = true;
             }
+        }
+        if(!isActiveVendorsAvailable & (denodoPartyIdData!=null || denodoVendorData != null)){
+            log.info("Vendor Type is not MFG {} ", smeeUser.getUserName(), kv(REQUEST_ID_KEY, MDC.get(REQUEST_ID_KEY)),
+                    kv("userName", smeeUser.getUserName()));
+            throw new GenericBadRequestException(resource, "Vendor Status is not Active or vendor type is not MFG for given vendor party id "
+                    + resource.getVendorPartyId());
+
         }
         if (vendors.isEmpty()) {
             log.info("Vendor details not found for given user {} ", smeeUser.getUserName(), kv(REQUEST_ID_KEY, MDC.get(REQUEST_ID_KEY)),
