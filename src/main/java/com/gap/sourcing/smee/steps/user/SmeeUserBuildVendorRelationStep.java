@@ -67,6 +67,13 @@ public class SmeeUserBuildVendorRelationStep implements Step {
                     .filter(this::isValidVendor)
                     .map(denodoData ->  buildVendor(denodoData, smeeUser))
                     .collect(Collectors.toList()));
+            if(vendors.isEmpty()){
+                log.info("Vendor Type is not MFG {} ", smeeUser.getUserName(), kv(REQUEST_ID_KEY, MDC.get(REQUEST_ID_KEY)),
+                        kv("userName", smeeUser.getUserName()));
+                throw new GenericBadRequestException(resource, "Vendor Status is not Active or vendor type is not MFG for given vendor party id "
+                        + resource.getVendorPartyId());
+
+            }
         }
         if (vendors.isEmpty()) {
             log.info("Vendor details not found for given user {} ", smeeUser.getUserName(), kv(REQUEST_ID_KEY, MDC.get(REQUEST_ID_KEY)),
