@@ -51,11 +51,7 @@ public class SmeeUserBuildVendorRelationStep implements Step {
         log.info("Fetching vendors from denodo API for user {}", smeeUser.getUserName(),kv("userName", smeeUser.getUserName()),
                 kv("vendorPartyId", vendorPartyId), kv(REQUEST_ID_KEY, MDC.get(REQUEST_ID_KEY)));
         DenodoResponse denodoPartyIdData =  client.get(denodoURI+"partyId="+vendorPartyId, DenodoResponse.class);
-        if (denodoPartyIdData==null) {
-            log.info("Vendor details not found for given user {} ", smeeUser.getUserName(), kv(REQUEST_ID_KEY, MDC.get(REQUEST_ID_KEY)),
-                    kv("userName", smeeUser.getUserName()));
-            throw new GenericBadRequestException(resource, "Vendor details not found for given vendor party id "+ resource.getVendorPartyId());
-        }
+        
         log.info("Vendor data from denodo api for partyId", denodoPartyIdData, kv("partyIdResponse", denodoPartyIdData),
                 kv(REQUEST_ID_KEY, MDC.get(REQUEST_ID_KEY)));
         DenodoResponse denodoVendorData =  client.get(denodoURI+"parVenId="+vendorPartyId, DenodoResponse.class);
@@ -76,12 +72,17 @@ public class SmeeUserBuildVendorRelationStep implements Step {
                     .collect(Collectors.toList()));
 
         }
-        if(vendors.isEmpty()){
+        if(vendors.isEmpty() & (denodoPartyIdData !=null || denodoVendorData != null)){
             log.info("Vendor Type is not MFG {} ", smeeUser.getUserName(), kv(REQUEST_ID_KEY, MDC.get(REQUEST_ID_KEY)),
                     kv("userName", smeeUser.getUserName()));
             throw new GenericBadRequestException(resource, "Vendor Status is not Active or vendor type is not MFG for given vendor party id "
                     + resource.getVendorPartyId());
 
+        }
+        if (vendors.isEmpty()) {
+            log.info("Vendor details not found for given user {} ", smeeUser.getUserName(), kv(REQUEST_ID_KEY, MDC.get(REQUEST_ID_KEY)),
+                    kv("userName", smeeUser.getUserName()));
+            throw new GenericBadRequestException(resource, "Vendor details not found for given vendor party id "+ resource.getVendorPartyId());
         }
 
         smeeUser.setVendors(vendors);
