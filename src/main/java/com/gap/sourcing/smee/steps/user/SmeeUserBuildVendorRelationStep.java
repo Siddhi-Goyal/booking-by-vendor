@@ -73,7 +73,8 @@ public class SmeeUserBuildVendorRelationStep implements Step {
                     .collect(Collectors.toList()));
 
         }
-        if(vendors.isEmpty() & (denodoPartyIdData != null || denodoVendorData != null || !ObjectUtils.isEmpty(denodoVendorData))){
+        if(vendors.isEmpty() && ((denodoPartyIdData != null && !ObjectUtils.isEmpty(denodoPartyIdData) ) || (denodoVendorData != null &&
+                 !ObjectUtils.isEmpty(denodoVendorData)))){
             log.info("Vendor Type is not MFG {} ", smeeUser.getUserName(), kv(REQUEST_ID_KEY, MDC.get(REQUEST_ID_KEY)),
                     kv("userName", smeeUser.getUserName()));
             throw new GenericBadRequestException(resource, "Vendor Status is not Active or vendor type is not MFG for given vendor party id "
