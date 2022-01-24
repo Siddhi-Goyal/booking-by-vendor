@@ -7,6 +7,7 @@ import lombok.Setter;
 @Getter
 public class SmeeVendor {
 
+    private Long id;
     private String vendorPartyId;
     private String vendorName;
 }
