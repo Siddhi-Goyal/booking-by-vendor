@@ -18,6 +18,7 @@ plugins {
 }
 
 apply plugin: 'gap-sonarqube'
+apply from: 'sonar.gradle'
 
 group = 'com.gap.sourcing.smee'
 sourceCompatibility = '11'
@@ -83,32 +84,6 @@ sourceSets {
 		resources { srcDirs = ['src/test/unit/resources'] }
 		compileClasspath += sourceSets.main.compileClasspath
 		runtimeClasspath += sourceSets.main.runtimeClasspath
-	}
-}
-
-sonar.dependsOn jacocoTestReport
-jacoco {
-	toolVersion = "0.8.5"
-}
-
-jacocoTestReport {
-	reports {
-		xml.enabled true
-		csv.enabled true
-	}
-	dependsOn test
-}
-
-sonarqube {
-	properties {
-		property "sonar.login", System.getenv('SONAR_TOKEN')
-		property "sonar.projectKey", 'com.gap.sourcing:smee-user-service'
-		property "sonar.projectName", 'smee-user-service'
-		property "sonar.includePlugins", "buildbreaker"
-		property "sonar.analysis.mode", "preview"
-		property "sonar.projectVersion", version
-		property "sonar.exclusions", "/src/main/java/com/gap/sourcing/smee/SmeeUserServiceApplication.java, " +
-				"/src/main/java/com/gap/sourcing/smee/configurations/*.java, /src/main/java/com/gap/sourcing/smee/controllers/*.java"
 	}
 }
 
