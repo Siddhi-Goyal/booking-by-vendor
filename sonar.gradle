@@ -1,0 +1,33 @@
+sonarqube {
+	properties {
+		if (project.hasProperty('pullRequest')) {
+			property "sonar.login", System.getenv('SONAR_WIP_TOKEN')
+			property 'sonar.host.url', 'https://sonar-wip.gaptech.com/'
+			property 'sonar.pullrequest.provider', 'github'
+			property 'sonar.pullrequest.github.repository', 'gapinc/spc-smee-user-service'
+			property 'sonar.pullrequest.key', System.getenv('ghprbPullId')
+			property 'sonar.pullrequest.branch', System.getenv('ghprbSourceBranch')
+			property 'sonar.pullrequest.base', System.getenv('ghprbTargetBranch')
+		} else {
+			property "sonar.login", System.getenv('SONAR_TOKEN')
+		}
+		property "sonar.projectKey", 'com.gap.sourcing:smee-user-service'
+		property "sonar.projectName", 'smee-user-service'
+		property "sonar.projectVersion", version
+		property "sonar.coverage.jacoco.xmlReportPaths", "build/reports/jacoco/test/jacocoTestReport.xml"
+		property "sonar.exclusions", "/src/main/java/com/gap/sourcing/smee/SmeeUserServiceApplication.java, " +
+				"/src/main/java/com/gap/sourcing/smee/configurations/*.java, /src/main/java/com/gap/sourcing/smee/controllers/*.java"
+	}
+}
+
+test.finalizedBy(jacocoTestReport)
+
+jacoco {
+	toolVersion = "0.8.5"
+}
+
+jacocoTestReport {
+	reports {
+		xml.required = true
+	}
+}
