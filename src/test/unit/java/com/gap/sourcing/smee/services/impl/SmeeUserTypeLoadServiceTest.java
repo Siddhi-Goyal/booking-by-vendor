@@ -19,7 +19,7 @@ import static org.hamcrest.core.IsNull.notNullValue;
 import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
-public class SmeeUserTypeLoadServiceTest {
+class SmeeUserTypeLoadServiceTest {
 
     @Mock
     private SmeeUserTypeRepository smeeUserTypeRepository;

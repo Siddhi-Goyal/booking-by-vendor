@@ -16,7 +16,15 @@ sonarqube {
 		property "sonar.projectVersion", version
 		property "sonar.coverage.jacoco.xmlReportPaths", "build/reports/jacoco/test/jacocoTestReport.xml"
 		property "sonar.exclusions", "/src/main/java/com/gap/sourcing/smee/SmeeUserServiceApplication.java, " +
-				"/src/main/java/com/gap/sourcing/smee/configurations/*.java, /src/main/java/com/gap/sourcing/smee/controllers/*.java"
+				"/src/main/java/com/gap/sourcing/smee/contexts/*.java, " +
+				"/src/main/java/com/gap/sourcing/smee/controllers/*.java, " +
+				"/src/main/java/com/gap/sourcing/smee/dtos/**/*.java, " +
+				"/src/main/java/com/gap/sourcing/smee/entities/*.java, " +
+				"/src/main/java/com/gap/sourcing/smee/enums/*.java, " +
+				"/src/main/java/com/gap/sourcing/smee/envelopes/*.java, " +
+				"/src/main/java/com/gap/sourcing/smee/exceptions/*.java, " +
+				"/src/main/java/com/gap/sourcing/smee/filters/*.java, " +
+				"/src/main/java/com/gap/sourcing/smee/repositories/*.java"
 	}
 }
 
