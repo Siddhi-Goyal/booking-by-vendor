@@ -22,7 +22,8 @@ public class SmeeUserTypeLoadDataStep implements Step {
     private final SmeeUserTypeLoadService smeeUserTypeLoadService;
     private final Step smeeUserTypeResponseConversionStep;
 
-    public SmeeUserTypeLoadDataStep(final SmeeUserTypeLoadService smeeUserTypeLoadService, Step smeeUserTypeResponseConversionStep) {
+    public SmeeUserTypeLoadDataStep(final SmeeUserTypeLoadService smeeUserTypeLoadService,
+                                    Step smeeUserTypeResponseConversionStep) {
         this.smeeUserTypeResponseConversionStep = smeeUserTypeResponseConversionStep;
         this.smeeUserTypeLoadService = smeeUserTypeLoadService;
     }
@@ -33,10 +34,10 @@ public class SmeeUserTypeLoadDataStep implements Step {
         SmeeUserContext userContext = (SmeeUserContext) context;
         log.info("Loading  data for smee user types: ",kv(REQUEST_ID_KEY, MDC.get(REQUEST_ID_KEY)));
         List<SmeeUserType> smeeUserTypesFromDb  = smeeUserTypeLoadService.getSmeeUserTypes();
-        if(smeeUserTypesFromDb != null){
-            userContext.setUserTypeOutput(smeeUserTypesFromDb);
-        } else {
+        if(smeeUserTypesFromDb == null){
             userContext.setUserTypeOutput(List.of());
+        } else {
+            userContext.setUserTypeOutput(smeeUserTypesFromDb);
         }
         return smeeUserTypeResponseConversionStep;
         }

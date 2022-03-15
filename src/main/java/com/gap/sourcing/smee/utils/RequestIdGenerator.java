@@ -9,8 +9,9 @@ public final class RequestIdGenerator {
     }
 
     public static final String REQUEST_ID_KEY = "requestId";
+    public static final int KEY_LENGTH = 16;
 
     public static String generateRequestId() {
-        return UUID.randomUUID().toString().replace("-", "").substring(16);
+        return UUID.randomUUID().toString().replace("-", "").substring(KEY_LENGTH);
     }
 }

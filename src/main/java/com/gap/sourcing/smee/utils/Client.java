@@ -34,7 +34,8 @@ public class Client {
         return processRequest(request, HttpMethod.GET, null, responseClass).block();
     }
 
-    private <T, Q> Mono<T> processRequest(WebClient.RequestBodySpec request, HttpMethod method, Q requestBody, Class<T> responseClass) {
+    private <T, Q> Mono<T> processRequest(WebClient.RequestBodySpec request, HttpMethod method,
+                                          Q requestBody, Class<T> responseClass) {
         return request.
                 header(HEADER_API_KEY, apikey).
                 body(BodyInserters.fromValue((Objects.nonNull(requestBody) ? requestBody : "")))

@@ -16,7 +16,8 @@ public class SmeeUserStepManager implements StepManager {
 
     private final Map<RequestAction, Step> firstStepMap;
 
-    public SmeeUserStepManager(final Step smeeUserCreateValidationStep , final  Step smeeUserGetDataStep, final Step smeeUserTypeLoadDataStep) {
+    public SmeeUserStepManager(final Step smeeUserCreateValidationStep ,
+                               final  Step smeeUserGetDataStep, final Step smeeUserTypeLoadDataStep) {
         this.firstStepMap = new EnumMap<>(RequestAction.class);
 
         firstStepMap.put(RequestAction.CREATE, smeeUserCreateValidationStep);

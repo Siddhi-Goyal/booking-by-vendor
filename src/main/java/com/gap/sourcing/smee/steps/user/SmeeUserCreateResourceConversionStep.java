@@ -26,7 +26,8 @@ public class SmeeUserCreateResourceConversionStep implements Step {
     private final Step smeeUserLoadDataStep;
     private final SmeeUserTypeRepository smeeUserTypeRepository;
 
-    public SmeeUserCreateResourceConversionStep(Step smeeUserLoadDataStep , SmeeUserTypeRepository smeeUserTypeRepository) {
+    public SmeeUserCreateResourceConversionStep(Step smeeUserLoadDataStep ,
+                                                SmeeUserTypeRepository smeeUserTypeRepository) {
         this.smeeUserLoadDataStep = smeeUserLoadDataStep;
         this.smeeUserTypeRepository = smeeUserTypeRepository;
 
@@ -37,7 +38,8 @@ public class SmeeUserCreateResourceConversionStep implements Step {
         SmeeUserContext userContext = (SmeeUserContext) context;
         SmeeUserCreateResource userResource = (SmeeUserCreateResource) userContext.getResource();
         SmeeUser smeeUser = new SmeeUser();
-        log.info("Converting incoming resource to smeeUser, resource={}", userResource, kv(REQUEST_ID_KEY, MDC.get(REQUEST_ID_KEY)));
+        log.info("Converting incoming resource to smeeUser, resource={}", userResource, kv(REQUEST_ID_KEY,
+                MDC.get(REQUEST_ID_KEY)));
         try {
             smeeUser.setUserName(userResource.getUserName());
             smeeUser.setUserEmail(userResource.getUserEmail());
@@ -54,8 +56,10 @@ public class SmeeUserCreateResourceConversionStep implements Step {
             log.info("Converted incoming resource to smee user and saved in context's input attribute.",
                     kv(REQUEST_ID_KEY, MDC.get(REQUEST_ID_KEY)));
         } catch (Exception exception) {
-            throw new GenericBadRequestException(userResource, "Exception while converting resource to input entity object " +
-                    "withStackTrace - " + Arrays.toString(exception.getStackTrace()));
+            log.error("Something went wrong!!", kv(REQUEST_ID_KEY, MDC.get(REQUEST_ID_KEY)),
+                    kv("exception", exception));
+            throw new GenericBadRequestException(userResource, "Exception while converting resource to input " +
+                    "entity object withStackTrace - " + Arrays.toString(exception.getStackTrace()));
         }
         return smeeUserLoadDataStep;
     }

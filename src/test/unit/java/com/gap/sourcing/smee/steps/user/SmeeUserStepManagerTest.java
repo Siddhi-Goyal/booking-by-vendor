@@ -31,7 +31,8 @@ class SmeeUserStepManagerTest {
 
     @BeforeEach
     void init() {
-        smeeUserStepManager = new SmeeUserStepManager(smeeUserCreateValidationStep,smeeUserGetDataStep,smeeUserTypesLoadDataStep);
+        smeeUserStepManager = new SmeeUserStepManager(smeeUserCreateValidationStep,smeeUserGetDataStep,
+                smeeUserTypesLoadDataStep);
 
     }
 
