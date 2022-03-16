@@ -44,6 +44,7 @@ public class SmeeUserResponseConversionStep implements Step {
                 smeeUserContext.setResponse(smeeUserEntityToDTOConverter.convert(entity, userType));
             }
         } catch (Exception exception) {
+            log.error("Something went wrong while converting context", kv("exception", exception));
             throw new GenericBadRequestException(userResource, "Exception in parsing data from DB to Response");
         }
         return null;
