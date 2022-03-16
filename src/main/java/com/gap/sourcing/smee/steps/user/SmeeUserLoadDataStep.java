@@ -23,8 +23,8 @@ public class SmeeUserLoadDataStep implements Step {
     private final SmeeUserRepository smeeUserRepository;
     private final Step smeeUserEntityMergeStep;
 
-    public SmeeUserLoadDataStep(final Step smeeUserBuildVendorRelationStep, final SmeeUserRepository smeeUserRepository,
-                                Step smeeUserEntityMergeStep) {
+    public SmeeUserLoadDataStep(final Step smeeUserBuildVendorRelationStep,
+                                final SmeeUserRepository smeeUserRepository, Step smeeUserEntityMergeStep) {
         this.smeeUserRepository = smeeUserRepository;
         this.smeeUserBuildVendorRelationStep = smeeUserBuildVendorRelationStep;
         this.smeeUserEntityMergeStep = smeeUserEntityMergeStep;
@@ -39,12 +39,13 @@ public class SmeeUserLoadDataStep implements Step {
                 kv(REQUEST_ID_KEY, MDC.get(REQUEST_ID_KEY)));
         SmeeUser smeeUserFromDb  = smeeUserRepository.findSmeeUserByUserName(smeeUser.getUserName());
 
-        if(smeeUserFromDb != null){
-            userContext.setCurrent(smeeUserFromDb);
-        } else {
-            log.info("User not found in database with UserName={}", smeeUser.getUserName(), kv("userName", smeeUser.getUserName()),
+        if(smeeUserFromDb == null){
+            log.info("User not found in database with UserName={}", smeeUser.getUserName(),
+                    kv("userName", smeeUser.getUserName()),
                     kv(REQUEST_ID_KEY, MDC.get(REQUEST_ID_KEY)));
             smeeUser.setVendors(List.of());
+        } else {
+            userContext.setCurrent(smeeUserFromDb);
         }
         if (Boolean.TRUE.equals(smeeUser.getIsVendor())) {
             return smeeUserBuildVendorRelationStep;

@@ -30,11 +30,13 @@ public class SmeeUserPersistStep implements Step {
         final SmeeUserContext smeeUserContext = (SmeeUserContext) context;
         final SmeeUser input = smeeUserContext.getInput();
         final SmeeUser current = smeeUserContext.getCurrent();
-        log.info("Persisting the context's input(smeeUser) attribute into database.", kv(REQUEST_ID_KEY, MDC.get(REQUEST_ID_KEY)));
-        final SmeeUser output = smeeUserRepository.save(current !=  null  ? current : input);
+        log.info("Persisting the context's input(smeeUser) attribute into database.",
+                kv(REQUEST_ID_KEY, MDC.get(REQUEST_ID_KEY)));
+        final SmeeUser output = smeeUserRepository.save(current ==  null  ? input : current);
         smeeUserContext.setOutput(output);
 
-        log.info("Persisted context's input(smeeUser) attribute in database.", kv(REQUEST_ID_KEY, MDC.get(REQUEST_ID_KEY)));
+        log.info("Persisted context's input(smeeUser) attribute in database.",
+                kv(REQUEST_ID_KEY, MDC.get(REQUEST_ID_KEY)));
 
         return smeeUserResponseConversionStep;
     }

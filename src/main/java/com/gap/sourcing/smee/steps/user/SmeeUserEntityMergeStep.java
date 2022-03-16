@@ -41,25 +41,33 @@ public class SmeeUserEntityMergeStep implements Step {
             current.setIsVendor(input.getIsVendor());
             current.setUserTypeId(input.getUserTypeId());
             if (Boolean.TRUE.equals(input.getIsVendor())) {
-                List<SmeeUserVendor> removedVendors = current.getVendors().stream().filter(vendor -> isPresent(input.getVendors(),
+                List<SmeeUserVendor> removedVendors = current.getVendors().stream().filter(vendor ->
+                        isPresent(input.getVendors(),
                         vendor)).collect(Collectors.toList());
-                List<SmeeUserVendor> addedVendors = input.getVendors().stream().filter(vendor -> isPresent(current.getVendors(),
+                List<SmeeUserVendor> addedVendors = input.getVendors().stream().filter(vendor ->
+                        isPresent(current.getVendors(),
                         vendor)).collect(Collectors.toList());
-                if (!removedVendors.isEmpty()) {
-                    removedVendors.forEach(vendor -> current.getVendors().remove(vendor));
-                }
-                if (!addedVendors.isEmpty()) {
-                    addedVendors.forEach(vendor -> {
-                        vendor.setUserId(current);
-                        current.getVendors().add(vendor);
-                    });
-                }
+                setVendorDetails(current, removedVendors, addedVendors);
             }
         }
 
-        log.info("Merged record's created details from context's current to context's input attribute", kv(REQUEST_ID_KEY, MDC.get(REQUEST_ID_KEY)));
+        log.info("Merged record's created details from context's current to context's input attribute",
+                kv(REQUEST_ID_KEY, MDC.get(REQUEST_ID_KEY)));
 
         return smeeUserPersistStep;
+    }
+
+    private void setVendorDetails(SmeeUser current, List<SmeeUserVendor> removedVendors,
+                                  List<SmeeUserVendor> addedVendors) {
+        if (!removedVendors.isEmpty()) {
+            removedVendors.forEach(vendor -> current.getVendors().remove(vendor));
+        }
+        if (!addedVendors.isEmpty()) {
+            addedVendors.forEach(vendor -> {
+                vendor.setUserId(current);
+                current.getVendors().add(vendor);
+            });
+        }
     }
 
     private boolean isPresent(List<SmeeUserVendor> vendors, SmeeUserVendor vendor) {

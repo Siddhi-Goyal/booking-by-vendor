@@ -3,7 +3,6 @@ package com.gap.sourcing.smee.steps.user.types;
 import com.gap.sourcing.smee.contexts.Context;
 import com.gap.sourcing.smee.contexts.SmeeUserContext;
 import com.gap.sourcing.smee.entities.SmeeUserType;
-import com.gap.sourcing.smee.exceptions.GenericBadRequestException;
 import com.gap.sourcing.smee.exceptions.GenericUserException;
 import com.gap.sourcing.smee.steps.Step;
 import com.gap.sourcing.smee.steps.helper.SmeeUserTypeEntityToDTOConverter;
@@ -29,7 +28,8 @@ public class SmeeUserTypeResponseConversionStep implements Step {
 
     @Override
     public Step execute(Context context) throws GenericUserException {
-        log.info("Converting context's output(smeeUserType) to response object.", kv(REQUEST_ID_KEY, MDC.get(REQUEST_ID_KEY)));
+        log.info("Converting context's output(smeeUserType) to response object.",
+                kv(REQUEST_ID_KEY, MDC.get(REQUEST_ID_KEY)));
 
         try {
             SmeeUserContext smeeUserContext = (SmeeUserContext) context;

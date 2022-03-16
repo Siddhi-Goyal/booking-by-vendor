@@ -24,14 +24,17 @@ import static net.logstash.logback.argument.StructuredArguments.kv;
 @Slf4j
 public class SmeeUserCreateValidationStep implements Step{
 
-    private static final String INVALID_USER_TYPE_ERROR_MESSAGE = "Received invalid user type in request, user type should be";
-    private static final String VENDOR_PARTY_ID_MANDATORY_MESSAGE = "Vendor Party id is  mandatory for vendor creation";
+    private static final String INVALID_USER_TYPE_ERROR_MESSAGE =
+            "Received invalid user type in request, user type should be";
+    private static final String VENDOR_PARTY_ID_MANDATORY_MESSAGE =
+            "Vendor Party id is  mandatory for vendor creation";
     private static final String USER_TYPE = "userType";
 
     private final Step smeeUserCreateResourceConversionStep;
     private final SmeeUserTypeRepository smeeUserTypeRepository;
 
-    public SmeeUserCreateValidationStep(final Step smeeUserCreateResourceConversionStep, SmeeUserTypeRepository smeeUserTypeRepository) {
+    public SmeeUserCreateValidationStep(final Step smeeUserCreateResourceConversionStep,
+                                        SmeeUserTypeRepository smeeUserTypeRepository) {
         this.smeeUserCreateResourceConversionStep = smeeUserCreateResourceConversionStep;
         this.smeeUserTypeRepository = smeeUserTypeRepository;
     }
@@ -52,20 +55,22 @@ public class SmeeUserCreateValidationStep implements Step{
     }
 
     private void isValidUserType(SmeeUserCreateResource resource) {
-        if (isVendor(resource.getIsVendor()) && !resource.getUserType().equals("Garment Vendor")) {
+        if (isVendor(resource.getIsVendor()) && !"Garment Vendor".equals(resource.getUserType())) {
             log.info("Usertype should be Garment Vendor for vendor creation",
                     kv(USER_TYPE, resource.getUserType()), kv(REQUEST_ID_KEY, MDC.get(REQUEST_ID_KEY)));
             throw new GenericBadRequestException(resource, "Usertype should be Garment Vendor for vendor creation");
-        } else if (!isVendor(resource.getIsVendor()) && resource.getUserType().equals("Garment Vendor")) {
+        } else if (!isVendor(resource.getIsVendor()) && "Garment Vendor".equals(resource.getUserType())) {
             log.info("Usertype should not be Garment Vendor for non vendor creation",
                     kv(USER_TYPE, resource.getUserType()), kv(REQUEST_ID_KEY, MDC.get(REQUEST_ID_KEY)));
-            throw new GenericBadRequestException(resource, "Usertype should not be Garment Vendor for non vendor creation");
+            throw new GenericBadRequestException(resource,
+                    "Usertype should not be Garment Vendor for non vendor creation");
         }
         List<SmeeUserType> smeeUserTypes = smeeUserTypeRepository.findAll();
         Optional<SmeeUserType> smeeUserType =  smeeUserTypes.stream().filter(userType -> resource.getUserType()
                 .equals(userType.getUserType())).findAny();
         if(smeeUserType.isEmpty()) {
-            List<String> userTypes = smeeUserTypes.stream().map(SmeeUserType::getUserType).collect(Collectors.toList());
+            List<String> userTypes = smeeUserTypes.stream().map(SmeeUserType::getUserType)
+                    .collect(Collectors.toList());
             log.info(INVALID_USER_TYPE_ERROR_MESSAGE, userTypes,
                     kv(USER_TYPE, resource.getUserType()), kv(REQUEST_ID_KEY, MDC.get(REQUEST_ID_KEY)));
             throw new GenericBadRequestException(resource, INVALID_USER_TYPE_ERROR_MESSAGE + userTypes);
@@ -78,7 +83,8 @@ public class SmeeUserCreateValidationStep implements Step{
     }
 
     private void isValidEmail(SmeeUserCreateResource resource, boolean isVendor) {
-        if ((isVendor && isGapEmailId(resource.getUserEmail())) || (!isVendor && !isGapEmailId(resource.getUserEmail()))) {
+        if ((isVendor && isGapEmailId(resource.getUserEmail())) || (!isVendor &&
+                !isGapEmailId(resource.getUserEmail()))) {
             log.info("Invalid email({}) id for vendor {} ", resource.getUserEmail(), resource.getUserName(), 
                     kv(REQUEST_ID_KEY, MDC.get(REQUEST_ID_KEY)), kv("emailId", resource.getUserEmail()));
             throw new GenericBadRequestException(resource, prepareErrorMessage(isVendor, resource));
@@ -94,7 +100,7 @@ public class SmeeUserCreateValidationStep implements Step{
     }
 
     private boolean isGapEmailId(String userEmail) {
-        return userEmail.substring(userEmail.indexOf("@")+1).equals("gap.com");
+        return "gap.com".equals(userEmail.substring(userEmail.indexOf('@')+1));
     }
 
     private String prepareErrorMessage(boolean isVendor, SmeeUserCreateResource resource) {
