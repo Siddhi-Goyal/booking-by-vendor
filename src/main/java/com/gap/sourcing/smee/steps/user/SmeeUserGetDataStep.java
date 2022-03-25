@@ -12,9 +12,11 @@ import com.gap.sourcing.smee.steps.Step;
 import lombok.extern.slf4j.Slf4j;
 import org.slf4j.MDC;
 import org.springframework.stereotype.Component;
+import org.springframework.transaction.annotation.Transactional;
 
 import static com.gap.sourcing.smee.utils.RequestIdGenerator.REQUEST_ID_KEY;
 import static net.logstash.logback.argument.StructuredArguments.kv;
+
 
 @Component
 @Slf4j
@@ -31,6 +33,7 @@ public class SmeeUserGetDataStep implements Step {
         this.smeeUserTypeLoadService = smeeUserTypeLoadService;
     }
 
+    @Transactional(readOnly = true)
     public Step execute(Context context) throws GenericUserException {
         SmeeUserContext userContext = (SmeeUserContext) context;
         SmeeUserGetResource resource = (SmeeUserGetResource) userContext.getResource();
@@ -39,6 +42,8 @@ public class SmeeUserGetDataStep implements Step {
         log.info("Getting user details for user-id, resource={}", resource,
                 kv(REQUEST_ID_KEY, MDC.get(REQUEST_ID_KEY)));
         SmeeUser smeeUser = smeeUserRepository.findSmeeUserByUserName(userIdToGetDetails);
+        String replica = smeeUserRepository.checkReplica();
+        log.info("Database Config: {}", replica);
         if (smeeUser == null) {
             userContext.setOutput(null);
         } else {
