@@ -10,6 +10,7 @@ public interface SmeeUserRepository extends JpaRepository<SmeeUser, Integer> {
 
     SmeeUser findSmeeUserByUserName(String userName);
 
+    //TODO: Included this to prove it's working, to be deleted once tested
     @Query(value = "SELECT cast(DATABASEPROPERTYEX(DB_NAME(), 'Updateability') as varchar);", nativeQuery = true)
     String checkReplica();
 

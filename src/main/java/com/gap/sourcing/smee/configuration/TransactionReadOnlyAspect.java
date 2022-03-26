@@ -17,7 +17,7 @@ public class TransactionReadOnlyAspect {
 
     @Around("@annotation(transactional)")
     public Object proceed(ProceedingJoinPoint proceedingJoinPoint, Transactional transactional) throws Throwable {
-        log.info("Database Context Set To READ_ONLY");
+        log.debug("Transaction Management Set To READ_ONLY");
         try {
             if (transactional.readOnly()) {
                 DatabaseContextHolder.set(DatabaseEnvironment.READONLY);

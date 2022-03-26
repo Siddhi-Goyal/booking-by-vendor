@@ -5,6 +5,14 @@
 #     password: ENC(gTbq2KQ76FdVkdKdNLxXIvRucctt+HdL)
 #     driver-class-name: com.microsoft.sqlserver.jdbc.SQLServerDriver
 
+jdbc:
+  primary:
+    url: jdbc:sqlserver://g-sdb-2s-sourcing-smee-booking-01.database.windows.net:1433;database=smee_user_release
+  readOnly:
+    url: jdbc:sqlserver://g-sdb-2s-sourcing-smee-booking-01.database.windows.net:1433;database=smee_user_release;ApplicationIntent=ReadOnly
+  username: smee_user_app
+  password: hello-world
+
 smee-user-service:
   denodo-uri: http://denodo.gapinc.com:9090/server/sourcing_db/vendor_relationship/views/vendor_relationship?$format=json&
   apikey: ENC(eWCptjY5A8r+gpHp/FWAbrtO6jpN6HpaicNLvFeMI6CjToOq9CcpkkwPtQBVgJsQ)

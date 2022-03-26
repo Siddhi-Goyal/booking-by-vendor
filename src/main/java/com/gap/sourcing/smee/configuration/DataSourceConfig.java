@@ -7,11 +7,24 @@ import javax.sql.DataSource;
 
 import com.zaxxer.hikari.HikariDataSource;
 
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
 @Configuration
 public class DataSourceConfig {
+
+    @Value("${jdbc.primary.url}")
+    private String primaryJdbcUrl;
+
+    @Value("${jdbc.readOnly.url}")
+    private String readOnlyJdbcUrl;
+
+    @Value("${jdbc.username}")
+    private String username;
+
+    @Value("${jdbc.password}")
+    private String password;
 
     @Bean
     public DataSource dataSource() {
@@ -24,20 +37,20 @@ public class DataSourceConfig {
         return msDataSource;
     }
 
-    public DataSource readOnlyDataSource() {
+    public DataSource primaryDataSource() {
         HikariDataSource hikariDataSource = new HikariDataSource();
-        hikariDataSource.setJdbcUrl("jdbc:sqlserver://g-sdb-2s-sourcing-smee-booking-01.database.windows.net:1433;database=smee_user_release;ApplicationIntent=ReadOnly");
-        hikariDataSource.setUsername("smee_user_app");
-        hikariDataSource.setPassword("");
+        hikariDataSource.setJdbcUrl(primaryJdbcUrl);
+        hikariDataSource.setUsername(username);
+        hikariDataSource.setPassword(password);
         return hikariDataSource;
     }
 
-    public DataSource primaryDataSource() {
+    public DataSource readOnlyDataSource() {
         HikariDataSource hikariDataSource = new HikariDataSource();
-        hikariDataSource.setJdbcUrl("jdbc:sqlserver://g-sdb-2s-sourcing-smee-booking-01.database.windows.net:1433;database=smee_user_release");
-        hikariDataSource.setUsername("smee_user_app");
-        hikariDataSource.setPassword("");
+        hikariDataSource.setJdbcUrl(readOnlyJdbcUrl);
+        hikariDataSource.setUsername(username);
+        hikariDataSource.setPassword(password);
         return hikariDataSource;
     }
-    
+
 }

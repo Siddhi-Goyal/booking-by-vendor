@@ -42,8 +42,11 @@ public class SmeeUserGetDataStep implements Step {
         log.info("Getting user details for user-id, resource={}", resource,
                 kv(REQUEST_ID_KEY, MDC.get(REQUEST_ID_KEY)));
         SmeeUser smeeUser = smeeUserRepository.findSmeeUserByUserName(userIdToGetDetails);
+       
+        //TODO: Added to prove that it's replica, to be removed once tested
         String replica = smeeUserRepository.checkReplica();
         log.info("Database Config: {}", replica);
+        
         if (smeeUser == null) {
             userContext.setOutput(null);
         } else {

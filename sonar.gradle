@@ -24,7 +24,8 @@ sonarqube {
 				"/src/main/java/com/gap/sourcing/smee/envelopes/*.java, " +
 				"/src/main/java/com/gap/sourcing/smee/exceptions/*.java, " +
 				"/src/main/java/com/gap/sourcing/smee/filters/*.java, " +
-				"/src/main/java/com/gap/sourcing/smee/repositories/*.java"
+				"/src/main/java/com/gap/sourcing/smee/repositories/*.java" +
+				"/src/main/java/com/gap/sourcing/smee/configuration/*.java"
 	}
 }
 
