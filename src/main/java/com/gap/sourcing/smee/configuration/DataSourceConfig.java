@@ -37,7 +37,7 @@ public class DataSourceConfig {
         return msDataSource;
     }
 
-    public DataSource primaryDataSource() {
+    private DataSource primaryDataSource() {
         HikariDataSource hikariDataSource = new HikariDataSource();
         hikariDataSource.setJdbcUrl(primaryJdbcUrl);
         hikariDataSource.setUsername(username);
@@ -45,7 +45,7 @@ public class DataSourceConfig {
         return hikariDataSource;
     }
 
-    public DataSource readOnlyDataSource() {
+    private DataSource readOnlyDataSource() {
         HikariDataSource hikariDataSource = new HikariDataSource();
         hikariDataSource.setJdbcUrl(readOnlyJdbcUrl);
         hikariDataSource.setUsername(username);
