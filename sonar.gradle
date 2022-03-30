@@ -7,6 +7,7 @@ sonarqube {
 			property 'sonar.pullrequest.branch', System.getenv('ghprbSourceBranch')
 			property 'sonar.pullrequest.base', System.getenv('ghprbTargetBranch')
 		}
+		property "sonar.login", System.getenv('SONAR_TOKEN')
 		property "sonar.projectKey", 'com.gap.sourcing:smee-user-service'
 		property "sonar.projectName", 'smee-user-service'
 		property "sonar.projectVersion", version
