@@ -9,6 +9,7 @@ import com.gap.sourcing.smee.steps.Step;
 import lombok.extern.slf4j.Slf4j;
 import org.slf4j.MDC;
 import org.springframework.stereotype.Component;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 
@@ -29,6 +30,7 @@ public class SmeeUserTypeLoadDataStep implements Step {
     }
 
     @Override
+    @Transactional(readOnly = true)
     public Step execute(Context context) throws GenericUserException {
 
         SmeeUserContext userContext = (SmeeUserContext) context;

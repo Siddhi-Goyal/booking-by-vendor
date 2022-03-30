@@ -1,16 +1,13 @@
 sonarqube {
 	properties {
 		if (project.hasProperty('pullRequest')) {
-			property "sonar.login", System.getenv('SONAR_WIP_TOKEN')
-			property 'sonar.host.url', 'https://sonar-wip.gaptech.com/'
 			property 'sonar.pullrequest.provider', 'github'
-			property 'sonar.pullrequest.github.repository', 'gapinc/spc-smee-user-service'
+			property 'sonar.pullrequest.github.repository', 'smee/smee-user-service'
 			property 'sonar.pullrequest.key', System.getenv('ghprbPullId')
 			property 'sonar.pullrequest.branch', System.getenv('ghprbSourceBranch')
 			property 'sonar.pullrequest.base', System.getenv('ghprbTargetBranch')
-		} else {
-			property "sonar.login", System.getenv('SONAR_TOKEN')
 		}
+		property "sonar.login", System.getenv('SONAR_TOKEN')
 		property "sonar.projectKey", 'com.gap.sourcing:smee-user-service'
 		property "sonar.projectName", 'smee-user-service'
 		property "sonar.projectVersion", version
@@ -24,7 +21,8 @@ sonarqube {
 				"/src/main/java/com/gap/sourcing/smee/envelopes/*.java, " +
 				"/src/main/java/com/gap/sourcing/smee/exceptions/*.java, " +
 				"/src/main/java/com/gap/sourcing/smee/filters/*.java, " +
-				"/src/main/java/com/gap/sourcing/smee/repositories/*.java"
+				"/src/main/java/com/gap/sourcing/smee/repositories/*.java, " +
+				"/src/main/java/com/gap/sourcing/smee/configuration/*.java"
 	}
 }
 

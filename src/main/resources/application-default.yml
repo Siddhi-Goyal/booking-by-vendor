@@ -1,9 +1,10 @@
-spring:
-  datasource:
-    url: jdbc:sqlserver://localhost:1433;databaseName=smee_user_localhost
-    username: SA
-    password: ENC(gTbq2KQ76FdVkdKdNLxXIvRucctt+HdL)
-    driver-class-name: com.microsoft.sqlserver.jdbc.SQLServerDriver
+jdbc:
+  primary:
+    url: jdbc:sqlserver://localhost:1433;database=smee_user_local
+  readOnly:
+    url: jdbc:sqlserver://localhost:1433;database=smee_user_local;ApplicationIntent=ReadOnly
+  username: smee_user_app
+  password: hello-world
 
 smee-user-service:
   denodo-uri: http://denodo.gapinc.com:9090/server/sourcing_db/vendor_relationship/views/vendor_relationship?$format=json&
