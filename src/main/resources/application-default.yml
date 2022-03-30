@@ -1,15 +1,8 @@
-# spring:
-#   datasource:
-#     url: jdbc:sqlserver://localhost:1433;databaseName=smee_user_localhost
-#     username: SA
-#     password: ENC(gTbq2KQ76FdVkdKdNLxXIvRucctt+HdL)
-#     driver-class-name: com.microsoft.sqlserver.jdbc.SQLServerDriver
-
 jdbc:
   primary:
-    url: jdbc:sqlserver://g-sdb-2s-sourcing-smee-booking-01.database.windows.net:1433;database=smee_user_release
+    url: jdbc:sqlserver://localhost:1433;database=smee_user_local
   readOnly:
-    url: jdbc:sqlserver://g-sdb-2s-sourcing-smee-booking-01.database.windows.net:1433;database=smee_user_release;ApplicationIntent=ReadOnly
+    url: jdbc:sqlserver://localhost:1433;database=smee_user_local;ApplicationIntent=ReadOnly
   username: smee_user_app
   password: hello-world
 
