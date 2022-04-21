@@ -8,4 +8,4 @@ jdbc:
 
 smee-user-service:
   vendor-profile-uri: https://stage.api.azeus.gaptech.com/sourcing/vendor-profile-integrator/parties/
-  apikey: ENC(JRF/yj8/NGqZr+GHrJqTNHRCgaLplTzM3ZJotF37NtSWuKzR+QxvhXThzby9j5qT)
+  apikey: ENC(JRF/yj8/NGqZr+GHrJqTNHRCgaLplTzM3ZJotF37NtSWuKzR+QxvhXThzby9j5qT)q
