@@ -111,7 +111,7 @@ public class SmeeUserBuildVendorRelationStep implements Step {
         return SmeeUserVendor.builder()
                 .vendorName(denodoElement.getLegalName())
                 .vendorPartyId(denodoElement.getPartyId())
-                .userId(smeeUser)
+                .userName(smeeUser)
                 .build();
     }
 }

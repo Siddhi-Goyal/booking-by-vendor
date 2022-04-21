@@ -46,7 +46,7 @@ public class SmeeUserGetDataStep implements Step {
         if (smeeUser == null) {
             userContext.setOutput(null);
         } else {
-            String smeeUserTypeVal = smeeUserTypeLoadService.fetchUserTypeFromCache(smeeUser.getUserTypeId());
+            String smeeUserTypeVal = smeeUserTypeLoadService.fetchUserTypeFromCache(smeeUser.getUserTypeId().getId());
             userContext.setSmeeUserType(smeeUserTypeVal);
             ((SmeeUserContext) context).setOutput(smeeUser);
         }

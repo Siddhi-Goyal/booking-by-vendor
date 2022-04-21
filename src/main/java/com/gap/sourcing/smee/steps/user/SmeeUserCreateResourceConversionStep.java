@@ -66,8 +66,7 @@ public class SmeeUserCreateResourceConversionStep implements Step {
     }
 
     @Transactional(readOnly = true)
-    public Long fetchUserTypeIdFromDB (String userType){
-         SmeeUserType smeeUserType =  smeeUserTypeRepository.findSmeeUserTypeByUserType(userType);
-         return smeeUserType.getId();
+    public SmeeUserType fetchUserTypeIdFromDB (String userType){
+         return  smeeUserTypeRepository.findSmeeUserTypeByUserType(userType);
     }
 }

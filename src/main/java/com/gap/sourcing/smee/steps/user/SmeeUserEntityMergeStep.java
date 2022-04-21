@@ -64,7 +64,7 @@ public class SmeeUserEntityMergeStep implements Step {
         }
         if (!addedVendors.isEmpty()) {
             addedVendors.forEach(vendor -> {
-                vendor.setUserId(current);
+                vendor.setUserName(current);
                 current.getVendors().add(vendor);
             });
         }
