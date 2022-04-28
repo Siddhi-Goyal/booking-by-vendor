@@ -34,7 +34,7 @@ public class SmeeUserTypeLoadDataStep implements Step {
     public Step execute(Context context) throws GenericUserException {
 
         SmeeUserContext userContext = (SmeeUserContext) context;
-        log.info("Loading  data for smee user types: ",kv(REQUEST_ID_KEY, MDC.get(REQUEST_ID_KEY)));
+        log.info("Loading  data for smee user types: ");
         List<SmeeUserType> smeeUserTypesFromDb  = smeeUserTypeLoadService.getSmeeUserTypes();
         if(smeeUserTypesFromDb == null){
             userContext.setUserTypeOutput(List.of());

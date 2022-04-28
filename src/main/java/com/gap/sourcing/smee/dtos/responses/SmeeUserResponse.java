@@ -15,12 +15,14 @@ import java.util.List;
 public class SmeeUserResponse implements Response {
 
     private String userName;
-    private String userEmail;
     private String userType;
+    private String lastName;
+    private String userEmail;
     private Boolean isVendor;
-    private List<SmeeVendor> vendors;
+    private String firstName;
     private String createdBy;
     private String lastModifiedBy;
+    private List<SmeeVendor> vendors;
     private ZonedDateTime createdDate;
     private ZonedDateTime lastModifiedDate;
 }

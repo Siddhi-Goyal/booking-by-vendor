@@ -38,14 +38,12 @@ public class SmeeUserLoadDataStep implements Step {
 
         SmeeUserContext userContext = (SmeeUserContext) context;
         SmeeUser smeeUser = userContext.getInput();
-        log.info("Loading  data for smee user {}", smeeUser.getUserName(), kv("userName", smeeUser.getUserName()),
-                kv(REQUEST_ID_KEY, MDC.get(REQUEST_ID_KEY)));
+        log.info("Loading  data for smee user {}", smeeUser.getUserName(), kv("userName", smeeUser.getUserName()));
         SmeeUser smeeUserFromDb  = smeeUserRepository.findSmeeUserByUserName(smeeUser.getUserName());
 
         if(smeeUserFromDb == null){
             log.info("User not found in database with UserName={}", smeeUser.getUserName(),
-                    kv("userName", smeeUser.getUserName()),
-                    kv(REQUEST_ID_KEY, MDC.get(REQUEST_ID_KEY)));
+                    kv("userName", smeeUser.getUserName()));
             smeeUser.setVendors(List.of());
         } else {
             userContext.setCurrent(smeeUserFromDb);

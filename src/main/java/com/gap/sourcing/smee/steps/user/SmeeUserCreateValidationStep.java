@@ -42,14 +42,13 @@ public class SmeeUserCreateValidationStep implements Step{
     @Override
     public Step execute(final Context context) throws GenericUserException {
         final SmeeUserCreateResource resource = (SmeeUserCreateResource) ((SmeeUserContext) context).getResource();
-        log.info("Validating the incoming resource for user creation", kv("resource", resource),
-                kv(REQUEST_ID_KEY, MDC.get(REQUEST_ID_KEY)));
+        log.info("Validating the incoming resource for user creation", kv("resource", resource));
         if (isVendor(resource.getIsVendor())) {
             checkForVendorPartyId(resource);
         }
         isValidEmail(resource, resource.getIsVendor());
         isValidUserType(resource);
-        log.info("Validation of the incoming resource is complete.", kv(REQUEST_ID_KEY, MDC.get(REQUEST_ID_KEY)));
+        log.info("Validation of the incoming resource is complete.");
 
         return smeeUserCreateResourceConversionStep;
     }
@@ -57,11 +56,11 @@ public class SmeeUserCreateValidationStep implements Step{
     private void isValidUserType(SmeeUserCreateResource resource) {
         if (isVendor(resource.getIsVendor()) && !"Garment Vendor".equals(resource.getUserType())) {
             log.info("Usertype should be Garment Vendor for vendor creation",
-                    kv(USER_TYPE, resource.getUserType()), kv(REQUEST_ID_KEY, MDC.get(REQUEST_ID_KEY)));
+                    kv(USER_TYPE, resource.getUserType()));
             throw new GenericBadRequestException(resource, "Usertype should be Garment Vendor for vendor creation");
         } else if (!isVendor(resource.getIsVendor()) && "Garment Vendor".equals(resource.getUserType())) {
             log.info("Usertype should not be Garment Vendor for non vendor creation",
-                    kv(USER_TYPE, resource.getUserType()), kv(REQUEST_ID_KEY, MDC.get(REQUEST_ID_KEY)));
+                    kv(USER_TYPE, resource.getUserType()));
             throw new GenericBadRequestException(resource,
                     "Usertype should not be Garment Vendor for non vendor creation");
         }
@@ -72,7 +71,7 @@ public class SmeeUserCreateValidationStep implements Step{
             List<String> userTypes = smeeUserTypes.stream().map(SmeeUserType::getUserType)
                     .collect(Collectors.toList());
             log.info(INVALID_USER_TYPE_ERROR_MESSAGE, userTypes,
-                    kv(USER_TYPE, resource.getUserType()), kv(REQUEST_ID_KEY, MDC.get(REQUEST_ID_KEY)));
+                    kv(USER_TYPE, resource.getUserType()));
             throw new GenericBadRequestException(resource, INVALID_USER_TYPE_ERROR_MESSAGE + userTypes);
         }
 
@@ -86,15 +85,14 @@ public class SmeeUserCreateValidationStep implements Step{
         if ((isVendor && isGapEmailId(resource.getUserEmail())) || (!isVendor &&
                 !isGapEmailId(resource.getUserEmail()))) {
             log.info("Invalid email({}) id for vendor {} ", resource.getUserEmail(), resource.getUserName(), 
-                    kv(REQUEST_ID_KEY, MDC.get(REQUEST_ID_KEY)), kv("emailId", resource.getUserEmail()));
+                    kv("emailId", resource.getUserEmail()));
             throw new GenericBadRequestException(resource, prepareErrorMessage(isVendor, resource));
         }
     }
 
     private void checkForVendorPartyId(SmeeUserCreateResource resource) {
         if (StringUtil.isNullOrEmpty(resource.getVendorPartyId())) {
-            log.info(VENDOR_PARTY_ID_MANDATORY_MESSAGE, kv(REQUEST_ID_KEY, MDC.get(REQUEST_ID_KEY)),
-                    kv("userName", resource.getUserName()));
+            log.info(VENDOR_PARTY_ID_MANDATORY_MESSAGE, kv("userName", resource.getUserName()));
             throw new GenericBadRequestException(resource, VENDOR_PARTY_ID_MANDATORY_MESSAGE);
         }
     }

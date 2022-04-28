@@ -27,6 +27,8 @@ public class SmeeUserController {
 
     private final ControllerStepService userControllerStepService;
 
+    private static final String RESOURCE = "resource";
+
     SmeeUserController(final ControllerStepService userControllerStepService) {
         this.userControllerStepService = userControllerStepService;
     }
@@ -36,13 +38,13 @@ public class SmeeUserController {
 
         final String requestId = MDC.get(REQUEST_ID_KEY);
 
-        log.info("Received requested to create User", kv("resource", resource), kv(REQUEST_ID_KEY, requestId));
+        log.info("Received requested to create User", kv(RESOURCE, resource));
 
         final Response response = userControllerStepService.process(RequestAction.CREATE, resource);
 
         final Envelope envelope = new Envelope(HttpStatus.OK.value(), requestId, response);
 
-        log.info("SMEE User created successfully", kv("response", response), kv(REQUEST_ID_KEY, requestId));
+        log.info("SMEE User created successfully", kv(RESOURCE, response));
 
         return new ResponseEntity<>(envelope, HttpStatus.OK);
     }
@@ -51,13 +53,13 @@ public class SmeeUserController {
     public ResponseEntity<Envelope> getUser(final @Valid SmeeUserGetResource resource) throws GenericUserException {
 
         final String requestId = MDC.get(REQUEST_ID_KEY);
-        log.info("Received request to get user details for user id", kv("resource", resource), kv(REQUEST_ID_KEY, requestId));
+        log.info("Received request to get user details for user id", kv(RESOURCE, resource));
 
         final Response response = userControllerStepService.process(RequestAction.GET, resource);
 
         final Envelope envelope = new Envelope(HttpStatus.OK.value(), requestId, response);
 
-        log.info("User response returned successfully", kv("response", response), kv(REQUEST_ID_KEY, requestId));
+        log.info("User response returned successfully", kv(RESOURCE, response));
         return new ResponseEntity<>(envelope, HttpStatus.OK);
 
     }
@@ -66,13 +68,13 @@ public class SmeeUserController {
     public ResponseEntity<Envelope> getUserTypes() throws GenericUserException {
 
         final String requestId = MDC.get(REQUEST_ID_KEY);
-        log.info("Received request to get user types ", kv(REQUEST_ID_KEY, requestId));
+        log.info("Received request to get user types");
 
         final SmeeUserTypeResponse response = (SmeeUserTypeResponse)userControllerStepService.process(RequestAction.GET_USER_TYPES, null);
 
         final Envelope envelope = new Envelope(HttpStatus.OK.value(), requestId, response.getUserTypes());
 
-        log.info("User types response returned successfully", kv("response", response), kv(REQUEST_ID_KEY, requestId));
+        log.info("User types response returned successfully", kv(RESOURCE, response));
         return new ResponseEntity<>(envelope, HttpStatus.OK);
     }
 }

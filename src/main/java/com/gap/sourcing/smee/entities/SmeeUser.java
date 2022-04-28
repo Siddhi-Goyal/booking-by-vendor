@@ -6,10 +6,17 @@ import lombok.Builder;
 import lombok.NoArgsConstructor;
 import lombok.AllArgsConstructor;
 
-import javax.persistence.*;
+import javax.persistence.Id;
+import javax.persistence.Table;
+import javax.persistence.Entity;
+import javax.persistence.OneToOne;
+import javax.persistence.OneToMany;
+import javax.persistence.FetchType;
+import javax.persistence.JoinColumn;
+import javax.persistence.CascadeType;
 
-import java.time.ZonedDateTime;
 import java.util.List;
+import java.time.ZonedDateTime;
 
 @Getter
 @Setter
@@ -32,6 +39,9 @@ public class SmeeUser {
     private ZonedDateTime createdDate;
     private String lastModifiedBy;
     private ZonedDateTime lastModifiedDate;
+
+    private String firstName;
+    private String lastName;
 
     @OneToMany(mappedBy = "userName", fetch = FetchType.LAZY, orphanRemoval = true, cascade = CascadeType.ALL )
     private List<SmeeUserVendor> vendors;

@@ -39,8 +39,7 @@ public class SmeeUserGetDataStep implements Step {
         SmeeUserGetResource resource = (SmeeUserGetResource) userContext.getResource();
         String userIdToGetDetails = resource.getUserId();
 
-        log.info("Getting user details for user-id, resource={}", resource,
-                kv(REQUEST_ID_KEY, MDC.get(REQUEST_ID_KEY)));
+        log.info("Getting user details for user-id, resource={}", resource);
         SmeeUser smeeUser = smeeUserRepository.findSmeeUserByUserName(userIdToGetDetails);
         
         if (smeeUser == null) {

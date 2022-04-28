@@ -28,8 +28,7 @@ public class SmeeUserTypeResponseConversionStep implements Step {
 
     @Override
     public Step execute(Context context) throws GenericUserException {
-        log.info("Converting context's output(smeeUserType) to response object.",
-                kv(REQUEST_ID_KEY, MDC.get(REQUEST_ID_KEY)));
+        log.info("Converting context's output(smeeUserType) to response object.");
 
         try {
             SmeeUserContext smeeUserContext = (SmeeUserContext) context;
