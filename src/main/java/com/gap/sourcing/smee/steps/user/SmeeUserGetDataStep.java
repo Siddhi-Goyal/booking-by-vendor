@@ -39,14 +39,13 @@ public class SmeeUserGetDataStep implements Step {
         SmeeUserGetResource resource = (SmeeUserGetResource) userContext.getResource();
         String userIdToGetDetails = resource.getUserId();
 
-        log.info("Getting user details for user-id, resource={}", resource,
-                kv(REQUEST_ID_KEY, MDC.get(REQUEST_ID_KEY)));
+        log.info("Getting user details for user-id, resource={}", resource);
         SmeeUser smeeUser = smeeUserRepository.findSmeeUserByUserName(userIdToGetDetails);
         
         if (smeeUser == null) {
             userContext.setOutput(null);
         } else {
-            String smeeUserTypeVal = smeeUserTypeLoadService.fetchUserTypeFromCache(smeeUser.getUserTypeId());
+            String smeeUserTypeVal = smeeUserTypeLoadService.fetchUserTypeFromCache(smeeUser.getUserTypeId().getId());
             userContext.setSmeeUserType(smeeUserTypeVal);
             ((SmeeUserContext) context).setOutput(smeeUser);
         }

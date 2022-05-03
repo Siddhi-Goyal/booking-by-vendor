@@ -12,7 +12,6 @@ import com.gap.sourcing.smee.exceptions.GenericUserException;
 import com.gap.sourcing.smee.steps.Step;
 import com.gap.sourcing.smee.utils.Client;
 import lombok.extern.slf4j.Slf4j;
-import org.slf4j.MDC;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 import org.springframework.util.CollectionUtils;
@@ -21,7 +20,6 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
-import static com.gap.sourcing.smee.utils.RequestIdGenerator.REQUEST_ID_KEY;
 import static net.logstash.logback.argument.StructuredArguments.kv;
 
 @Slf4j
@@ -51,14 +49,14 @@ public class SmeeUserBuildVendorRelationStep implements Step {
         String vendorPartyId = resource.getVendorPartyId();
         log.info("Fetching vendors from denodo API for user {}", smeeUser.getUserName(),
                 kv(USER_NAME, smeeUser.getUserName()),
-                kv("vendorPartyId", vendorPartyId), kv(REQUEST_ID_KEY, MDC.get(REQUEST_ID_KEY)));
+                kv("vendorPartyId", vendorPartyId));
         DenodoResponse denodoPartyIdData =  client.get(denodoURI+"partyId="+vendorPartyId, DenodoResponse.class);
         
         log.info("Vendor data from denodo api for partyId", denodoPartyIdData,
-                kv("partyIdResponse", denodoPartyIdData), kv(REQUEST_ID_KEY, MDC.get(REQUEST_ID_KEY)));
+                kv("partyIdResponse", denodoPartyIdData));
         DenodoResponse denodoVendorData =  client.get(denodoURI+"parVenId="+vendorPartyId, DenodoResponse.class);
         log.info("Vendor data from denodo api for parVenId", denodoVendorData,
-                kv("parVenIdResponse", denodoVendorData), kv(REQUEST_ID_KEY, MDC.get(REQUEST_ID_KEY)));
+                kv("parVenIdResponse", denodoVendorData));
         List<SmeeUserVendor> vendors = new ArrayList<>();
 
         if (denodoPartyIdData != null && !CollectionUtils.isEmpty(denodoPartyIdData.getElements()) &&
@@ -75,23 +73,20 @@ public class SmeeUserBuildVendorRelationStep implements Step {
 
         }
         if(isVendorsInvalid(denodoPartyIdData, denodoVendorData, vendors)){
-            log.info("Vendor Type is not MFG {} ", smeeUser.getUserName(), kv(REQUEST_ID_KEY, MDC.get(REQUEST_ID_KEY)),
-                    kv(USER_NAME, smeeUser.getUserName()));
+            log.info("Vendor Type is not MFG {} ", smeeUser.getUserName(), kv(USER_NAME, smeeUser.getUserName()));
             throw new GenericBadRequestException(resource, "Vendor Status is not Active or vendor type is not MFG " +
                     "for given vendor party id "
                     + resource.getVendorPartyId());
 
         }
         if (vendors.isEmpty()) {
-            log.info("Vendor details not found for given user {} ", smeeUser.getUserName(),
-                    kv(REQUEST_ID_KEY, MDC.get(REQUEST_ID_KEY)), kv(USER_NAME, smeeUser.getUserName()));
+            log.info("Vendor details not found for given user {} ", smeeUser.getUserName());
             throw new GenericBadRequestException(resource, "Vendor details not found for given vendor party id "+
                     resource.getVendorPartyId());
         }
 
         smeeUser.setVendors(vendors);
-        log.info("Retrieved vendors from denodo API",kv("vendors", vendors.size()),
-                kv(REQUEST_ID_KEY, MDC.get(REQUEST_ID_KEY)));
+        log.info("Retrieved vendors from denodo API",kv("vendors", vendors.size()));
         return smeeUserEntityMergeStep;
     }
 
@@ -111,7 +106,7 @@ public class SmeeUserBuildVendorRelationStep implements Step {
         return SmeeUserVendor.builder()
                 .vendorName(denodoElement.getLegalName())
                 .vendorPartyId(denodoElement.getPartyId())
-                .userId(smeeUser)
+                .userName(smeeUser)
                 .build();
     }
 }

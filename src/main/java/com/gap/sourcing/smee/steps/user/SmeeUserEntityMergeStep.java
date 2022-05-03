@@ -33,7 +33,7 @@ public class SmeeUserEntityMergeStep implements Step {
         SmeeUser current = smeeUserContext.getCurrent();
 
         log.info("Merging record's created from context's current to context's input attribute, " +
-                "input={}, current={}", input, current, kv(REQUEST_ID_KEY, MDC.get(REQUEST_ID_KEY)));
+                "input={}, current={}", input, current);
         if (current != null) {
             current.setLastModifiedBy(input.getLastModifiedBy());
             current.setLastModifiedDate(input.getLastModifiedDate());
@@ -51,8 +51,7 @@ public class SmeeUserEntityMergeStep implements Step {
             }
         }
 
-        log.info("Merged record's created details from context's current to context's input attribute",
-                kv(REQUEST_ID_KEY, MDC.get(REQUEST_ID_KEY)));
+        log.info("Merged record's created details from context's current to context's input attribute");
 
         return smeeUserPersistStep;
     }
@@ -64,7 +63,7 @@ public class SmeeUserEntityMergeStep implements Step {
         }
         if (!addedVendors.isEmpty()) {
             addedVendors.forEach(vendor -> {
-                vendor.setUserId(current);
+                vendor.setUserName(current);
                 current.getVendors().add(vendor);
             });
         }

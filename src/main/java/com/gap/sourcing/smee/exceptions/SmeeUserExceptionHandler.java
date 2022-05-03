@@ -116,10 +116,9 @@ public class SmeeUserExceptionHandler {
     }
 
     private ResponseEntity<Envelope> handle(Exception ex, String responseMessage, HttpStatus responseStatus) {
-        String requestId = MDC.get(RequestIdGenerator.REQUEST_ID_KEY);
         log.error(String.format("Error processing request with reason - %s", responseMessage)
                 , kv("stack_trace", ex.getStackTrace()), kv(REQUEST_ID_KEY, MDC.get(REQUEST_ID_KEY)));
-        return new ResponseEntity<>(new Envelope(responseStatus.value(), requestId, responseMessage), responseStatus);
+        return new ResponseEntity<>(new Envelope(responseStatus.value(), MDC.get(RequestIdGenerator.REQUEST_ID_KEY), responseMessage), responseStatus);
     }
 
     private ResponseEntity<Envelope> handleRequestParamsInvalidException(ConstraintViolationException ex) {

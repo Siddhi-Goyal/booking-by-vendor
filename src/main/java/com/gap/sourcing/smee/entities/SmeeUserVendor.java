@@ -7,15 +7,17 @@ import lombok.Setter;
 import lombok.ToString;
 import lombok.NoArgsConstructor;
 import lombok.AllArgsConstructor;
+import org.hibernate.annotations.Type;
 
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.Table;
-import javax.persistence.GenerationType;
+
 import javax.persistence.ManyToOne;
 import javax.persistence.FetchType;
 import javax.persistence.JoinColumn;
+import java.util.UUID;
 
 
 @Getter
@@ -29,12 +31,13 @@ import javax.persistence.JoinColumn;
 public class SmeeUserVendor {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+    @Type(type = "uuid-char")
+    @GeneratedValue
+    private UUID id;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "user_id")
-    private SmeeUser userId;
+    @JoinColumn(name = "user_name")
+    private SmeeUser userName;
 
     private String vendorPartyId;
     private String vendorName;
