@@ -10,13 +10,11 @@ import com.gap.sourcing.smee.exceptions.GenericUserException;
 import com.gap.sourcing.smee.repositories.SmeeUserTypeRepository;
 import com.gap.sourcing.smee.steps.Step;
 import lombok.extern.slf4j.Slf4j;
-import org.slf4j.MDC;
 import org.springframework.stereotype.Component;
 
 import java.time.ZonedDateTime;
 import java.util.Arrays;
 
-import static com.gap.sourcing.smee.utils.RequestIdGenerator.REQUEST_ID_KEY;
 import static net.logstash.logback.argument.StructuredArguments.kv;
 
 @Component
@@ -26,7 +24,7 @@ public class SmeeUserCreateResourceConversionStep implements Step {
     private final Step smeeUserLoadDataStep;
     private final SmeeUserTypeRepository smeeUserTypeRepository;
 
-    public SmeeUserCreateResourceConversionStep(Step smeeUserLoadDataStep ,
+    public SmeeUserCreateResourceConversionStep(Step smeeUserLoadDataStep,
                                                 SmeeUserTypeRepository smeeUserTypeRepository) {
         this.smeeUserLoadDataStep = smeeUserLoadDataStep;
         this.smeeUserTypeRepository = smeeUserTypeRepository;
@@ -38,8 +36,7 @@ public class SmeeUserCreateResourceConversionStep implements Step {
         SmeeUserContext userContext = (SmeeUserContext) context;
         SmeeUserCreateResource userResource = (SmeeUserCreateResource) userContext.getResource();
         SmeeUser smeeUser = new SmeeUser();
-        log.info("Converting incoming resource to smeeUser, resource={}", userResource, kv(REQUEST_ID_KEY,
-                MDC.get(REQUEST_ID_KEY)));
+        log.info("Converting incoming resource to smeeUser, resource={}", userResource);
         try {
             smeeUser.setUserName(userResource.getUserName());
             smeeUser.setUserEmail(userResource.getUserEmail());
@@ -51,21 +48,22 @@ public class SmeeUserCreateResourceConversionStep implements Step {
             smeeUser.setCreatedDate(currentTimestamp);
             smeeUser.setLastModifiedBy(userResource.getUserId());
             smeeUser.setLastModifiedDate(currentTimestamp);
+            smeeUser.setFirstName(userResource.getFirstName());
+            smeeUser.setLastName(userResource.getLastName());
+
             userContext.setSmeeUserType(userResource.getUserType());
             userContext.setInput(smeeUser);
-            log.info("Converted incoming resource to smee user and saved in context's input attribute.",
-                    kv(REQUEST_ID_KEY, MDC.get(REQUEST_ID_KEY)));
+
+            log.info("Converted incoming resource to smee user and saved in context's input attribute.");
         } catch (Exception exception) {
-            log.error("Something went wrong!!", kv(REQUEST_ID_KEY, MDC.get(REQUEST_ID_KEY)),
-                    kv("exception", exception));
+            log.error("Something went wrong!!", kv("exception", exception));
             throw new GenericBadRequestException(userResource, "Exception while converting resource to input " +
                     "entity object withStackTrace - " + Arrays.toString(exception.getStackTrace()));
         }
         return smeeUserLoadDataStep;
     }
-
-    private Long fetchUserTypeIdFromDB (String userType){
-         SmeeUserType smeeUserType =  smeeUserTypeRepository.findSmeeUserTypeByUserType(userType);
-         return smeeUserType.getId();
+  
+    private SmeeUserType fetchUserTypeIdFromDB(String userType) {
+        return smeeUserTypeRepository.findSmeeUserTypeByUserType(userType);
     }
 }

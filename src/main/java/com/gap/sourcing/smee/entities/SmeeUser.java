@@ -1,10 +1,22 @@
 package com.gap.sourcing.smee.entities;
 
-import lombok.*;
+import lombok.Getter;
+import lombok.Setter;
+import lombok.Builder;
+import lombok.NoArgsConstructor;
+import lombok.AllArgsConstructor;
 
-import javax.persistence.*;
-import java.time.ZonedDateTime;
+import javax.persistence.Id;
+import javax.persistence.Table;
+import javax.persistence.Entity;
+import javax.persistence.OneToOne;
+import javax.persistence.OneToMany;
+import javax.persistence.FetchType;
+import javax.persistence.JoinColumn;
+import javax.persistence.CascadeType;
+
 import java.util.List;
+import java.time.ZonedDateTime;
 
 @Getter
 @Setter
@@ -16,12 +28,11 @@ import java.util.List;
 public class SmeeUser {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
-
     private String userName;
     private String userEmail;
-    private Long userTypeId;
+    @OneToOne
+    @JoinColumn(name = "user_type_id")
+    private SmeeUserType userTypeId;
     private Boolean isActive;
     private Boolean isVendor;
     private String createdBy;
@@ -29,7 +40,10 @@ public class SmeeUser {
     private String lastModifiedBy;
     private ZonedDateTime lastModifiedDate;
 
-    @OneToMany(mappedBy = "userId", fetch = FetchType.LAZY, orphanRemoval = true, cascade = CascadeType.ALL )
+    private String firstName;
+    private String lastName;
+
+    @OneToMany(mappedBy = "userName", fetch = FetchType.LAZY, orphanRemoval = true, cascade = CascadeType.ALL )
     private List<SmeeUserVendor> vendors;
 
 }

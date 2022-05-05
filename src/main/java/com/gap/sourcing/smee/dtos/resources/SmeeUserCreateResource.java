@@ -35,6 +35,14 @@ public class SmeeUserCreateResource implements Resource {
         @NotBlank
         @Size(min = 1, max = 10)
         private String userId;
+
+        @NotBlank
+        @Size(min = 1, max = 50)
+        private String firstName;
+
+        @NotBlank
+        @Size(min = 1, max = 50)
+        private String lastName;
     }
 
 
