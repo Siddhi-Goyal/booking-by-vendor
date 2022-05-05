@@ -11,7 +11,6 @@ import com.gap.sourcing.smee.repositories.SmeeUserTypeRepository;
 import com.gap.sourcing.smee.steps.Step;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
-import org.springframework.transaction.annotation.Transactional;
 
 import java.time.ZonedDateTime;
 import java.util.Arrays;
@@ -63,9 +62,8 @@ public class SmeeUserCreateResourceConversionStep implements Step {
         }
         return smeeUserLoadDataStep;
     }
-
-    @Transactional(readOnly = true)
-    public SmeeUserType fetchUserTypeIdFromDB(String userType) {
+  
+    private SmeeUserType fetchUserTypeIdFromDB(String userType) {
         return smeeUserTypeRepository.findSmeeUserTypeByUserType(userType);
     }
 }
