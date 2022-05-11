@@ -96,7 +96,7 @@ public class SmeeUserCreateValidationStep implements Step{
     }
 
     private boolean isGapEmailId(String userEmail) {
-        return "gap.com".equals(userEmail.substring(userEmail.indexOf('@')+1));
+        return "gap.com".equalsIgnoreCase(userEmail.substring(userEmail.indexOf('@')+1));
     }
 
     private String prepareErrorMessage(boolean isVendor, SmeeUserCreateResource resource) {
