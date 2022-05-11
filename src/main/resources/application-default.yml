@@ -7,5 +7,5 @@ jdbc:
   password: hello-world
 
 smee-user-service:
-  denodo-uri: http://denodo.gapinc.com:9090/server/sourcing_db/vendor_relationship/views/vendor_relationship?$format=json&
-  apikey: ENC(eWCptjY5A8r+gpHp/FWAbrtO6jpN6HpaicNLvFeMI6CjToOq9CcpkkwPtQBVgJsQ)
+  vendor-profile-uri: https://stage.api.azeus.gaptech.com/sourcing/vendor-profile-integrator/parties/
+  apikey: ENC(JRF/yj8/NGqZr+GHrJqTNHRCgaLplTzM3ZJotF37NtSWuKzR+QxvhXThzby9j5qT)q
