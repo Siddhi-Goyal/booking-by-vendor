@@ -3,8 +3,9 @@ package com.gap.sourcing.smee.steps.user;
 
 import com.gap.sourcing.smee.contexts.SmeeUserContext;
 import com.gap.sourcing.smee.dtos.resources.SmeeUserCreateResource;
-import com.gap.sourcing.smee.dtos.responses.denodo.DenodoElement;
-import com.gap.sourcing.smee.dtos.responses.denodo.DenodoResponse;
+import com.gap.sourcing.smee.dtos.responses.bamboorose.VendorResource;
+import com.gap.sourcing.smee.dtos.responses.bamboorose.VendorResponse;
+import com.gap.sourcing.smee.dtos.responses.bamboorose.VendorTier;
 import com.gap.sourcing.smee.entities.SmeeUser;
 import com.gap.sourcing.smee.exceptions.GenericBadRequestException;
 import com.gap.sourcing.smee.exceptions.GenericUserException;
@@ -45,6 +46,7 @@ class SmeeUserBuildVendorRelationStepTest {
         smeeUserVendorRelationStep = new SmeeUserBuildVendorRelationStep(smeeUserEntityMergeStep,
                 client);
         SmeeUserCreateResource resource = new SmeeUserCreateResource();
+        resource.setVendorPartyId("12345678");
         context = new SmeeUserContext(resource);
         entity = new SmeeUser();
         entity.setUserName("xyz");
@@ -55,11 +57,16 @@ class SmeeUserBuildVendorRelationStepTest {
 
     @Test
     void execute_shouldReturnASmeeUserEntityMergeStepStep() throws GenericUserException {
-        DenodoResponse response  = new DenodoResponse();
-        DenodoElement element = new DenodoElement();
-        element.setVendorType("MFG");
-        element.setStatus("Active");
-        response.setElements(List.of(element));
+        VendorResponse response  = new VendorResponse();
+        VendorResource vendorResource = new VendorResource();
+        vendorResource.setStatus("A");
+        vendorResource.setId("1000045");
+        vendorResource.setType("MFG");
+        response.setResource(vendorResource);
+        VendorTier vendorTier = new VendorTier();
+        vendorTier.setId("1000045");
+        vendorTier.setRelationshipStatusDescription("ACTIVE");
+        vendorResource.setVendorTiers(List.of(vendorTier));
         Mockito.lenient().when(client.get(anyString(), any())).thenReturn(response);
 
         final Step step = smeeUserVendorRelationStep.execute(context);
@@ -68,33 +75,39 @@ class SmeeUserBuildVendorRelationStepTest {
 
     @Test
     void execute_shouldThrowBadExceptionIfVendorTypeNotMFG() throws GenericUserException {
-        DenodoResponse response  = new DenodoResponse();
-        DenodoElement element = new DenodoElement();
-        element.setVendorType("ABC");
-        element.setStatus("Active");
-        response.setElements(List.of(element));
+        VendorResponse response  = new VendorResponse();
+        VendorResource vendorResource = new VendorResource();
+        vendorResource.setType("ABC");
+        vendorResource.setStatus("ACTIVE");
+        VendorTier vendorTier = new VendorTier();
+        vendorResource.setVendorTiers(List.of(vendorTier));
         Mockito.lenient().when(client.get(anyString(), any())).thenReturn(response);
-
         Assertions.assertThrows(GenericBadRequestException.class, () -> smeeUserVendorRelationStep.execute(context));
 
     }
 
     @Test
     void execute_shouldThrowBadExceptionIfVendorStatusIsNotActive() throws GenericUserException {
-        DenodoResponse response  = new DenodoResponse();
-        DenodoElement element = new DenodoElement();
-        element.setVendorType("MFG");
-        element.setStatus("Deactivated");
-        response.setElements(List.of(element));
+        VendorResponse response  = new VendorResponse();
+        VendorResource vendorResource = new VendorResource();
+        vendorResource.setType("MFG");
+        vendorResource.setStatus("DEACTIVATED");
+        VendorTier vendorTier = new VendorTier();
+        vendorResource.setVendorTiers(List.of(vendorTier));
         Mockito.lenient().when(client.get(anyString(), any())).thenReturn(response);
-
         Assertions.assertThrows(GenericBadRequestException.class, () -> smeeUserVendorRelationStep.execute(context));
 
     }
 
     @Test
     void execute_shouldThrowAnExceptionForEmptyVendors() throws GenericUserException {
-        Mockito.lenient().when(client.get(anyString(), any())).thenReturn(new DenodoResponse());
+        Mockito.lenient().when(client.get(anyString(), any())).thenReturn(new VendorResponse());
+        Assertions.assertThrows(GenericBadRequestException.class, () -> smeeUserVendorRelationStep.execute(context));
+    }
+
+    @Test
+    void execute_shouldThrowAnExceptionForNullVendorResponse() throws GenericUserException {
+        Mockito.lenient().when(client.get(anyString(), any())).thenReturn(null);
         Assertions.assertThrows(GenericBadRequestException.class, () -> smeeUserVendorRelationStep.execute(context));
     }
 

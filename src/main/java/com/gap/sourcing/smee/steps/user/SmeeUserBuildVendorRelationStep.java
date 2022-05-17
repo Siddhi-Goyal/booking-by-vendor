@@ -47,20 +47,20 @@ public class SmeeUserBuildVendorRelationStep implements Step {
         SmeeUserContext userContext = (SmeeUserContext) context;
         SmeeUser smeeUser = userContext.getInput();
         String vendorPartyId = resource.getVendorPartyId();
-        log.info("Fetching vendors from vendor profile API for user {}", smeeUser.getUserName(),
+        log.info("Fetching vendors from vendor profile API for user",
                 kv(USER_NAME, smeeUser.getUserName()),
                 kv("vendorPartyId", vendorPartyId), kv(REQUEST_ID_KEY, MDC.get(REQUEST_ID_KEY)));
        VendorResponse vendorData =  client.get(vendorProfileUri+vendorPartyId, VendorResponse.class);
        List<SmeeUserVendor> vendors = createVendorsFromVendorApiResponse(vendorData,smeeUser, new ArrayList<>(), new HashSet<>());
        if (isVendorsInvalid(vendorData,vendors)){
-           log.info("Vendor status is inactive or vendor type is not MFG {} ", smeeUser.getUserName(), kv(REQUEST_ID_KEY, MDC.get(REQUEST_ID_KEY)),
+           log.info("Vendor status is inactive or vendor type is not MFG ", kv(REQUEST_ID_KEY, MDC.get(REQUEST_ID_KEY)),
                    kv(USER_NAME, smeeUser.getUserName()));
            throw new GenericBadRequestException(resource, "Vendor Status is not Active or vendor type is not MFG " +
                    "for given vendor party id "
                    + resource.getVendorPartyId());
        }
        if (vendors.isEmpty()) {
-           log.info("Vendor details not found for given user {} ", smeeUser.getUserName(),
+           log.info("Vendor details not found for given user",
                    kv(REQUEST_ID_KEY, MDC.get(REQUEST_ID_KEY)), kv(USER_NAME, smeeUser.getUserName()));
            throw new GenericBadRequestException(resource, "Vendor details not found for given vendor party id "+
                    resource.getVendorPartyId());
@@ -72,7 +72,7 @@ public class SmeeUserBuildVendorRelationStep implements Step {
 
     }
 
-    private List<SmeeUserVendor> createVendorsFromVendorApiResponse(VendorResponse vendorData, SmeeUser smeeUser, List<SmeeUserVendor> vendors, Set<String> vendorPartyIdTracker){
+    private List<SmeeUserVendor>  createVendorsFromVendorApiResponse(VendorResponse vendorData, SmeeUser smeeUser, List<SmeeUserVendor> vendors, Set<String> vendorPartyIdTracker){
 
         if (hasVendorInfo(vendorData)) {
             VendorResource vendorResource = vendorData.getResource();
@@ -103,7 +103,7 @@ public class SmeeUserBuildVendorRelationStep implements Step {
         return SmeeUserVendor.builder()
                 .vendorName(vendorResource.getLegalName())
                 .vendorPartyId(vendorResource.getId())
-                .userId(smeeUser)
+                .userName(smeeUser)
                 .build();
     }
 
