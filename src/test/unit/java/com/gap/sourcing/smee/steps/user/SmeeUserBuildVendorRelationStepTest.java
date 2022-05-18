@@ -78,7 +78,7 @@ class SmeeUserBuildVendorRelationStepTest {
         VendorResponse response  = new VendorResponse();
         VendorResource vendorResource = new VendorResource();
         vendorResource.setType("ABC");
-        vendorResource.setStatus("ACTIVE");
+        vendorResource.setStatus("A");
         VendorTier vendorTier = new VendorTier();
         vendorResource.setVendorTiers(List.of(vendorTier));
         Mockito.lenient().when(client.get(anyString(), any())).thenReturn(response);
@@ -92,6 +92,7 @@ class SmeeUserBuildVendorRelationStepTest {
         VendorResource vendorResource = new VendorResource();
         vendorResource.setType("MFG");
         vendorResource.setStatus("DEACTIVATED");
+        response.setResource(vendorResource);
         VendorTier vendorTier = new VendorTier();
         vendorResource.setVendorTiers(List.of(vendorTier));
         Mockito.lenient().when(client.get(anyString(), any())).thenReturn(response);

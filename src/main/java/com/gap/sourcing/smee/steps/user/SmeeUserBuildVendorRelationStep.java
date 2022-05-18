@@ -17,8 +17,11 @@ import org.apache.commons.codec.binary.StringUtils;
 import org.slf4j.MDC;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
-
-import java.util.*;
+import org.springframework.util.CollectionUtils;
+import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
 
 import static com.gap.sourcing.smee.utils.RequestIdGenerator.REQUEST_ID_KEY;
 import static net.logstash.logback.argument.StructuredArguments.kv;
@@ -112,7 +115,7 @@ public class SmeeUserBuildVendorRelationStep implements Step {
     }
 
     private boolean containsVendorTier(List<VendorTier> vendorTiers){
-        return vendorTiers!= null && vendorTiers.size()>0;
+        return !CollectionUtils.isEmpty(vendorTiers);
     }
 
     private boolean isValidVendor(VendorResource vendorResource){
@@ -124,7 +127,7 @@ public class SmeeUserBuildVendorRelationStep implements Step {
         return vendors.isEmpty() && vendorResponse != null;
     }
 
-    private boolean isValidAndNonRepeatedVendor(VendorTier vendorTier,Set<String> vendorPartyIdTracker){
+    private boolean isValidAndNonRepeatedVendor(VendorTier vendorTier, Set<String> vendorPartyIdTracker){
         return vendorTier.getId()!= null && !vendorPartyIdTracker.contains(vendorTier.getId());
     }
 
