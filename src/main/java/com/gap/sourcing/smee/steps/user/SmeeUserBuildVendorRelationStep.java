@@ -54,7 +54,9 @@ public class SmeeUserBuildVendorRelationStep implements Step {
                 kv(USER_NAME, smeeUser.getUserName()),
                 kv("vendorPartyId", vendorPartyId), kv(REQUEST_ID_KEY, MDC.get(REQUEST_ID_KEY)));
        VendorResponse vendorData =  client.get(vendorProfileUri+vendorPartyId, VendorResponse.class);
-       List<SmeeUserVendor> vendors = createVendorsFromVendorApiResponse(vendorData,smeeUser, new ArrayList<>(), new HashSet<>());
+       List<SmeeUserVendor> vendors = createVendorsFromVendorApiResponse(
+               vendorData, smeeUser,
+               new ArrayList<>(), new HashSet<>());
        if (isVendorsInvalid(vendorData,vendors)){
            log.info("Vendor status is inactive or vendor type is not MFG ", kv(REQUEST_ID_KEY, MDC.get(REQUEST_ID_KEY)),
                    kv(USER_NAME, smeeUser.getUserName()));
@@ -75,7 +77,10 @@ public class SmeeUserBuildVendorRelationStep implements Step {
 
     }
 
-    private List<SmeeUserVendor>  createVendorsFromVendorApiResponse(VendorResponse vendorData, SmeeUser smeeUser, List<SmeeUserVendor> vendors, Set<String> vendorPartyIdTracker){
+    private List<SmeeUserVendor>  createVendorsFromVendorApiResponse(VendorResponse vendorData,
+                                                                     SmeeUser smeeUser,
+                                                                     List<SmeeUserVendor> vendors,
+                                                                     Set<String> vendorPartyIdTracker){
 
         if (hasVendorInfo(vendorData)) {
             VendorResource vendorResource = vendorData.getResource();
@@ -88,13 +93,16 @@ public class SmeeUserBuildVendorRelationStep implements Step {
         return vendors;
     }
 
-    private List<SmeeUserVendor> fetchVendorTierVendorsDetails(List<VendorTier> vendorTiers, SmeeUser smeeUser,
-                                                               List<SmeeUserVendor> vendors,Set<String> vendorPartyIdTracker){
+    private List<SmeeUserVendor> fetchVendorTierVendorsDetails(List<VendorTier> vendorTiers,
+                                                               SmeeUser smeeUser,
+                                                               List<SmeeUserVendor> vendors,
+                                                               Set<String> vendorPartyIdTracker){
         if(containsVendorTier(vendorTiers)){
             vendorTiers.forEach(vendorTier->{
                 if(isValidAndNonRepeatedVendor(vendorTier,vendorPartyIdTracker)
                         && StringUtils.equals(vendorTier.getRelationshipStatusDescription(),"ACTIVE")){
-                    VendorResponse vendorTierData =  client.get(vendorProfileUri+vendorTier.getId(), VendorResponse.class);
+                    VendorResponse vendorTierData =  client.get(vendorProfileUri+vendorTier.getId(),
+                            VendorResponse.class);
                     createVendorsFromVendorApiResponse(vendorTierData, smeeUser,vendors,vendorPartyIdTracker);
                 }
             });
