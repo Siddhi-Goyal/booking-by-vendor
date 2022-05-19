@@ -3,8 +3,9 @@ package com.gap.sourcing.smee.steps.user;
 import com.gap.sourcing.smee.contexts.Context;
 import com.gap.sourcing.smee.contexts.SmeeUserContext;
 import com.gap.sourcing.smee.dtos.resources.SmeeUserCreateResource;
-import com.gap.sourcing.smee.dtos.responses.denodo.DenodoElement;
-import com.gap.sourcing.smee.dtos.responses.denodo.DenodoResponse;
+import com.gap.sourcing.smee.dtos.responses.bamboorose.VendorResponse;
+import com.gap.sourcing.smee.dtos.responses.bamboorose.VendorResource;
+import com.gap.sourcing.smee.dtos.responses.bamboorose.VendorTier;
 import com.gap.sourcing.smee.entities.SmeeUser;
 import com.gap.sourcing.smee.entities.SmeeUserVendor;
 import com.gap.sourcing.smee.exceptions.GenericBadRequestException;
@@ -12,14 +13,17 @@ import com.gap.sourcing.smee.exceptions.GenericUserException;
 import com.gap.sourcing.smee.steps.Step;
 import com.gap.sourcing.smee.utils.Client;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.codec.binary.StringUtils;
+import org.slf4j.MDC;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 import org.springframework.util.CollectionUtils;
-
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
-import java.util.stream.Collectors;
+import java.util.Set;
 
+import static com.gap.sourcing.smee.utils.RequestIdGenerator.REQUEST_ID_KEY;
 import static net.logstash.logback.argument.StructuredArguments.kv;
 
 @Slf4j
@@ -27,8 +31,8 @@ import static net.logstash.logback.argument.StructuredArguments.kv;
 public class SmeeUserBuildVendorRelationStep implements Step {
 
 
-    @Value("${smee-user-service.denodo-uri}")
-    private String denodoURI;
+    @Value("${smee-user-service.vendor-profile-uri}")
+    private String vendorProfileUri;
 
     private static final String USER_NAME = "userName";
 
@@ -40,73 +44,100 @@ public class SmeeUserBuildVendorRelationStep implements Step {
         this.client = client;
     }
 
-
-    @Override
+   @Override
     public Step execute(Context context) throws GenericUserException {
         SmeeUserCreateResource resource = (SmeeUserCreateResource) ((SmeeUserContext) context).getResource();
         SmeeUserContext userContext = (SmeeUserContext) context;
         SmeeUser smeeUser = userContext.getInput();
         String vendorPartyId = resource.getVendorPartyId();
-        log.info("Fetching vendors from denodo API for user {}", smeeUser.getUserName(),
+        log.info("Fetching vendors from vendor profile API for user",
                 kv(USER_NAME, smeeUser.getUserName()),
-                kv("vendorPartyId", vendorPartyId));
-        DenodoResponse denodoPartyIdData =  client.get(denodoURI+"partyId="+vendorPartyId, DenodoResponse.class);
-        
-        log.info("Vendor data from denodo api for partyId", denodoPartyIdData,
-                kv("partyIdResponse", denodoPartyIdData));
-        DenodoResponse denodoVendorData =  client.get(denodoURI+"parVenId="+vendorPartyId, DenodoResponse.class);
-        log.info("Vendor data from denodo api for parVenId", denodoVendorData,
-                kv("parVenIdResponse", denodoVendorData));
-        List<SmeeUserVendor> vendors = new ArrayList<>();
-
-        if (denodoPartyIdData != null && !CollectionUtils.isEmpty(denodoPartyIdData.getElements()) &&
-                isValidVendor(denodoPartyIdData.getElements().get(0))) {
-            vendors.add(buildVendor(denodoPartyIdData.getElements().get(0), smeeUser));
-
-        }
-        if (denodoVendorData != null && !CollectionUtils.isEmpty(denodoVendorData.getElements())) {
-            vendors.addAll(denodoVendorData.getElements()
-                    .stream()
-                    .filter(this::isValidVendor)
-                    .map(denodoData ->  buildVendor(denodoData, smeeUser))
-                    .collect(Collectors.toList()));
-
-        }
-        if(isVendorsInvalid(denodoPartyIdData, denodoVendorData, vendors)){
-            log.info("Vendor Type is not MFG {} ", smeeUser.getUserName(), kv(USER_NAME, smeeUser.getUserName()));
-            throw new GenericBadRequestException(resource, "Vendor Status is not Active or vendor type is not MFG " +
-                    "for given vendor party id "
-                    + resource.getVendorPartyId());
-
-        }
-        if (vendors.isEmpty()) {
-            log.info("Vendor details not found for given user {} ", smeeUser.getUserName());
-            throw new GenericBadRequestException(resource, "Vendor details not found for given vendor party id "+
-                    resource.getVendorPartyId());
-        }
-
+                kv("vendorPartyId", vendorPartyId), kv(REQUEST_ID_KEY, MDC.get(REQUEST_ID_KEY)));
+       VendorResponse vendorData =  client.get(vendorProfileUri+vendorPartyId, VendorResponse.class);
+       List<SmeeUserVendor> vendors = createVendorsFromVendorApiResponse(
+               vendorData, smeeUser,
+               new ArrayList<>(), new HashSet<>());
+       if (isVendorsInvalid(vendorData,vendors)){
+           log.info("Vendor status is inactive or vendor type is not MFG ", kv(REQUEST_ID_KEY, MDC.get(REQUEST_ID_KEY)),
+                   kv(USER_NAME, smeeUser.getUserName()));
+           throw new GenericBadRequestException(resource, "Vendor Status is not Active or vendor type is not MFG " +
+                   "for given vendor party id "
+                   + resource.getVendorPartyId());
+       }
+       if (vendors.isEmpty()) {
+           log.info("Vendor details not found for given user",
+                   kv(REQUEST_ID_KEY, MDC.get(REQUEST_ID_KEY)), kv(USER_NAME, smeeUser.getUserName()));
+           throw new GenericBadRequestException(resource, "Vendor details not found for given vendor party id "+
+                   resource.getVendorPartyId());
+       }
         smeeUser.setVendors(vendors);
-        log.info("Retrieved vendors from denodo API",kv("vendors", vendors.size()));
-        return smeeUserEntityMergeStep;
+        log.info("Retrieved vendors from vendor profile API",kv("vendors", vendors.size()),
+                kv(REQUEST_ID_KEY, MDC.get(REQUEST_ID_KEY)));
+       return smeeUserEntityMergeStep;
+
     }
 
-    private boolean isVendorsInvalid(DenodoResponse denodoPartyIdData, DenodoResponse denodoVendorData,
-                                     List<SmeeUserVendor> vendors) {
-        return vendors.isEmpty() && (denodoPartyIdData != null &&
-                !CollectionUtils.isEmpty(denodoPartyIdData.getElements() ) ||
-                denodoVendorData != null && !CollectionUtils.isEmpty(denodoVendorData.getElements()));
+    private List<SmeeUserVendor>  createVendorsFromVendorApiResponse(VendorResponse vendorData,
+                                                                     SmeeUser smeeUser,
+                                                                     List<SmeeUserVendor> vendors,
+                                                                     Set<String> vendorPartyIdTracker){
+
+        if (hasVendorInfo(vendorData)) {
+            VendorResource vendorResource = vendorData.getResource();
+            if(isValidVendor(vendorResource)) {
+                vendors.add(buildVendor(vendorResource, smeeUser));
+            }
+            vendorPartyIdTracker.add(vendorResource.getId());
+            return fetchVendorTierVendorsDetails(vendorResource.getVendorTiers(),smeeUser,vendors,vendorPartyIdTracker);
+        }
+        return vendors;
     }
 
-    private boolean isValidVendor(DenodoElement denodoData){
-        return "MFG".equalsIgnoreCase(denodoData.getVendorType()) &&
-                "Active".equalsIgnoreCase(denodoData.getStatus());
+    private List<SmeeUserVendor> fetchVendorTierVendorsDetails(List<VendorTier> vendorTiers,
+                                                               SmeeUser smeeUser,
+                                                               List<SmeeUserVendor> vendors,
+                                                               Set<String> vendorPartyIdTracker){
+        if(containsVendorTier(vendorTiers)){
+            vendorTiers.forEach(vendorTier->{
+                if(isValidAndNonRepeatedVendor(vendorTier,vendorPartyIdTracker)
+                        && StringUtils.equals(vendorTier.getRelationshipStatusDescription(),"ACTIVE")){
+                    VendorResponse vendorTierData =  client.get(vendorProfileUri+vendorTier.getId(),
+                            VendorResponse.class);
+                    createVendorsFromVendorApiResponse(vendorTierData, smeeUser,vendors,vendorPartyIdTracker);
+                }
+            });
+        }
+        return vendors;
     }
 
-    private SmeeUserVendor buildVendor(DenodoElement denodoElement, SmeeUser smeeUser) {
+    private SmeeUserVendor buildVendor(VendorResource vendorResource, SmeeUser smeeUser) {
         return SmeeUserVendor.builder()
-                .vendorName(denodoElement.getLegalName())
-                .vendorPartyId(denodoElement.getPartyId())
+                .vendorName(vendorResource.getLegalName())
+                .vendorPartyId(vendorResource.getId())
                 .userName(smeeUser)
                 .build();
     }
+
+    private boolean hasVendorInfo(VendorResponse vendorData){
+        return vendorData != null && vendorData.getResource() != null;
+    }
+
+    private boolean containsVendorTier(List<VendorTier> vendorTiers){
+        return !CollectionUtils.isEmpty(vendorTiers);
+    }
+
+    private boolean isValidVendor(VendorResource vendorResource){
+        return  StringUtils.equals(vendorResource.getType(),"MFG")
+                && StringUtils.equals(vendorResource.getStatus(),"A");
+    }
+
+    private boolean isVendorsInvalid(VendorResponse vendorResponse, List<SmeeUserVendor> vendors) {
+        return vendors.isEmpty() && vendorResponse != null;
+    }
+
+    private boolean isValidAndNonRepeatedVendor(VendorTier vendorTier, Set<String> vendorPartyIdTracker){
+        return vendorTier.getId()!= null && !vendorPartyIdTracker.contains(vendorTier.getId());
+    }
+
+
 }
