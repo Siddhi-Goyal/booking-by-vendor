@@ -25,4 +25,5 @@ public class SmeeUserResponse implements Response {
     private String lastModifiedBy;
     private ZonedDateTime createdDate;
     private ZonedDateTime lastModifiedDate;
+    private Boolean isActive;
 }

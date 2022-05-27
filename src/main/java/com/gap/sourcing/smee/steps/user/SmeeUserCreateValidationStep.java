@@ -80,7 +80,7 @@ public class SmeeUserCreateValidationStep implements Step{
     }
 
     private void isValidEmail(SmeeUserCreateResource resource, boolean isVendor) {
-        if ((isVendor && isGapEmailId(resource.getUserEmail())) || (!isVendor &&
+        if ((!isVendor &&
                 !isGapEmailId(resource.getUserEmail()))) {
             log.info("Invalid email({}) id for vendor {} ", resource.getUserEmail(), resource.getUserName(), 
                     kv("emailId", resource.getUserEmail()));

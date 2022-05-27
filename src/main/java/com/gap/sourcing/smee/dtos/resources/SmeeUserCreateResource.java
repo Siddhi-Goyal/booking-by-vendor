@@ -43,6 +43,9 @@ public class SmeeUserCreateResource implements Resource {
         @NotBlank
         @Size(min = 1, max = 50)
         private String lastName;
+        private Boolean isActive;
+
+
     }
 
 

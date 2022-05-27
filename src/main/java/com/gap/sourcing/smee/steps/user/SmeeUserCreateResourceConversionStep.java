@@ -41,7 +41,7 @@ public class SmeeUserCreateResourceConversionStep implements Step {
             smeeUser.setUserName(userResource.getUserName());
             smeeUser.setUserEmail(userResource.getUserEmail());
             smeeUser.setUserTypeId(fetchUserTypeIdFromDB(userResource.getUserType()));
-            smeeUser.setIsActive(true);
+            smeeUser.setIsActive(userResource.getIsActive()!=null?userResource.getIsActive():true);
             smeeUser.setIsVendor(userResource.getIsVendor());
             smeeUser.setCreatedBy(userResource.getUserId());
             ZonedDateTime currentTimestamp = ZonedDateTime.now();
