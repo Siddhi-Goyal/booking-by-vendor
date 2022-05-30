@@ -61,6 +61,7 @@ class SmeeUserCreateResourceConversionStepTest {
     @Test
     void execute_shouldUpdateTheContextWithAnInputSmeeUserEntityObject() throws GenericUserException {
         final SmeeUserCreateResource resource = ResourceProvider.getSmeeUserCreateResource();
+        resource.setIsActive(true);
         final SmeeUserContext context = new SmeeUserContext(resource);
         when(smeeUserTypeRepository.findSmeeUserTypeByUserType(resource.getUserType())).thenReturn(smeeUserType);
         smeeUserCreateResourceConversionStep.execute(context);
