@@ -69,18 +69,4 @@ class SmeeUserEntityMergeStepTest {
         assertThat(step, is(smeeUserPersistStep));
     }
 
-    @Test
-    void execute_shouldReturnASmeeUserLoadDataStep_isActive_Null() throws GenericUserException {
-        final SmeeUserCreateResource resource = ResourceProvider.getSmeeUserCreateResource();
-        final SmeeUserContext context = new SmeeUserContext(resource);
-        SmeeUser input = SmeeUser.builder().lastModifiedDate(ZonedDateTime.now()).lastModifiedBy("rparmal").
-                build();
-        SmeeUser current = SmeeUser.builder().lastModifiedDate(ZonedDateTime.now()).lastModifiedBy("rparmal").
-                build();
-        context.setCurrent(current);
-        context.setInput(input);
-        final Step step = smeeUserEntityMergeStep.execute(context);
-
-        assertThat(step, is(smeeUserPersistStep));
-    }
 }
