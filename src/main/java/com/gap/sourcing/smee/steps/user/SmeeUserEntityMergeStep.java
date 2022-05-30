@@ -39,7 +39,7 @@ public class SmeeUserEntityMergeStep implements Step {
             current.setUserTypeId(input.getUserTypeId());
             current.setFirstName(input.getFirstName());
             current.setLastName(input.getLastName());
-            current.setIsActive(input.getIsActive()!=null?input.getIsActive():current.getIsActive());
+            current.setIsActive(setIsActive(input.getIsActive()));
             if (Boolean.TRUE.equals(input.getIsVendor())) {
                 List<SmeeUserVendor> removedVendors = current.getVendors().stream().filter(vendor ->
                         isPresent(input.getVendors(),
@@ -72,5 +72,12 @@ public class SmeeUserEntityMergeStep implements Step {
     private boolean isPresent(List<SmeeUserVendor> vendors, SmeeUserVendor vendor) {
         return vendors.stream().noneMatch(ven -> vendor.getVendorName().equals(ven.getVendorName()) &&
                 vendor.getVendorPartyId().equals(ven.getVendorPartyId()));
+    }
+    private boolean setIsActive(Boolean isActive) {
+        if(isActive!=null) {
+            return isActive;
+        } else {
+            return true;
+        }
     }
 }
