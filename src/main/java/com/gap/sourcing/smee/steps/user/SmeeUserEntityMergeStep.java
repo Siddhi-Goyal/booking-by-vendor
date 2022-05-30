@@ -74,10 +74,10 @@ public class SmeeUserEntityMergeStep implements Step {
                 vendor.getVendorPartyId().equals(ven.getVendorPartyId()));
     }
     private boolean setIsActive(Boolean isActive) {
-        if(isActive!=null) {
-            return isActive;
-        } else {
+        if(isActive == null) {
             return true;
+        } else {
+            return isActive;
         }
     }
 }

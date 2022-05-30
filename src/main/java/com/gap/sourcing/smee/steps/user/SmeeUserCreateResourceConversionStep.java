@@ -68,10 +68,10 @@ public class SmeeUserCreateResourceConversionStep implements Step {
     }
 
     private boolean setIsActive(Boolean isActive) {
-        if(isActive!=null) {
-            return isActive;
-        } else {
+        if(isActive == null) {
             return true;
+        } else {
+            return isActive;
         }
     }
 }
