@@ -20,10 +20,11 @@ public class SmeeUserResponse implements Response {
     private String userType;
     private String userEmail;
     private Boolean isVendor;
+    private Boolean isActive;
     private List<SmeeVendor> vendors;
     private String createdBy;
     private String lastModifiedBy;
     private ZonedDateTime createdDate;
     private ZonedDateTime lastModifiedDate;
-    private Boolean isActive;
+
 }
