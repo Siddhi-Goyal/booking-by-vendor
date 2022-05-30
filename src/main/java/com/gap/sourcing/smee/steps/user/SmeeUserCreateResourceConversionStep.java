@@ -41,7 +41,7 @@ public class SmeeUserCreateResourceConversionStep implements Step {
             smeeUser.setUserName(userResource.getUserName());
             smeeUser.setUserEmail(userResource.getUserEmail());
             smeeUser.setUserTypeId(fetchUserTypeIdFromDB(userResource.getUserType()));
-            smeeUser.setIsActive(userResource.getIsActive()!=null?userResource.getIsActive():true);
+            smeeUser.setIsActive(setIsActive(userResource.getIsActive()));
             smeeUser.setIsVendor(userResource.getIsVendor());
             smeeUser.setCreatedBy(userResource.getUserId());
             ZonedDateTime currentTimestamp = ZonedDateTime.now();
@@ -65,5 +65,13 @@ public class SmeeUserCreateResourceConversionStep implements Step {
   
     private SmeeUserType fetchUserTypeIdFromDB(String userType) {
         return smeeUserTypeRepository.findSmeeUserTypeByUserType(userType);
+    }
+
+    private boolean setIsActive(Boolean isActive) {
+        if(isActive!=null) {
+            return isActive;
+        } else {
+            return true;
+        }
     }
 }
