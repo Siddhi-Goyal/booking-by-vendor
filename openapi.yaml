@@ -14,6 +14,8 @@ info:
 servers:
   - url: https://stage.api.azeus.gaptech.com/sourcing/smee-user-service/api
     description: Stage
+  - url: https://api.azeus.gaptech.com/sourcing/smee-user-service/api
+    description: Production
 tags:
   - name: basic-error-controller
     description: Basic Error Controller
