@@ -74,6 +74,7 @@ paths:
           required: true
           schema:
             type: string
+            example: vprabhu
       responses:
         '200':
           description: OK
@@ -100,11 +101,14 @@ components:
       properties:
         error:
           type: string
+          example: Something Went Wrong!
         httpStatus:
           type: integer
           format: int32
+          example: 200
         requestId:
           type: string
+          example: b0c6aef4e0769726
         resource:
           $ref: '#/components/schemas/Response'
         resources:
@@ -127,43 +131,54 @@ components:
         - userType
       type: object
       properties:
-        firstName:
-          maxLength: 50
-          minLength: 1
-          type: string
-        isActive:
-          type: boolean
-        isVendor:
-          type: boolean
-        lastName:
-          maxLength: 50
-          minLength: 1
-          type: string
-        userEmail:
-          maxLength: 50
-          minLength: 1
-          type: string
-        userId:
-          maxLength: 10
-          minLength: 1
-          type: string
         userName:
           maxLength: 20
           minLength: 1
           type: string
+          example: vprabhu
+        firstName:
+          maxLength: 50
+          minLength: 1
+          type: string
+          example: Vinayak
+        lastName:
+          maxLength: 50
+          minLength: 1
+          type: string
+          example: Prabhu
+        userEmail:
+          maxLength: 50
+          minLength: 1
+          type: string
+          example: Vinayak_Prabhu@gap.com
+        isActive:
+          type: boolean
+          example: true
         userType:
           maxLength: 20
           minLength: 1
           type: string
+          example: GIS PD
+        isVendor:
+          type: boolean
+          example: false
         vendorPartyId:
           type: string
+          example: 1000045
+        userId:
+          maxLength: 10
+          minLength: 1
+          type: string
+          example: dnagpal
     SmeeUserTypes:
       title: SmeeUserTypes
       type: object
       properties:
         description:
           type: string
+          example: Asia PD
         name:
           type: string
+          example: GIS PD
 security:
   - ApiKeyAuth: []
