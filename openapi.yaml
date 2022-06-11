@@ -9,27 +9,19 @@ info:
     email: HQ-SMEE-DG@gap.com
   version: '1.0'
 servers:
-  - url: https://stage.api.azeus.gaptech.com/sourcing/smee-user-service/api
+  - url: https://stage.api.azeus.gaptech.com/sourcing/smee-user-service
     description: Stage
-  - url: https://api.azeus.gaptech.com/sourcing/smee-user-service/api
+  - url: https://api.azeus.gaptech.com/sourcing/smee-user-service
     description: Production
 tags:
-  - name: basic-error-controller
-    description: Basic Error Controller
-  - name: cloud-foundry-links-handler
-    description: Cloud Foundry Links Handler
-  - name: operation-handler
-    description: Operation Handler
   - name: smee-user-controller
     description: Smee User Controller
-  - name: web-mvc-links-handler
-    description: Web Mvc Links Handler
 paths:
   /api/user:
     post:
       tags:
         - smee-user-controller
-      summary: createOrUpdateUser
+      summary: Create Or Update SMEE User
       operationId: createOrUpdateUserUsingPOST
       requestBody:
         content:
@@ -55,7 +47,7 @@ paths:
     get:
       tags:
         - smee-user-controller
-      summary: getUserTypes
+      summary: Fetch SMEE User Types
       operationId: getUserTypesUsingGET
       responses:
         '200':
@@ -74,13 +66,12 @@ paths:
     get:
       tags:
         - smee-user-controller
-      summary: getUser
+      summary: Fetch User By GAP AD Id
       operationId: getUserUsingGET
       parameters:
         - name: userId
-          in: query
+          in: path
           required: true
-          style: form
           schema:
             type: string
       responses:
