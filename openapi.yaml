@@ -9,6 +9,8 @@ info:
     email: HQ-SMEE-DG@gap.com
   version: '1.0'
 servers:
+  - url: https://dev.api.azeus.gaptech.com/sourcing/smee-user-service
+    description: Development
   - url: https://stage.api.azeus.gaptech.com/sourcing/smee-user-service
     description: Stage
   - url: https://api.azeus.gaptech.com/sourcing/smee-user-service
@@ -119,6 +121,67 @@ components:
     Response:
       title: Response
       type: object
+      oneOf:
+        - $ref: '#/components/schemas/SmeeUserResponse'
+    SmeeUserResponse:
+      type: object
+      properties:
+        userName:
+          type: string
+          example: vprabhu
+          description: GAP username of the account
+        firstName:
+          type: string
+          example: Vinayak
+        lastName:
+          type: string
+          example: Prabhu
+        userType:
+          type: string
+          example: GIS PD
+        userEmail:
+          type: string
+          example: Vinayak_Prabhu@gap.com
+        isVendor:
+          type: boolean
+          example: false
+        isActive:
+          type: boolean
+          example: true
+        vendors:
+          type: array
+          items:
+            $ref: '#/components/schemas/SmeeVendor'
+        createdBy:
+          type: string
+          example: smee-user
+          description: Audit field for internal use
+        lastModifiedBy:
+          type: string
+          example: smee-user
+          description: Audit field for internal use
+        createdDate:
+          type: string
+          format: date-time
+          example: '2022-05-03T05:00:44.78013Z'
+        lastModifiedDate:
+          type: string
+          format: date-time
+          example: '2022-05-03T05:00:44.78013Z'
+    SmeeVendor:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+          example: 'dea14dad-0872-4fd7-b7e9-7eb64c635e1c'
+          description: GUID for internal application mapping
+        vendorPartyId:
+          type: string
+          example: "1000045"
+        vendorName:
+          type: string
+          example: "ARVIND LIMITED (WOVEN SHIRTS)"
     SmeeUserCreateResource:
       title: SmeeUserCreateResource
       required:
