@@ -75,6 +75,7 @@ paths:
           schema:
             type: string
             example: vprabhu
+            description: GAP username of SMEE account you want to fetch
       responses:
         '200':
           description: OK
@@ -164,12 +165,13 @@ components:
           example: false
         vendorPartyId:
           type: string
-          example: 1000045
+          example: "1000045"
         userId:
           maxLength: 10
           minLength: 1
           type: string
           example: dnagpal
+          description: GAP username of account creation approver
     SmeeUserTypes:
       title: SmeeUserTypes
       type: object
