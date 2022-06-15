@@ -43,10 +43,10 @@ public class SmeeUserCreateResourceConversionStep implements Step {
             smeeUser.setUserTypeId(fetchUserTypeIdFromDB(userResource.getUserType()));
             smeeUser.setIsActive(userResource.getIsActive());
             smeeUser.setIsVendor(userResource.getIsVendor());
-            smeeUser.setCreatedBy(userResource.getUserId());
+            smeeUser.setCreatedBy(userResource.getCreatedBy());
             ZonedDateTime currentTimestamp = ZonedDateTime.now();
             smeeUser.setCreatedDate(currentTimestamp);
-            smeeUser.setLastModifiedBy(userResource.getUserId());
+            smeeUser.setLastModifiedBy(userResource.getCreatedBy());
             smeeUser.setLastModifiedDate(currentTimestamp);
             smeeUser.setFirstName(userResource.getFirstName());
             smeeUser.setLastName(userResource.getLastName());

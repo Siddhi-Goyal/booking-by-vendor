@@ -14,6 +14,6 @@ import javax.validation.constraints.NotBlank;
 public class SmeeUserGetResource implements Resource {
 
     @NotBlank
-    private  String userId;
+    private  String userName;
 
 }

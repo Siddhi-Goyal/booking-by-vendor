@@ -81,7 +81,7 @@ class SmeeUserGetDataStepTest {
 
     @Test
     void execute_shouldReturnAsmeeUserResponseConversionStep() throws GenericUserException {
-        resource.setUserId("xyz");
+        resource.setUserName("xyz");
         context.setResource(resource);
         final Step step = smeeUserGetDataStep.execute(context);
         assertThat(step, is(smeeUserResponseConversionStep));
@@ -90,7 +90,7 @@ class SmeeUserGetDataStepTest {
 
     @Test
     void execute_shouldReturnNullWhenNoUserIdisFound() throws GenericUserException {
-        resource.setUserId("xyz");
+        resource.setUserName("xyz");
         context.setResource(resource);
         entity = null;
         when(smeeUserRepository.findSmeeUserByUserName("xyz")).thenReturn(entity);
@@ -101,7 +101,7 @@ class SmeeUserGetDataStepTest {
 
     @Test
     void execute_shouldReturnAsmeeUserResponse() throws GenericUserException {
-        resource.setUserId("xyz");
+        resource.setUserName("xyz");
         context.setResource(resource);
         when(smeeUserRepository.findSmeeUserByUserName("xyz")).thenReturn(entity);
         final Step step = smeeUserGetDataStep.execute(context);
