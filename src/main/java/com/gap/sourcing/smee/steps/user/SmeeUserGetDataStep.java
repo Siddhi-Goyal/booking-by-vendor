@@ -33,7 +33,7 @@ public class SmeeUserGetDataStep implements Step {
     public Step execute(Context context) throws GenericUserException {
         SmeeUserContext userContext = (SmeeUserContext) context;
         SmeeUserGetResource resource = (SmeeUserGetResource) userContext.getResource();
-        String userIdToGetDetails = resource.getUserId();
+        String userIdToGetDetails = resource.getUserName();
 
         log.info("Getting user details for user-id, resource={}", resource);
         SmeeUser smeeUser = smeeUserRepository.findSmeeUserByUserName(userIdToGetDetails);

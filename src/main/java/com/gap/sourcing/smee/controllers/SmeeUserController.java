@@ -49,7 +49,7 @@ public class SmeeUserController {
         return new ResponseEntity<>(envelope, HttpStatus.OK);
     }
 
-    @GetMapping("/{userId}")
+    @GetMapping("/{userName}")
     public ResponseEntity<Envelope> getUser(final @Valid SmeeUserGetResource resource) throws GenericUserException {
 
         final String requestId = MDC.get(REQUEST_ID_KEY);

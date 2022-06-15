@@ -34,7 +34,7 @@ public class SmeeUserCreateResource implements Resource {
         private String vendorPartyId;
         @NotBlank
         @Size(min = 1, max = 10)
-        private String userId;
+        private String createdBy;
 
         @NotBlank
         @Size(min = 1, max = 50)
