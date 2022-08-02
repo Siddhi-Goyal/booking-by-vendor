@@ -19,6 +19,9 @@ management:
   health:
     db:
       enabled: false
+  info:
+    git:
+      mode: full
 
 jasypt:
   encryptor:
