@@ -8,6 +8,7 @@ import javax.sql.DataSource;
 import com.zaxxer.hikari.HikariDataSource;
 
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.boot.actuate.jdbc.DataSourceHealthIndicator;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
@@ -51,6 +52,11 @@ public class DataSourceConfig {
         hikariDataSource.setUsername(username);
         hikariDataSource.setPassword(password);
         return hikariDataSource;
+    }
+
+    @Bean
+    public DataSourceHealthIndicator db() {
+        return new DataSourceHealthIndicator(primaryDataSource());
     }
 
 }

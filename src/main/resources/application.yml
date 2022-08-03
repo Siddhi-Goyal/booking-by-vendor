@@ -16,6 +16,12 @@ management:
   endpoint:
     health:
       show-details: always
+  health:
+    db:
+      enabled: false
+  info:
+    git:
+      mode: full
 
 jasypt:
   encryptor:
