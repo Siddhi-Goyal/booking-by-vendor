@@ -59,4 +59,9 @@ public class DataSourceConfig {
         return new DataSourceHealthIndicator(primaryDataSource());
     }
 
+    @Bean
+    public DataSourceHealthIndicator readOnlyDB() {
+        return new DataSourceHealthIndicator(readOnlyDataSource());
+    }
+
 }
