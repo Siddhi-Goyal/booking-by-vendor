@@ -35,6 +35,7 @@ public class SmeeUser {
     private SmeeUserType userTypeId;
     private Boolean isActive;
     private Boolean isVendor;
+    private Boolean isAdmin;
     private String createdBy;
     private ZonedDateTime createdDate;
     private String lastModifiedBy;

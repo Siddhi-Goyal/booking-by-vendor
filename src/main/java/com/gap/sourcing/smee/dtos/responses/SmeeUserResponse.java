@@ -20,6 +20,7 @@ public class SmeeUserResponse implements Response {
     private String userType;
     private String userEmail;
     private Boolean isVendor;
+    private Boolean isAdmin;
     private Boolean isActive;
     private List<SmeeVendor> vendors;
     private String createdBy;

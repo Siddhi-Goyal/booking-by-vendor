@@ -23,6 +23,7 @@ public class SmeeUserCreateResourceConversionStep implements Step {
 
     private final Step smeeUserLoadDataStep;
     private final SmeeUserTypeRepository smeeUserTypeRepository;
+    private static final Boolean IS_ADMIN = false;
 
     public SmeeUserCreateResourceConversionStep(Step smeeUserLoadDataStep,
                                                 SmeeUserTypeRepository smeeUserTypeRepository) {
@@ -50,7 +51,7 @@ public class SmeeUserCreateResourceConversionStep implements Step {
             smeeUser.setLastModifiedDate(currentTimestamp);
             smeeUser.setFirstName(userResource.getFirstName());
             smeeUser.setLastName(userResource.getLastName());
-
+            smeeUser.setIsAdmin(IS_ADMIN);
             userContext.setSmeeUserType(userResource.getUserType());
             userContext.setInput(smeeUser);
 
