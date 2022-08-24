@@ -59,6 +59,7 @@ class SmeeUserGetDataStepTest {
         entity = new SmeeUser();
         entity.setUserName("xyz");
         entity.setUserEmail("xyz@abc.com");
+        entity.setIsAdmin(false);
         entity.setUserTypeId(type);
         context.setInput(entity);
 
