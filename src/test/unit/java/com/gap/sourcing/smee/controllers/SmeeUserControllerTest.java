@@ -77,4 +77,10 @@ class SmeeUserControllerTest {
         assertThat(response.getBody(), is(notNullValue()));
     }
 
+    @Test
+    void patchSmeeUser_ShouldReturnAStatusOkResponseEntity() throws GenericUserException {
+
+        assertThat( sampleController.updateUserLastLoginDate(getResource).getStatusCode(),is(HttpStatus.OK));
+    }
+
 }
