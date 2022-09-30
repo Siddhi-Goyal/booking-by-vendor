@@ -20,7 +20,6 @@ public class SmeeUserPatchDataStep implements Step {
 
     public SmeeUserPatchDataStep(SmeeUserRepository smeeUserRepository) {
         this.smeeUserRepository = smeeUserRepository;
-
     }
 
     @Override
@@ -34,7 +33,7 @@ public class SmeeUserPatchDataStep implements Step {
             userContext.setOutput(null);
         } else {
             smeeUser.setLastLoginDate(ZonedDateTime.now());
-             smeeUserRepository.save(smeeUser);
+            smeeUserRepository.save(smeeUser);
         }
         return null;
     }
