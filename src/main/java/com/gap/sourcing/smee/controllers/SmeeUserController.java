@@ -77,4 +77,13 @@ public class SmeeUserController {
         log.info("User types response returned successfully", kv(RESOURCE, response));
         return new ResponseEntity<>(envelope, HttpStatus.OK);
     }
+
+    @PatchMapping("/last-login-date/{userName}")
+    public ResponseEntity<Void> updateUserLastLoginDate(final @Valid SmeeUserGetResource resource) {
+        log.info("Received requested to patch SMEE User", kv(RESOURCE, resource));
+        userControllerStepService.process(RequestAction.PATCH, resource);
+        log.info("SMEE User patched successfully");
+        return new ResponseEntity<>(HttpStatus.OK);
+    }
+
 }

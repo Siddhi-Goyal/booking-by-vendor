@@ -17,12 +17,15 @@ public class SmeeUserStepManager implements StepManager {
     private final Map<RequestAction, Step> firstStepMap;
 
     public SmeeUserStepManager(final Step smeeUserCreateValidationStep ,
-                               final  Step smeeUserGetDataStep, final Step smeeUserTypeLoadDataStep) {
+                               final  Step smeeUserGetDataStep,
+                               final Step smeeUserTypeLoadDataStep,
+                              final Step smeeUserPatchDataStep) {
         this.firstStepMap = new EnumMap<>(RequestAction.class);
 
         firstStepMap.put(RequestAction.CREATE, smeeUserCreateValidationStep);
         firstStepMap.put(RequestAction.GET, smeeUserGetDataStep);
         firstStepMap.put(RequestAction.GET_USER_TYPES, smeeUserTypeLoadDataStep);
+        firstStepMap.put(RequestAction.PATCH, smeeUserPatchDataStep);
     }
 
     @Override

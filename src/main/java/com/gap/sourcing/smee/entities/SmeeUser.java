@@ -44,6 +44,8 @@ public class SmeeUser {
     private String firstName;
     private String lastName;
 
+    private ZonedDateTime lastLoginDate;
+
     @OneToMany(mappedBy = "userName", fetch = FetchType.LAZY, orphanRemoval = true, cascade = CascadeType.ALL )
     private List<SmeeUserVendor> vendors;
 
