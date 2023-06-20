@@ -2,7 +2,7 @@ sonarqube {
 	properties {
 		if (project.hasProperty('pullRequest')) {
 			property 'sonar.pullrequest.provider', 'github'
-			property 'sonar.pullrequest.github.repository', 'smee/smee-user-service'
+			property 'sonar.pullrequest.github.repository', 'gisbooking/smee-user-service'
 			property 'sonar.pullrequest.key', System.getenv('ghprbPullId')
 			property 'sonar.pullrequest.branch', System.getenv('ghprbSourceBranch')
 			property 'sonar.pullrequest.base', System.getenv('ghprbTargetBranch')
