@@ -1,0 +1,49 @@
+name: GIS Booking PR Workflow
+
+on:
+  pull_request:
+    types:
+      - opened
+      - synchronize
+
+jobs:
+  pull_request:
+    name: Build when PR is raised
+    runs-on: [ self-hosted, arc-dind-rootless-enterprise ]
+    
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+
+      - name: Set up Java
+        uses: actions/setup-java@v3
+        with:
+          java-version: '11'
+          distribution: 'adopt-hotspot'
+
+      - name: Setup Gradle
+        uses: gradle/wrapper-validation-action@v1
+
+      - name: Execute Gradle build
+        run: ./gradlew clean build
+        env:
+          SAAS_ARTIFACTORY_USERNAME: ${{secrets.SAAS_ARTIFACTORY_USERNAME}}
+          SAAS_ARTIFACTORY_PASSWORD: ${{secrets.SAAS_ARTIFACTORY_PASSWORD}}
+          
+      - name: SonarQube Scan
+        uses: sonarsource/sonarqube-scan-action@master
+        env:
+          SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
+          SONAR_HOST_URL: ${{ secrets.SONARQUBE_HOST }}
+          projectVersion: ${{ github.event.inputs.projectVersion }}
+
+#       - name: SonarQube Quality Gate check
+#         id: sonarqube-quality-gate-check
+#         uses: sonarsource/sonarqube-quality-gate-action@master
+#         timeout-minutes: 5
+#         env:
+#           SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
+#           SONAR_HOST_URL: ${{ secrets.SONAR_HOST_URL }}
+
+#       - name: "Display SonarQube Quality Gate Status value"
+#         run: echo "The Sonar Quality Gate status is ${{ steps.sonarqube-quality-gate-check.outputs.quality-gate-status }}"
