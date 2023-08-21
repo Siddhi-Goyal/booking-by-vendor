@@ -1,19 +1,21 @@
+# This is a basic workflow to help you get started with Actions
 
 name: AKS Workflow
 permissions:
   id-token: write
   contents: read
 
+# Controls when the workflow will run
+
 on:
   push:
     branches:
       - master
-  paths-ignore:
-    - 'README.md'
-    - 'chartis-stage.yml'
+    paths-ignore:
+      - 'README.md'
+      - 'chartis-stage.yml'
 
 jobs:
-
   set-short-sha:
     name: Build And Test For AKS
     runs-on: [ self-hosted, arc-dind-rootless-enterprise ]
@@ -25,8 +27,7 @@ jobs:
         id: shorten_sha
         run: echo "::set-output name=short_sha::$(git rev-parse --short HEAD)"
     outputs:
-            short_sha: ${{ steps.shorten_sha.outputs.short_sha }}
-
+      short_sha: ${{ steps.shorten_sha.outputs.short_sha }}
 
   docker-build-scan-push:
     needs: set-short-sha
@@ -35,7 +36,6 @@ jobs:
       app-name: smee-user-service
       image-name: com/gap/sourcing/smee/smee-user-service
       image-tag: ${{needs.set-short-sha.outputs.short_sha}}
-
 
   deploy-to-dev:
     needs:

@@ -10,7 +10,7 @@ jobs:
   pull_request:
     name: Build when PR is raised
     runs-on: [ self-hosted, arc-dind-rootless-enterprise ]
-    
+
     steps:
       - name: Checkout code
         uses: actions/checkout@v3
@@ -32,20 +32,20 @@ jobs:
           JASYPT_ENCRYPTOR_PASSWORD: ${{secrets.JASYPT_ENCRYPTION_PASSWORD}}
           SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
           SONAR_HOST_URL: ${{ secrets.SONARQUBE_HOST }}
-          
+
       - name: SonarQube Scan
         uses: sonarsource/sonarqube-scan-action@v1.2.0
         env:
           SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
           SONAR_HOST_URL: ${{ secrets.SONARQUBE_HOST }}
 
-#       - name: SonarQube Quality Gate check
-#         id: sonarqube-quality-gate-check
-#         uses: sonarsource/sonarqube-quality-gate-action@master
-#         timeout-minutes: 5
-#         env:
-#           SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
-#           SONAR_HOST_URL: ${{ secrets.SONAR_HOST_URL }}
-
-#       - name: "Display SonarQube Quality Gate Status value"
-#         run: echo "The Sonar Quality Gate status is ${{ steps.sonarqube-quality-gate-check.outputs.quality-gate-status }}"
+  #      - name: SonarQube Quality Gate check
+  #        id: sonarqube-quality-gate-check
+  #        uses: sonarsource/sonarqube-quality-gate-action@master
+  #        timeout-minutes: 5
+  #        env:
+  #          SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
+  #          SONAR_HOST_URL: ${{ secrets.SONAR_HOST_URL }}
+  #
+  #      - name: "Display SonarQube Quality Gate Status value"
+  #        run: echo "The Sonar Quality Gate status is ${{ steps.sonarqube-quality-gate-check.outputs.quality-gate-status }}"
