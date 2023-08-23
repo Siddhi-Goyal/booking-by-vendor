@@ -8,5 +8,5 @@ spring:
   cloud:
     config:
       name: smee-user-service
-      uri: http://localhost:8888
+      uri: ${SMEE_CONFIG_SERVER_URL}
       fail-fast: true
