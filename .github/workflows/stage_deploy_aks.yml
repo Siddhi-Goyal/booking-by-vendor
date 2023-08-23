@@ -1,0 +1,24 @@
+name: AKS stage deploy
+permissions:
+  id-token: write
+  contents: read
+
+# Controls when the workflow will run
+
+on:
+  workflow_dispatch:
+    inputs:
+      artifactID:
+        description: 'Enter the short-sha id (first 7 characters) to deploy to stage'
+        required: true
+
+jobs:
+  deploy-to-stage:
+    runs-on: [ self-hosted ]
+    steps:
+      - name: checkout the repo
+        uses: actions/checkout@v3
+      - name: Deploy to Stage
+        uses: continuous-delivery-platform/chartis-deploy@main
+        with:
+          chartis-abstract: chartis-stage.yml
