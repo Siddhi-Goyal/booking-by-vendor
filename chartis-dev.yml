@@ -20,17 +20,11 @@ secrets:
 kubernetes:
   dockerImage: gacr2nnonprod.azurecr.io/com/gap/sourcing/smee/smee-user-service
   port: 8080
-    #  deploymentStrategy:
-    #    blueGreen:
-    #      liveTrafficWeighting:
-    #        green: 100
-    #      deployTo: green
-    #      killDormant: true
-    #    autoscaling:
-    #      minReplicas: 2
-    #      maxReplicas: 3
-  #      memoryThreshold: 75
-  #      cpuThreshold: 75
+  #  autoscaling:
+  #    minReplicas: 2
+  #    maxReplicas: 3
+  #    memoryThreshold: 75
+  #    cpuThreshold: 75
   health:
     livenessProbe:
       endpoint: /actuator/health/liveness

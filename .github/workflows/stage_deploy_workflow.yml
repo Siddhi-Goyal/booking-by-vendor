@@ -1,4 +1,4 @@
-name: AKS stage deploy
+name: AKS stage deploy Workflow
 permissions:
   id-token: write
   contents: read
@@ -6,11 +6,11 @@ permissions:
 # Controls when the workflow will run
 
 on:
-  workflow_dispatch:
-    inputs:
-      artifactID:
-        description: 'Enter the short-sha id (first 7 characters) to deploy to stage'
-        required: true
+  push:
+    branches:
+      - master
+    paths:
+      - 'chartis-stage.yml'
 
 jobs:
   deploy-to-stage:

@@ -1,6 +1,6 @@
 # This is a basic workflow to help you get started with Actions
 
-name: AKS Workflow
+name: Merge & Deploy To AKS Workflow
 permissions:
   id-token: write
   contents: read
