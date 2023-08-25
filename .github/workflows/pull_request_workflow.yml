@@ -44,7 +44,7 @@ jobs:
         timeout-minutes: 5
         env:
           SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
-          SONAR_HOST_URL: ${{ secrets.SONAR_HOST_URL }}
+          SONAR_HOST_URL: ${{ secrets.SONARQUBE_HOST }}
 
       - name: "Display SonarQube Quality Gate Status value"
         run: echo "The Sonar Quality Gate status is ${{ steps.sonarqube-quality-gate-check.outputs.quality-gate-status }}"
