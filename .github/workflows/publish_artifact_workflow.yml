@@ -1,0 +1,45 @@
+# This is a basic workflow to help you get started with Actions
+
+name: Build & Publish Artifact Workflow
+
+# Controls when the workflow will run
+on:
+  # Triggers the workflow on push or pull request events but only for the "master" branch
+  push:
+    branches:
+      - master
+    paths-ignore:
+      - 'README.md'
+      - 'chartis-stage.yml'
+      - 'chartis-dev.yml'
+      - 'Dockerfile'
+      - 'build-local.sh'
+
+jobs:
+  build-Test-sonar:
+    name: Build And Publish Artifact
+    runs-on: [ self-hosted, arc-dind-rootless-enterprise ]
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+
+      - name: Set up Java
+        uses: actions/setup-java@v3
+        with:
+          java-version: '11'
+          distribution: 'adopt-hotspot'
+
+      - name: Setup Gradle
+        uses: gradle/wrapper-validation-action@v1
+
+      - name: Execute Gradle build
+        run: ./gradlew -Dgradle.wrapperUser=${SAAS_ARTIFACTORY_USERNAME} -Dgradle.wrapperPassword=${SAAS_ARTIFACTORY_PASSWORD} -Dsonar.analysis.mode=publish clean build uploadArchives -Pversion=$(git rev-parse HEAD)
+        env:
+          SAAS_ARTIFACTORY_USERNAME: ${{secrets.SAAS_ARTIFACTORY_USERNAME}}
+          SAAS_ARTIFACTORY_PASSWORD: ${{secrets.SAAS_ARTIFACTORY_PASSWORD}}
+          JASYPT_ENCRYPTOR_PASSWORD: ${{secrets.JASYPT_ENCRYPTION_PASSWORD}}
+
+
+      - name: Published Artifact To JFrog
+        run: echo "Artifact Published in Jfrog Local Non-Prod"
