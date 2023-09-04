@@ -25,7 +25,7 @@ COPY --chown=gradle:gradle . .
 
 RUN chmod +x gradlew && ./gradlew -Dgradle.wrapperUser=${ARTIFACTORY_USERNAME} -Dgradle.wrapperPassword=${ARTIFACTORY_PASSWORD} clean build sonar -Dsonar.analysis.mode=publish -Pversion=${APPLICATION_VERSION} -PbuildDate=${IMAGE_DATE}
 
-FROM gacr2pbaseimages.azurecr.io/gap/baseimages/openjdk11-alpine:0.0.8 AS app
+FROM gacr2pbaseimages.azurecr.io/gap/baseimages/openjdk11-alpine:1-stable AS app
 # FROM gacr2pbaseimages.azurecr.io/gap/baseimages/openjdk17-alpine:0.0.5 AS app # uncomment and remove the above line if you want ot use j17
 
 ARG SERVICE_NAME

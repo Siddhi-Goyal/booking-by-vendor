@@ -13,7 +13,7 @@ on:
       - master
     paths-ignore:
       - 'README.md'
-      - 'chartis-stage.yml'
+      - 'deploy/chartis-stage.yml'
 
 jobs:
   set-short-sha:
@@ -48,5 +48,5 @@ jobs:
       - name: Deploy to Dev
         uses: continuous-delivery-platform/chartis-deploy@main
         with:
-          chartis-abstract: chartis-dev.yml
+          chartis-abstract: deploy/chartis-dev.yml
           image-tag: ${{needs.set-short-sha.outputs.short_sha}}
