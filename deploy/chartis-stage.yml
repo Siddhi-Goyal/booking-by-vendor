@@ -18,7 +18,7 @@ secrets:
       environmentVariableKey: NEW_RELIC_LICENSE_KEY
 kubernetes:
   dockerImage: gacr2nnonprod.azurecr.io/com/gap/sourcing/smee/smee-user-service
-  dockerImageTag: 880b8ef
+  dockerImageTag: 7bbcdc2
   port: 8080
   health:
     livenessProbe:
