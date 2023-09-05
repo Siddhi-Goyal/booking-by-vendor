@@ -10,8 +10,7 @@ on:
       - master
     paths-ignore:
       - 'README.md'
-      - 'chartis-stage.yml'
-      - 'chartis-dev.yml'
+      - 'deploy/**'
       - 'Dockerfile'
       - 'build-local.sh'
 

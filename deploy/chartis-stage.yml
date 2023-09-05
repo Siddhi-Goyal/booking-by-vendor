@@ -1,17 +1,16 @@
 version: 1-beta
 appName: smee-user-service
 team: pt-gisbooking
-targetEnv: dev
+environment: stage
 environmentVariables:
   JAVA_NR_OPTS: '-javaagent:/usr/local/newrelic/newrelic.jar'
-  NEW_RELIC_APP_NAME: aks-smee-user-service-dev
+  NEW_RELIC_APP_NAME: aks-smee-user-service-stage
   NEW_RELIC_LOG: stdout
   NEW_RELIC_LOG_LEVEL: info
   NEW_RELIC_DISTRIBUTED_TRACING: true
   SMEE_CONFIG_SERVER_URL: "https://gisbooking-config-server-configuration.apps.cfplatform.dev.azeus.gaptech.com"
-  PROFILE: "development"
+  PROFILE: "release"
 secrets:
-  vault: g-akv-2d-spc-smee-01
   secretKeys:
     - key: JASYPT-ENCRYPTOR-PASSWORD
       environmentVariableKey: JASYPT_ENCRYPTOR_PASSWORD
@@ -19,12 +18,8 @@ secrets:
       environmentVariableKey: NEW_RELIC_LICENSE_KEY
 kubernetes:
   dockerImage: gacr2nnonprod.azurecr.io/com/gap/sourcing/smee/smee-user-service
+  dockerImageTag: 880b8ef
   port: 8080
-  #  autoscaling:
-  #    minReplicas: 2
-  #    maxReplicas: 3
-  #    memoryThreshold: 75
-  #    cpuThreshold: 75
   health:
     livenessProbe:
       endpoint: /actuator/health/liveness
@@ -37,6 +32,6 @@ kubernetes:
       endpoint: /actuator/health/liveness
       port: "8080"
       initialDelay: "25"
-      timeout: "5"
-      period: "10"
+      timeout: "600"
+      period: "30"
       failureThreshold: "30"

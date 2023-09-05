@@ -10,7 +10,7 @@ on:
     branches:
       - master
     paths:
-      - 'chartis-stage.yml'
+      - 'deploy/chartis-stage.yml'
 
 jobs:
   deploy-to-stage:
@@ -21,4 +21,4 @@ jobs:
       - name: Deploy to Stage
         uses: continuous-delivery-platform/chartis-deploy@main
         with:
-          chartis-abstract: chartis-stage.yml
+          chartis-abstract: deploy/chartis-stage.yml
