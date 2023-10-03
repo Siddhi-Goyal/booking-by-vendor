@@ -24,6 +24,11 @@ kubernetes:
   #    maxReplicas: 3
   #    memoryThreshold: 75
   #    cpuThreshold: 75
+  resources:
+    requestsCpu: 2
+    limitsCpu: 3
+    requestsMemory: 2G
+    limitsMemory: 3G
   health:
     livenessProbe:
       endpoint: /actuator/health/liveness
