@@ -44,5 +44,3 @@ kubernetes:
       timeout: "5"
       period: "10"
       failureThreshold: "30"
-control:
-  destroyApplication: true

@@ -39,4 +39,3 @@ jacocoTestReport {
 		xml.required = true
 	}
 }
-
