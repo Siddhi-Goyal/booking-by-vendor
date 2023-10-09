@@ -25,10 +25,10 @@ kubernetes:
   #    memoryThreshold: 75
   #    cpuThreshold: 75
   resources:
-    requestsCpu: 2
-    limitsCpu: 3
-    requestsMemory: 2G
-    limitsMemory: 3G
+    requestsCpu: 1
+    limitsCpu: 2
+    requestsMemory: 1G
+    limitsMemory: 2G
   health:
     livenessProbe:
       endpoint: /actuator/health/liveness
