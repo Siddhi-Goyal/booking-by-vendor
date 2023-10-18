@@ -12,26 +12,26 @@ import java.util.List;
 @JsonInclude(JsonInclude.Include.NON_NULL)
 public class Envelope {
     private final Integer httpStatus;
-    private final String requestId;
+    private final String traceId;
     private Response resource;
     private String error;
     private List<SmeeUserTypes> resources;
 
-    public Envelope(Integer httpStatus, String requestId, Response response) {
+    public Envelope(Integer httpStatus, String traceId, Response response) {
         this.httpStatus = httpStatus;
-        this.requestId = requestId;
+        this.traceId = traceId;
         this.resource = response;
     }
 
-    public Envelope(Integer httpStatus, String requestId, List<SmeeUserTypes> resources) {
+    public Envelope(Integer httpStatus, String traceId, List<SmeeUserTypes> resources) {
         this.httpStatus = httpStatus;
-        this.requestId = requestId;
+        this.traceId = traceId;
         this.resources = resources;
     }
 
-    public Envelope(Integer httpStatus, String requestId, String error) {
+    public Envelope(Integer httpStatus, String traceId, String error) {
         this.httpStatus = httpStatus;
-        this.requestId = requestId;
+        this.traceId = traceId;
         this.error = error;
     }
 }

@@ -9,6 +9,6 @@ import lombok.ToString;
 @ToString
 public class VendorResponse {
 
-    private String requestId;
+    private String traceId;
     private VendorResource resource;
 }

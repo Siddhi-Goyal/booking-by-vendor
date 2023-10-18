@@ -1,7 +1,8 @@
 package com.gap.sourcing.smee.filters;
 
 
-import com.gap.sourcing.smee.utils.RequestIdGenerator;
+import brave.Tracer;
+import com.gap.sourcing.smee.utils.TraceUtil;
 import org.slf4j.MDC;
 import org.springframework.stereotype.Component;
 
@@ -13,10 +14,15 @@ import javax.servlet.ServletResponse;
 import javax.servlet.FilterChain;
 import java.io.IOException;
 
-import static com.gap.sourcing.smee.utils.RequestIdGenerator.REQUEST_ID_KEY;
-
 @Component
 public class RequestFilter implements Filter {
+
+    private final Tracer tracer;
+
+    public RequestFilter(Tracer tracer) {
+        this.tracer = tracer;
+    }
+
     @Override
     public void init(FilterConfig filterConfig) throws ServletException {
         //
@@ -25,7 +31,7 @@ public class RequestFilter implements Filter {
     @Override
     public void doFilter(ServletRequest request, ServletResponse response, FilterChain chain) throws IOException, ServletException {
         try {
-            MDC.put(REQUEST_ID_KEY, RequestIdGenerator.generateRequestId());
+            MDC.put(TraceUtil.TRACE_ID, TraceUtil.getTraceId(tracer));
             chain.doFilter(request, response);
         } finally {
             MDC.clear();

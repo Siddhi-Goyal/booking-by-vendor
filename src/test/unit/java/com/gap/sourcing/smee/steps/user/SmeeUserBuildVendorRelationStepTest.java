@@ -1,6 +1,7 @@
 package com.gap.sourcing.smee.steps.user;
 
 
+import brave.Tracer;
 import com.gap.sourcing.smee.contexts.SmeeUserContext;
 import com.gap.sourcing.smee.dtos.resources.SmeeUserCreateResource;
 import com.gap.sourcing.smee.dtos.responses.bamboorose.VendorResource;
@@ -38,6 +39,9 @@ class SmeeUserBuildVendorRelationStepTest {
     @Mock
     Client client;
 
+    @Mock
+    private Tracer tracer;
+
     SmeeUserBuildVendorRelationStep smeeUserVendorRelationStep;
 
     private SmeeUserContext context;
@@ -45,7 +49,7 @@ class SmeeUserBuildVendorRelationStepTest {
 
     @BeforeEach
     void init() {
-        smeeUserVendorRelationStep = new SmeeUserBuildVendorRelationStep(smeeUserEntityMergeStep,
+        smeeUserVendorRelationStep = new SmeeUserBuildVendorRelationStep(tracer, smeeUserEntityMergeStep,
                 client);
         SmeeUserCreateResource resource = new SmeeUserCreateResource();
         resource.setVendorPartyId("12345678");
