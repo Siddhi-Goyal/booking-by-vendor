@@ -1,8 +1,6 @@
 package com.gap.sourcing.smee.controllers;
 
-import brave.Span;
 import brave.Tracer;
-import brave.propagation.TraceContext;
 import com.gap.sourcing.smee.dtos.resources.Resource;
 import com.gap.sourcing.smee.dtos.resources.SmeeUserCreateResource;
 import com.gap.sourcing.smee.dtos.resources.SmeeUserGetResource;
@@ -17,7 +15,6 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
-import org.mockito.Mockito;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -27,7 +24,6 @@ import static org.hamcrest.core.Is.is;
 import static org.hamcrest.core.IsNull.notNullValue;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.eq;
-import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
@@ -47,11 +43,7 @@ class SmeeUserControllerTest {
     void init() {
         createResource = new SmeeUserCreateResource();
         getResource = new SmeeUserGetResource();
-
-        Span spanMock = mock(Span.class);
-        Mockito.when(tracer.currentSpan()).thenReturn(spanMock);
-        TraceContext context = TraceContext.newBuilder().traceId(1).spanId(2).shared(true).build();
-        Mockito.when(tracer.currentSpan().context()).thenReturn(context);    }
+    }
 
     @Test
     void createSmeeUser_ShouldReturnAStatusOkResponseEntity() throws GenericUserException {
