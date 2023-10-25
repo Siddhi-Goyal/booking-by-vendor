@@ -1,6 +1,5 @@
 package com.gap.sourcing.smee.steps.user;
 
-import brave.Tracer;
 import com.gap.sourcing.smee.contexts.Context;
 import com.gap.sourcing.smee.contexts.SmeeUserContext;
 import com.gap.sourcing.smee.dtos.resources.SmeeUserCreateResource;
@@ -13,7 +12,6 @@ import com.gap.sourcing.smee.exceptions.GenericBadRequestException;
 import com.gap.sourcing.smee.exceptions.GenericUserException;
 import com.gap.sourcing.smee.steps.Step;
 import com.gap.sourcing.smee.utils.Client;
-import com.gap.sourcing.smee.utils.TraceUtil;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.codec.binary.StringUtils;
 import org.springframework.beans.factory.annotation.Value;
@@ -35,15 +33,11 @@ public class SmeeUserBuildVendorRelationStep implements Step {
     private String vendorProfileUri;
 
     private static final String USER_NAME = "userName";
-    private static final String TRACE_ID = "traceId";
-
-    private final Tracer tracer;
 
     private final Client client;
     private final Step smeeUserEntityMergeStep;
 
-    public SmeeUserBuildVendorRelationStep(Tracer tracer, Step smeeUserEntityMergeStep, Client client) {
-        this.tracer = tracer;
+    public SmeeUserBuildVendorRelationStep(Step smeeUserEntityMergeStep, Client client) {
         this.smeeUserEntityMergeStep = smeeUserEntityMergeStep;
         this.client = client;
     }
@@ -56,27 +50,24 @@ public class SmeeUserBuildVendorRelationStep implements Step {
         String vendorPartyId = resource.getVendorPartyId();
         log.info("Fetching vendors from vendor profile API for user",
                 kv(USER_NAME, smeeUser.getUserName()),
-                kv("vendorPartyId", vendorPartyId), kv(TRACE_ID, TraceUtil.getTraceId(tracer)));
+                kv("vendorPartyId", vendorPartyId));
        VendorResponse vendorData =  client.get(vendorProfileUri+vendorPartyId, VendorResponse.class);
        List<SmeeUserVendor> vendors = createVendorsFromVendorApiResponse(
                vendorData, smeeUser,
                new ArrayList<>(), new HashSet<>());
        if (isVendorsInvalid(vendorData,vendors)){
-           log.info("Vendor status is inactive or vendor type is not MFG ", kv(TRACE_ID, TraceUtil.getTraceId(tracer)),
-                   kv(USER_NAME, smeeUser.getUserName()));
+           log.info("Vendor status is inactive or vendor type is not MFG ", kv(USER_NAME, smeeUser.getUserName()));
            throw new GenericBadRequestException(resource, "Vendor Status is not Active or vendor type is not MFG " +
                    "for given vendor party id "
                    + resource.getVendorPartyId());
        }
        if (vendors.isEmpty()) {
-           log.info("Vendor details not found for given user",
-                   kv(TRACE_ID, TraceUtil.getTraceId(tracer)), kv(USER_NAME, smeeUser.getUserName()));
+           log.info("Vendor details not found for given user", kv(USER_NAME, smeeUser.getUserName()));
            throw new GenericBadRequestException(resource, "Vendor details not found for given vendor party id "+
                    resource.getVendorPartyId());
        }
         smeeUser.setVendors(vendors);
-        log.info("Retrieved vendors from vendor profile API",kv("vendors", vendors.size()),
-                kv(TRACE_ID, TraceUtil.getTraceId(tracer)));
+        log.info("Retrieved vendors from vendor profile API",kv("vendors", vendors.size()));
        return smeeUserEntityMergeStep;
 
     }
