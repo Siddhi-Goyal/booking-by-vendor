@@ -1,11 +1,11 @@
 package com.gap.sourcing.smee.exceptions;
 
+import brave.Tracer;
 import com.gap.sourcing.smee.dtos.resources.SmeeUserCreateResource;
 import com.gap.sourcing.smee.envelopes.Envelope;
-import com.gap.sourcing.smee.utils.RequestIdGenerator;
+import com.gap.sourcing.smee.utils.TraceUtil;
 import lombok.extern.slf4j.Slf4j;
 import org.hibernate.TransientPropertyValueException;
-import org.slf4j.MDC;
 import org.springframework.context.support.DefaultMessageSourceResolvable;
 import org.springframework.core.Ordered;
 import org.springframework.core.annotation.Order;
@@ -29,7 +29,6 @@ import java.util.List;
 import java.util.Objects;
 import java.util.stream.Collectors;
 
-import static com.gap.sourcing.smee.utils.RequestIdGenerator.REQUEST_ID_KEY;
 import static net.logstash.logback.argument.StructuredArguments.kv;
 
 @ControllerAdvice
@@ -43,17 +42,23 @@ public class SmeeUserExceptionHandler {
     private static final String VENDOR_CREATE_ERROR = "Something  went  wrong";
     private static final String REQUIRED_USER_ID = "Required userId";
 
+    private final Tracer tracer;
+
+    public SmeeUserExceptionHandler(Tracer tracer) {
+        this.tracer = tracer;
+    }
+
 
     @Order(Ordered.HIGHEST_PRECEDENCE)
     @ExceptionHandler(value = {GenericBadRequestException.class})
     protected ResponseEntity<Envelope> handleBadRequestException(GenericBadRequestException ex, WebRequest request) {
-        return handle(ex, ex.getMessage(), HttpStatus.BAD_REQUEST);
+        return handle(ex, ex.getMessage(), TraceUtil.getTraceId(tracer), HttpStatus.BAD_REQUEST);
     }
 
     @Order(Ordered.HIGHEST_PRECEDENCE)
     @ExceptionHandler(value = {GenericUnknownActionException.class})
     protected ResponseEntity<Envelope> handleUnknownActionException(GenericUnknownActionException ex, WebRequest request) {
-        return handle(ex, ex.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
+        return handle(ex, ex.getMessage(), TraceUtil.getTraceId(tracer), HttpStatus.INTERNAL_SERVER_ERROR);
     }
 
     @ExceptionHandler(value = {MethodArgumentNotValidException.class})
@@ -68,14 +73,14 @@ public class SmeeUserExceptionHandler {
 
     @ExceptionHandler(value = {HttpRequestMethodNotSupportedException.class})
     protected ResponseEntity<Envelope> handleMethodNotSupportedException(HttpRequestMethodNotSupportedException ex, WebRequest request) {
-        return handle(ex, REQUIRED_USER_ID, HttpStatus.METHOD_NOT_ALLOWED);
+        return handle(ex, REQUIRED_USER_ID, TraceUtil.getTraceId(tracer), HttpStatus.METHOD_NOT_ALLOWED);
 
     }
 
     @ExceptionHandler(value = {HttpMessageNotReadableException.class})
     protected ResponseEntity<Envelope> handleMalformedRequestException(HttpMessageNotReadableException ex, WebRequest request) {
         String responseMessage = getMessageForHttpMessageNotReadableException(ex);
-        return handle(ex, responseMessage, HttpStatus.BAD_REQUEST);
+        return handle(ex, responseMessage, TraceUtil.getTraceId(tracer), HttpStatus.BAD_REQUEST);
     }
 
     @ExceptionHandler(value = {ConstraintViolationException.class})
@@ -85,47 +90,47 @@ public class SmeeUserExceptionHandler {
 
     @ExceptionHandler(value = {DataAccessResourceFailureException.class})
     protected ResponseEntity<Envelope> handleConstraintViolationException(DataAccessResourceFailureException ex, WebRequest request) {
-        return handle(ex, ex.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
+        return handle(ex, ex.getMessage(), TraceUtil.getTraceId(tracer), HttpStatus.INTERNAL_SERVER_ERROR);
     }
 
     @ExceptionHandler(value = {ResourceNotFoundException.class})
     protected ResponseEntity<Envelope> handleResourceNotFoundException(ResourceNotFoundException ex, WebRequest request) {
-        return handle(ex, ex.getMessage(), HttpStatus.NOT_FOUND);
+        return handle(ex, ex.getMessage(), TraceUtil.getTraceId(tracer), HttpStatus.NOT_FOUND);
     }
 
     @ExceptionHandler(value = {TransientPropertyValueException.class})
     protected ResponseEntity<Envelope> handleTransientPropertyValueException(TransientPropertyValueException ex, WebRequest request) {
-        return handle(ex, ex.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
+        return handle(ex, ex.getMessage(), TraceUtil.getTraceId(tracer), HttpStatus.INTERNAL_SERVER_ERROR);
     }
 
     @ExceptionHandler(value = {CannotCreateTransactionException.class})
     protected ResponseEntity<Envelope> handleCannotCreateTransactionException(CannotCreateTransactionException ex, WebRequest request) {
-        return handle(ex, ex.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
+        return handle(ex, ex.getMessage(), TraceUtil.getTraceId(tracer), HttpStatus.INTERNAL_SERVER_ERROR);
     }
 
     @ExceptionHandler(value = {InvalidDataAccessApiUsageException.class})
     protected ResponseEntity<Envelope> handleInvalidDataAccessApiUsageException(InvalidDataAccessApiUsageException ex, WebRequest request) {
-        return handle(ex, VENDOR_CREATE_ERROR,
+        return handle(ex, VENDOR_CREATE_ERROR, TraceUtil.getTraceId(tracer),
                 HttpStatus.INTERNAL_SERVER_ERROR);
     }
 
     @ExceptionHandler(value = {ApiClientException.class})
     protected ResponseEntity<Envelope> handleApiClientException(ApiClientException ex, WebRequest request) {
-        return handle(ex, ex.getMessage(),
+        return handle(ex, ex.getMessage(), TraceUtil.getTraceId(tracer),
                 HttpStatus.INTERNAL_SERVER_ERROR);
     }
 
-    private ResponseEntity<Envelope> handle(Exception ex, String responseMessage, HttpStatus responseStatus) {
+    private ResponseEntity<Envelope> handle(Exception ex, String responseMessage, String traceId, HttpStatus responseStatus) {
         log.error(String.format("Error processing request with reason - %s", responseMessage)
-                , kv("stack_trace", ex.getStackTrace()), kv(REQUEST_ID_KEY, MDC.get(REQUEST_ID_KEY)));
-        return new ResponseEntity<>(new Envelope(responseStatus.value(), MDC.get(RequestIdGenerator.REQUEST_ID_KEY), responseMessage), responseStatus);
+                , kv("stack_trace", ex.getStackTrace()), traceId);
+        return new ResponseEntity<>(new Envelope(responseStatus.value(), TraceUtil.getTraceId(tracer), responseMessage), responseStatus);
     }
 
     private ResponseEntity<Envelope> handleRequestParamsInvalidException(ConstraintViolationException ex) {
         List<String> exceptionFields = ex.getConstraintViolations().stream()
                 .map(x -> String.format("Passed %s : %s is invalid", x.getPropertyPath(), x.getMessage()))
                 .collect(Collectors.toList());
-        return handle(ex, String.format("Bad Request - %s", exceptionFields), HttpStatus.BAD_REQUEST);
+        return handle(ex, String.format("Bad Request - %s", exceptionFields),TraceUtil.getTraceId(tracer), HttpStatus.BAD_REQUEST);
     }
 
     private ResponseEntity<Envelope> handleFieldsOrPathVariableInvalidException(Exception ex, BindingResult bindingResult) {
@@ -133,16 +138,16 @@ public class SmeeUserExceptionHandler {
             List<ObjectError> violations = ((MethodArgumentNotValidException) ex).getBindingResult().getAllErrors();
             List<String> errors = violations.stream().map(this::prepareError).filter(Objects::nonNull).collect(Collectors.toList());
             if (errors.isEmpty()) {
-                return handle(ex, SMEE_USER_MISSING_PARAM_MESSAGE, HttpStatus.BAD_REQUEST);
+                return handle(ex, SMEE_USER_MISSING_PARAM_MESSAGE, TraceUtil.getTraceId(tracer), HttpStatus.BAD_REQUEST);
             } else  {
-                return handle(ex, String.join(", ", errors) , HttpStatus.BAD_REQUEST);
+                return handle(ex, String.join(", ", errors) , TraceUtil.getTraceId(tracer), HttpStatus.BAD_REQUEST);
             }
         }
 
         List<String> exceptionFields = bindingResult.getFieldErrors().stream()
                 .map(x -> String.format("Passed %s : %s is invalid", x.getField(), x.getRejectedValue()))
                 .collect(Collectors.toList());
-        return handle(ex, String.format("Bad Request - %s", exceptionFields), HttpStatus.BAD_REQUEST);
+        return handle(ex, String.format("Bad Request - %s", exceptionFields),TraceUtil.getTraceId(tracer), HttpStatus.BAD_REQUEST);
     }
 
     private String prepareError(ObjectError objectError) {

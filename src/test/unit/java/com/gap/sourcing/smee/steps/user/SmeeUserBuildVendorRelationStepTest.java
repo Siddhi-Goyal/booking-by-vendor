@@ -45,8 +45,7 @@ class SmeeUserBuildVendorRelationStepTest {
 
     @BeforeEach
     void init() {
-        smeeUserVendorRelationStep = new SmeeUserBuildVendorRelationStep(smeeUserEntityMergeStep,
-                client);
+        smeeUserVendorRelationStep = new SmeeUserBuildVendorRelationStep(smeeUserEntityMergeStep, client);
         SmeeUserCreateResource resource = new SmeeUserCreateResource();
         resource.setVendorPartyId("12345678");
         context = new SmeeUserContext(resource);

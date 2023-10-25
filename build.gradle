@@ -48,6 +48,7 @@ dependencies {
 	implementation 'org.apache.commons:commons-lang3:3.9'
 	implementation 'org.springframework.boot:spring-boot-starter-cache'
 	implementation group: 'com.github.ben-manes.caffeine', name: 'caffeine', version: '3.0.2'
+	implementation group: 'org.springframework.cloud', name: 'spring-cloud-starter-sleuth', version: '2.2.8.RELEASE'
 	compileOnly 'org.projectlombok:lombok'
 	annotationProcessor 'org.projectlombok:lombok'
 	developmentOnly 'org.springframework.boot:spring-boot-devtools'

@@ -1,5 +1,6 @@
 package com.gap.sourcing.smee.controllers;
 
+import brave.Tracer;
 import com.gap.sourcing.smee.dtos.resources.Resource;
 import com.gap.sourcing.smee.dtos.resources.SmeeUserCreateResource;
 import com.gap.sourcing.smee.dtos.resources.SmeeUserGetResource;
@@ -9,14 +10,12 @@ import com.gap.sourcing.smee.enums.RequestAction;
 import com.gap.sourcing.smee.envelopes.Envelope;
 import com.gap.sourcing.smee.exceptions.GenericUserException;
 import com.gap.sourcing.smee.services.ControllerStepService;
-import com.gap.sourcing.smee.utils.RequestIdGenerator;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
-import org.slf4j.MDC;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 
@@ -34,6 +33,8 @@ class SmeeUserControllerTest {
     private SmeeUserGetResource getResource;
     @Mock
     private ControllerStepService controllerStepService;
+    @Mock
+    private Tracer tracer;
     @InjectMocks
     private SmeeUserController sampleController;
 
@@ -42,8 +43,6 @@ class SmeeUserControllerTest {
     void init() {
         createResource = new SmeeUserCreateResource();
         getResource = new SmeeUserGetResource();
-
-        MDC.put(RequestIdGenerator.REQUEST_ID_KEY, RequestIdGenerator.generateRequestId());
     }
 
     @Test
