@@ -46,3 +46,4 @@ kubernetes:
       failureThreshold: "30"
 control:
   destroyApplication: false
+
