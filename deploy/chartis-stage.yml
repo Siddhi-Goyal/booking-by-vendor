@@ -41,4 +41,4 @@ kubernetes:
       period: "30"
       failureThreshold: "30"
 control:
-  destroyApplication: false
+  destroyApplication: true
