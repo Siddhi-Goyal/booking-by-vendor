@@ -1,10 +1,11 @@
 version: 1-beta
-appName: smee-user-service
+appName: booking-by-vendor
 team: pt-gisbooking
 environment: stage
 environmentVariables:
   JAVA_NR_OPTS: '-javaagent:/usr/local/newrelic/newrelic.jar'
-  NEW_RELIC_APP_NAME: aks-smee-user-service-stage
+  NEW_RELIC_APP_NAME: aks-booking-by-vendor
+-stage
   NEW_RELIC_LOG: stdout
   NEW_RELIC_LOG_LEVEL: info
   NEW_RELIC_DISTRIBUTED_TRACING: true
@@ -17,7 +18,8 @@ secrets:
     - key: new-relic-license-key
       environmentVariableKey: NEW_RELIC_LICENSE_KEY
 kubernetes:
-  dockerImage: gacr2nnonprod.azurecr.io/com/gap/sourcing/smee/smee-user-service
+  dockerImage: gacr2nnonprod.azurecr.io/com/gap/sourcing/smee/booking-by-vendor
+
   dockerImageTag: 7bbcdc2
   port: 8080
   resources:
