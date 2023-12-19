@@ -2,6 +2,8 @@ name: PR Workflow
 
 on:
   pull_request:
+    branches:
+      - test
     types:
       - opened
       - synchronize
@@ -9,7 +11,7 @@ on:
 jobs:
   pull_request:
     name: Build when PR is raised
-    runs-on: [ self-hosted, arc-dind-rootless-enterprise ]
+    runs-on: ubuntu-latest
 
     steps:
       - name: Checkout code
