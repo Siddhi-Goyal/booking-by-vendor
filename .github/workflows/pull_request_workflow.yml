@@ -1,7 +1,10 @@
+#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
 name: PR Workflow
 
 on:
   pull_request:
+    branches:
+      - master
     types:
       - opened
       - synchronize
@@ -9,7 +12,7 @@ on:
 jobs:
   pull_request:
     name: Build when PR is raised
-    runs-on: [ self-hosted, arc-dind-rootless-enterprise ]
+    runs-on: ubuntu-latest
 
     steps:
       - name: Checkout code
@@ -25,10 +28,11 @@ jobs:
         uses: gradle/wrapper-validation-action@v1
 
       - name: Execute Gradle build
-        run: ./gradlew -Dgradle.wrapperUser=${SAAS_ARTIFACTORY_USERNAME} -Dgradle.wrapperPassword=${SAAS_ARTIFACTORY_PASSWORD} clean build sonarqube
-        env:
-          SAAS_ARTIFACTORY_USERNAME: ${{secrets.SAAS_ARTIFACTORY_USERNAME}}
-          SAAS_ARTIFACTORY_PASSWORD: ${{secrets.SAAS_ARTIFACTORY_PASSWORD}}
-          JASYPT_ENCRYPTOR_PASSWORD: ${{secrets.JASYPT_ENCRYPTION_PASSWORD}}
-          SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
-          SONAR_HOST_URL: ${{ secrets.SONARQUBE_HOST }}
+        run: ./gradlew build --console=plain
+#        run: ./gradlew -Dgradle.wrapperUser=${SAAS_ARTIFACTORY_USERNAME} -Dgradle.wrapperPassword=${SAAS_ARTIFACTORY_PASSWORD} clean build sonarqube
+#        env:
+#          SAAS_ARTIFACTORY_USERNAME: ${{secrets.SAAS_ARTIFACTORY_USERNAME}}
+#          SAAS_ARTIFACTORY_PASSWORD: ${{secrets.SAAS_ARTIFACTORY_PASSWORD}}
+#          JASYPT_ENCRYPTOR_PASSWORD: ${{secrets.JASYPT_ENCRYPTION_PASSWORD}}
+#          SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
+#          SONAR_HOST_URL: ${{ secrets.SONARQUBE_HOST }}
