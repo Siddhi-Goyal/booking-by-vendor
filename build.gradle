@@ -18,10 +18,10 @@ plugins {
 	id 'jacoco'
 }
 
-apply plugin: 'gap-sonarqube'
-apply from: 'sonar.gradle'
-
-group = 'com.gap.sourcing.smee'
+//apply plugin: 'gap-sonarqube'
+//apply from: 'sonar.gradle'
+//
+//group = 'com.gap.sourcing.smee'
 sourceCompatibility = '11'
 
 configurations {
