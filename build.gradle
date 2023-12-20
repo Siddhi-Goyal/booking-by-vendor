@@ -1,14 +1,14 @@
-buildscript {
-	apply from: 'properties.gradle'
-
-	repositories {
-		maven mavenConfig
-		ivy ivyConfig
-	}
-	dependencies {
-		classpath("com.gap.gradle.plugins:gap-sonar-plugin:2+")
-	}
-}
+//buildscript {
+//	apply from: 'properties.gradle'
+//
+//	repositories {
+//		maven mavenConfig
+//		ivy ivyConfig
+//	}
+//	dependencies {
+//		classpath("com.gap.gradle.plugins:gap-sonar-plugin:2+")
+//	}
+//}
 
 plugins {
 	id 'org.springframework.boot' version '2.3.6.RELEASE'

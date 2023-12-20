@@ -1,3 +1,4 @@
+#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
 name: PR Workflow
 
 on:
@@ -27,10 +28,11 @@ jobs:
         uses: gradle/wrapper-validation-action@v1
 
       - name: Execute Gradle build
-        run: ./gradlew -Dgradle.wrapperUser=${SAAS_ARTIFACTORY_USERNAME} -Dgradle.wrapperPassword=${SAAS_ARTIFACTORY_PASSWORD} clean build sonarqube
-        env:
-          SAAS_ARTIFACTORY_USERNAME: ${{secrets.SAAS_ARTIFACTORY_USERNAME}}
-          SAAS_ARTIFACTORY_PASSWORD: ${{secrets.SAAS_ARTIFACTORY_PASSWORD}}
-          JASYPT_ENCRYPTOR_PASSWORD: ${{secrets.JASYPT_ENCRYPTION_PASSWORD}}
-          SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
-          SONAR_HOST_URL: ${{ secrets.SONARQUBE_HOST }}
+        run: ./gradlew build --console=plain
+#        run: ./gradlew -Dgradle.wrapperUser=${SAAS_ARTIFACTORY_USERNAME} -Dgradle.wrapperPassword=${SAAS_ARTIFACTORY_PASSWORD} clean build sonarqube
+#        env:
+#          SAAS_ARTIFACTORY_USERNAME: ${{secrets.SAAS_ARTIFACTORY_USERNAME}}
+#          SAAS_ARTIFACTORY_PASSWORD: ${{secrets.SAAS_ARTIFACTORY_PASSWORD}}
+#          JASYPT_ENCRYPTOR_PASSWORD: ${{secrets.JASYPT_ENCRYPTION_PASSWORD}}
+#          SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
+#          SONAR_HOST_URL: ${{ secrets.SONARQUBE_HOST }}
